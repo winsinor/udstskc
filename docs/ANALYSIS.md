@@ -21,6 +21,145 @@ control, fault handling, motion, the Cognex vision interface, the tray data
 model and the robot handshake — was in one routine, in rungs that ran up to
 1,700 characters and eight branch levels deep.
 
+## How the machine cycle worked
+
+There is no state machine anywhere in the original. The machine's state is
+the combination of about fifteen latched bits and six counters, and the whole
+cycle is driven by **one counter walking down**: `Upstack_Layer_Current`.
+
+### The two stackers are mirror images
+
+Both use the same arithmetic:
+
+```
+target = HighMax_POS - (Layer_Current * TrayHeight)
+```
+
+so **layer 0 is the top of travel** and a higher layer number is a lower
+platform.
+
+- The **up stacker counts down**. It starts at the tray count and
+  decrements. Layer decreasing means position increasing, so the platform
+  **rises** as trays are consumed — keeping the top tray at a constant pick
+  height for the robot.
+- The **down stacker counts up**. It increments as trays arrive, so the
+  platform **descends** as the stack builds — keeping the top tray at a
+  constant place height.
+
+### The cycle, start to finish
+
+**1. Doors open.** `Door_Open_Request` sends both stackers to `LowMax_POS`
+(12 mm, the bottom) and writes 13 into both layer counters. The operator
+loads a full stack of parts into the up stacker and empty trays into the down
+stacker.
+
+**2. Doors close.** `Upstack_Complete_TMR` times out, then loads
+`UpStack_HMI_Tray_Qty` into both `Upstack_Layer_Current` and
+`Upstack_Layer_Last` (same for the down stacker). That HMI number is the
+operator telling the machine how many trays are in the stack.
+
+**3. The layer counter changing is what moves the axis.** `Layer_Current` now
+differs from `Layer_Temp`, so rung 3 fires `Start_Move` and the stacker
+travels to that layer's height. This is the only motion trigger in the
+program.
+
+**4. The camera fires.** The down stacker latches `Trigger_Cognex` once
+nothing is moving; the up stacker program services it — arms
+`IS3800:O.Control.TriggerEnable`, waits for `Cognex_Hold_TMR.ACC > 500`, then
+pulses `Trigger`. One camera shot covers **both** trays, which is why the
+request originates in one program and the camera lives in the other.
+
+**5. Results are unpacked into the tray array.** A changed `AcquisitionID`
+latches `UpStack_Status_Fill` + `UpStack_Fill_Trays`. After `Data_Delay_TMR`:
+
+- `InspectionResults[96]` and `[97]` are the tray-present scores for the up
+  and down trays. Below 50 latches `Upstack_Jam` / `DwnStack_Jam`.
+- A walker (rung 5) steps column 1→4 then row 1→2, one cell per scan,
+  pulsing `New_Fill_Item`.
+- For each cell, rung 6 looks up that hole's result offset from the
+  hard-coded table (0, 6, 24, 30 / 48, 54, 72, 78) and loads X1, X2 (=X1+12),
+  Y1, Y2, A1, A2 into the cell. **If either X is non-zero the hole is marked
+  occupied**; if both are zero the cell is cleared. That is the entire
+  part-present test.
+
+**6. The pick walk.** Rung 10 is the heart of the machine, gated by two bits:
+
+- `Upstack_Count_Permission` (rung 8) — door shut, not moving, no layer move
+  pending, no jam, not complete, data delay done, no pick already
+  outstanding.
+- `Upstack_Count_Request` (rung 9) — turn table not full, or a fresh layer
+  from the camera, or the robot just took the last hole in the tray, or a
+  turn table slot is free.
+
+With both true it increments the column pointer and asks: is this cell's
+`Status` equal to 1 (occupied)? If yes, bump `UStoR_PickSeqNumber` and latch
+`UStoR_ReqToPick`. If no, nothing happens and the counter simply walks past
+on the next scan — **that is how empty holes get skipped**.
+
+Column past 4 → next row, column back to 0. Row past 2 → decrement the layer
+and latch `UStoR_ReqToMoveLayer`. Layer at 0 → the stack is done.
+
+**7. Hand-off to the robot.** `UStoR_ReqToPick` publishes row and column to
+`UStoR_PickRowNumber` / `UStoR_PickColumnNumber` and stamps the sequence
+number into the tray cell. On `RtoUS_PickConfirm` the whole cell is copied
+into `Data_Item[UStoR_PickSeqNumber]`, that record's Status becomes 2, the
+tray cell is marked complete, and the request clears.
+
+**8. Empty tray.** `UStoR_ReqToMoveLayer` asks the robot to slide the empty
+tray across to the down stacker. `RtoUS_LayerMovedConfirm` clears the request
+in the up stacker and increments `DwnStack_Layer_Current` in the down
+stacker — which, being a layer change, is what makes the down stacker move.
+
+**9. The down stacker side** runs its own smaller version of the same walk:
+`DwnStack_Count_Permission` plus rung 6 steps its column/row pointers and
+latches `DStoR_OpenLocation` for each free hole. Rung 8 publishes the
+location; `RtoDS_PlacedConfirm` copies the part's travelling record into the
+down stacker tray cell. Row past max latches `DwnStack_Full_Layer`.
+
+**10. Completion.** `Upstack_Complete` latches `Door_Open_Request` once
+everything has stopped, both stackers return to the bottom, the tray counts
+reload from the HMI, and the cycle repeats.
+
+### Part tracking
+
+`Data_Item[500]` is the travelling database. `UStoR_PickSeqNumber` rolls
+1..490 and indexes it. Each record carries the original X/Y/angle the camera
+measured on the up stacker, plus a Status saying where the part is:
+
+```
+0 = not present            4 = robot picked from turn table
+1 = present in upstack     5 = robot placed in downstack
+2 = robot picked from upstack   6 = robot placed in chute
+3 = turn table ready for pickup
+```
+
+So a part keeps its measured pose from the moment it is seen on the up
+stacker all the way through the turn table to the down stacker. `TurnTable[5]`
+holds the records for parts currently on the turn table.
+
+The turn table and robot programs are **not** in these two exports — the up
+stacker only reads `Turn_Table_Full`, `TurnTable[n].Seq_Num`,
+`TurnTable_Move_ONS` and `RtoTT_PickConfirm` from elsewhere in the project.
+
+### Resuming after a door open
+
+A subtle bit worth knowing, in up stacker rung 1. Opening the doors stomps
+`Layer_Current` to 13, but the branch that saves `Layer_Current` into
+`Layer_Last` is gated on the door being shut — so `Layer_Last` keeps the
+pre-interruption value. When the doors close, a `TON` runs and a one-shot
+restores `Layer_Current := Layer_Last`. That is how the machine picks up
+mid-stack instead of starting over. The completion path in rung 11 overwrites
+both from `UpStack_HMI_Tray_Qty`, which is what starts a genuinely fresh
+stack.
+
+### The two programs are tightly coupled
+
+They are not independent stations. The up stacker sets `Door_Open_Request`
+and both read it; the down stacker requests the camera and the up stacker
+fires it; the up stacker's rung 4 latches `DwnStack_Jam` and its rung 11
+reloads the down stacker's layer counters. Neither program can be understood
+or modified on its own.
+
 ## The actuators
 
 Two IAI SCON drives on EtherNet/IP in direct numerical specification mode,
