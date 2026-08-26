@@ -1,0 +1,59 @@
+# Program-scoped tags for Program050000_Station200_UpStacker
+#
+# name , datatype , dimensions , default , description
+#
+# Everything the refactor adds lives at program scope so importing the
+# program creates it.  Tags that already exist at controller scope
+# (Cfg_UpStack_*, UpStack_Inputs/Outputs, Upstack_Layer_Current, the robot
+# handshake, Door_Open_Request, ...) are referenced, not redefined, so the
+# existing HMI and the robot interface keep working unchanged.
+#
+# HMI path for these:  Program:Program050000_Station200_UpStacker.<name>
+
+# ---- the axis ---------------------------------------------------------
+Axis , IAI_SCON_Axis , , , Up stacker actuator. All motion goes through this instruction
+
+# ---- axis configuration ----------------------------------------------
+Cfg_PosBand     , DINT , , 50    , In-position band in 0.01mm (50 = 0.50mm)
+Cfg_MoveTimeout , DINT , , 15000 , Move and home watchdog in ms
+Cfg_JogFast     , BOOL , , 0     , 0 = SCON jog speed 1, 1 = SCON jog speed 2
+Cfg_TrayScoreMin, DINT , , 50    , Cognex tray-present score below which a jam is declared
+
+# ---- manual control (the operator faceplate) -------------------------
+Man_Mode           , BOOL , , 0 , Manual mode selected. Auto sequence releases the axis
+Man_Position_Entry , DINT , , 0 , Height the operator types in, 0.01mm
+Man_Layer_Entry    , DINT , , 0 , Layer number for the go-to-layer helper
+Man_Target_Position, DINT , , 0 , Height that has been armed and is about to be run
+Man_Set_PB         , BOOL , , 0 , Momentary. Range-checks the entry and arms the move
+Man_Go_PB          , BOOL , , 0 , Momentary. Confirms and runs the armed move
+Man_GoToLayer_PB   , BOOL , , 0 , Momentary. Fills Man_Position_Entry from Man_Layer_Entry
+Man_JogUp_PB       , BOOL , , 0 , Maintained while held. Jog up
+Man_JogDn_PB       , BOOL , , 0 , Maintained while held. Jog down
+Man_Home_PB        , BOOL , , 0 , Momentary. Home the axis
+Man_Stop_PB        , BOOL , , 0 , Maintained. Pauses the drive and blocks new commands
+Man_Reset_PB       , BOOL , , 0 , Momentary. Resets the drive alarm and the soft faults
+
+Man_Permit         , BOOL , , 0 , Manual commands are allowed right now
+Man_Jog_Permit     , BOOL , , 0 , Jogging is allowed right now
+Man_Move_Armed     , BOOL , , 0 , A valid height is armed and waiting for the Go confirmation
+Man_Move_Active    , BOOL , , 0 , The armed move has been started and has not confirmed yet
+Man_Move_Confirmed , BOOL , , 0 , The last manual move reached its target. Cleared by the next Set
+Man_Rejected       , BOOL , , 0 , The entered height was outside the travel limits and was not armed
+Man_Move_Cmd       , BOOL , , 0 , One-scan move request handed to the axis
+Man_JogUp          , BOOL , , 0 , Jog-up request handed to the axis, soft-limited
+Man_JogDn          , BOOL , , 0 , Jog-down request handed to the axis, soft-limited
+Man_ONS            , DINT , , 0 , One-shot storage for the manual routine
+
+# ---- auto sequence ----------------------------------------------------
+Auto_Target_Position , DINT , , 0 , Height the auto sequence wants, 0.01mm
+Auto_Move_Cmd        , BOOL , , 0 , One-scan move request from the auto sequence
+Auto_Layer_Last      , DINT , , 0 , Layer the axis was last sent to. A change requests a move
+Auto_ONS             , DINT , , 0 , One-shot storage for the auto routine
+
+# ---- Cognex result map ------------------------------------------------
+# Index [row,column] -> the IS3800 InspectionResults index holding the X of
+# that hole.  Y is X+1, angle is X+2, and the second inspection is +12.
+# This array replaces the eight hard-coded MOVs in the original rung 6.
+# To go from an 8-hole tray to a 12-hole tray, set Cfg_Row_Max/Cfg_Column_Max
+# and fill in the extra offsets here -- no logic changes.
+Cfg_Cognex_Offset , DINT , 5 7 , 0 , Cognex InspectionResults index per tray hole, [row,column]

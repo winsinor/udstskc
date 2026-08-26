@@ -1,0 +1,63 @@
+# IAI_SCON_Axis -- Add-On Instruction parameter list
+#
+# name , usage , datatype , required , visible , description
+#
+# Only EnableIn/EnableOut and the two InOut image parameters appear on the
+# ladder instruction face.  Everything else is reached through the backing
+# tag (UpStack_Axis.Cmd_MoveAbs, UpStack_Axis.Sts_InPosition, ...) which
+# keeps the instruction block small and readable on the rung.
+
+EnableIn , Input  , BOOL         , false , false , Enable input
+EnableOut, Output , BOOL         , false , false , Enable output
+
+# ---- module image, passed by reference -------------------------------
+Drv_In   , InOut  , SCON_Inputs  , true  , true  , SCON input image (copy from the module tag before this call)
+Drv_Out  , InOut  , SCON_Outputs , true  , true  , SCON output image (copy to the module tag after this call)
+
+# ---- configuration ---------------------------------------------------
+Cfg_Pos_Min      , Input , DINT , false , false , Software lower travel limit in 0.01mm. A target below this is refused
+Cfg_Pos_Max      , Input , DINT , false , false , Software upper travel limit in 0.01mm. A target above this is refused
+Cfg_Speed        , Input , DINT , false , false , Move speed in 0.01mm/s
+Cfg_Accel        , Input , INT  , false , false , Acceleration in 0.01G
+Cfg_Decel        , Input , INT  , false , false , Deceleration in 0.01G
+Cfg_Band         , Input , DINT , false , false , In-position band in 0.01mm
+Cfg_Move_Timeout , Input , DINT , false , false , Move and home watchdog in ms. 0 falls back to 10000
+Cfg_Jog_Fast     , Input , BOOL , false , false , 0 = jog speed 1, 1 = jog speed 2 (JVEL). Speeds come from the SCON parameters
+
+# ---- commands --------------------------------------------------------
+Cmd_ServoOn   , Input , BOOL , false , false , Level. Servo enable permissive
+Cmd_Reset     , Input , BOOL , false , false , Level. Pulses the drive alarm reset and clears the soft faults
+Cmd_Home      , Input , BOOL , false , false , Rising edge. Home the axis
+Cmd_MoveAbs   , Input , BOOL , false , false , Rising edge. Move to Set_Position and confirm arrival
+Set_Position  , Input , DINT , false , false , Target absolute position in 0.01mm. Latched on the Cmd_MoveAbs edge
+Cmd_JogUp     , Input , BOOL , false , false , Level, held to run. Jog in the extend/up direction
+Cmd_JogDn     , Input , BOOL , false , false , Level, held to run. Jog in the retract/down direction
+Cmd_Stop      , Input , BOOL , false , false , Level. Holds the drive paused and blocks new commands
+
+# ---- status ----------------------------------------------------------
+Sts_Ready         , Output , BOOL , false , false , Servo on, homed, no fault, no E-stop
+Sts_ServoOn       , Output , BOOL , false , false , Drive reports servo on (SV)
+Sts_Homed         , Output , BOOL , false , false , Drive reports home complete (HEND)
+Sts_Busy          , Output , BOOL , false , false , A move, home or jog is in progress
+Sts_InPosition    , Output , BOOL , false , false , Arrival confirmed by PEND. This is the move confirmation
+Sts_MoveDone      , Output , BOOL , false , false , One scan pulse when a commanded move completes
+Sts_HomeDone      , Output , BOOL , false , false , One scan pulse when homing completes
+Sts_Jogging       , Output , BOOL , false , false , A jog button is held and the axis is jogging
+Sts_Fault         , Output , BOOL , false , false , Any fault: drive alarm, move timeout, or refused target
+Sts_Fault_Drive   , Output , BOOL , false , false , Drive alarm active (ALM). See Sts_AlarmCode
+Sts_Fault_Timeout , Output , BOOL , false , false , Move or home did not confirm inside Cfg_Move_Timeout
+Sts_Fault_Range   , Output , BOOL , false , false , Last commanded target was outside the travel limits and was refused
+Sts_EStop         , Output , BOOL , false , false , Drive reports E-stop (EMGS)
+Sts_Position      , Output , DINT , false , false , Actual position in 0.01mm
+Sts_Speed         , Output , DINT , false , false , Actual speed in 0.01mm/s
+Sts_Target        , Output , DINT , false , false , Target accepted for the move in progress or last completed
+Sts_AlarmCode     , Output , INT  , false , false , Drive alarm code
+Sts_Step          , Output , DINT , false , false , Sequencer step. See the header comment in the Logic routine
+
+# ---- local tags (not parameters) -------------------------------------
+@local MoveTMR  , TIMER , Move and home watchdog
+@local ResetTMR , TIMER , Alarm reset pulse
+@local OS_Move  , BOOL  , Cmd_MoveAbs edge memory
+@local OS_Home  , BOOL  , Cmd_Home edge memory
+@local Req_Move , BOOL  , Cmd_MoveAbs rising edge
+@local Req_Home , BOOL  , Cmd_Home rising edge

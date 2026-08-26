@@ -1,0 +1,1515 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.04" TargetName="IAI_SCON_Axis" TargetType="AddOnInstructionDefinition" TargetRevision="1.0" TargetLastEdited="Wed Aug 26 19:18:03 2026" ContainsContext="true" ExportDate="Wed Aug 26 19:18:03 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Context" Name="RS_Rev35011_691904_NPE">
+<DataTypes Use="Context">
+<DataType Name="SCON_Inputs" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Actual_Position" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Command_Current" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Actual_Speed" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Alarm_Code" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="OCCUPIED_n14_n15" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="Load_Cell_Value" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Total_Moving_Count" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Total_Moving_Distance" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZSCON_Input8" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Battery_Alarm" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[BALM]]>
+</Description>
+</Member>
+<Member Name="Loadcell_Cal_Complete" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CEND]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b4" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b5" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b6" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b7" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n29" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Input18" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Position_Complete" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PEND]]>
+</Description>
+</Member>
+<Member Name="Home_Complete" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HEND]]>
+</Description>
+</Member>
+<Member Name="Moving" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[MOVE]]>
+</Description>
+</Member>
+<Member Name="Alarm_Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ALM]]>
+</Description>
+</Member>
+<Member Name="Servo_is_On" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[SV]]>
+</Description>
+</Member>
+<Member Name="Push_Failed" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PSFL]]>
+</Description>
+</Member>
+<Member Name="In_Push_Zone" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PUSHS]]>
+</Description>
+</Member>
+<Member Name="Homing" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[GHMS]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Input27" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Manual_Mode" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RMDS]]>
+</Description>
+</Member>
+<Member Name="Torque_Level_Reached" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[TRQS]]>
+</Description>
+</Member>
+<Member Name="Load_Output_Reached" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[LOAD]]>
+</Description>
+</Member>
+<Member Name="In_PZone" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PZONE]]>
+</Description>
+</Member>
+<Member Name="In_Zone_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ZONE1]]>
+</Description>
+</Member>
+<Member Name="In_Zone_2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ZONE2]]>
+</Description>
+</Member>
+<Member Name="Ready" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RDY]]>
+</Description>
+</Member>
+<Member Name="E_Stop_Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EMGS]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="SCON_Outputs" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Target_Position" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Desired Absolute Position in .01mm]]>
+</Description>
+</Member>
+<Member Name="Position_Band" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Allowable Bandwidth of Move in .01mm]]>
+</Description>
+</Member>
+<Member Name="Target_Speed" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Desired speed of move .01mm/sec]]>
+</Description>
+</Member>
+<Member Name="Zone_Boundary_Pos" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Upper Limit of PZONE flag]]>
+</Description>
+</Member>
+<Member Name="Zone_Boundary_Neg" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Lower Limit of PZONE flag]]>
+</Description>
+</Member>
+<Member Name="Acceleration" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Acceleration in .01G]]>
+</Description>
+</Member>
+<Member Name="Deceleration" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Deceleration in .01G]]>
+</Description>
+</Member>
+<Member Name="Push_Percent" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Load_Threshold_Percent" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Sets the load current Threshold 0 (0%) to 255 (100%)]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Outpu9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="OCCUPIED_n28b0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Push_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PUSH]]>
+</Description>
+</Member>
+<Member Name="Push_Direction" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[DIR]]>
+</Description>
+</Member>
+<Member Name="Increment_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INC]]>
+</Description>
+</Member>
+<Member Name="Servo_Gain_Bit_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[GSL0]]>
+</Description>
+</Member>
+<Member Name="Servo_Gain_Bit_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[GSL1]]>
+</Description>
+</Member>
+<Member Name="Acc_Dec_Mode_Bit_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[MOD0]]>
+</Description>
+</Member>
+<Member Name="Acc_Dec_Mode_Bit_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[MOD1]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Outpu18" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Stop_Mode_Bit_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ASO0]]>
+</Description>
+</Member>
+<Member Name="Stop_Mode_Bit_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ASO1]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n29b2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="OCCUPIED_n29b3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Vibration_Damp_Bit_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[NTC0]]>
+</Description>
+</Member>
+<Member Name="Vibration_Damp_Bit_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[NTC1]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n29b6" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="OCCUPIED_n29b7" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZSCON_Outpu27" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Start_Move" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[DSTR]]>
+</Description>
+</Member>
+<Member Name="Home" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HOME]]>
+</Description>
+</Member>
+<Member Name="Pause" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[STP]]>
+</Description>
+</Member>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RES]]>
+</Description>
+</Member>
+<Member Name="Servo_On" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[SON]]>
+</Description>
+</Member>
+<Member Name="Inch_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[JISL]]>
+</Description>
+</Member>
+<Member Name="Jog_Parameter_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[JVEL]]>
+</Description>
+</Member>
+<Member Name="Jog_Reverse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[JOG-]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Outpu36" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Jog_Forward" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[JOG+]]>
+</Description>
+</Member>
+<Member Name="Calibrate" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CLBR]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n31b1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n31b2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n31b3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n31b4" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="Manual_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RMOD]]>
+</Description>
+</Member>
+<Member Name="Release_Brake" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[BKRL]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+</DataTypes>
+<AddOnInstructionDefinitions Use="Context">
+<AddOnInstructionDefinition Use="Target" Name="IAI_SCON_Axis" Revision="1.0" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="true" CreatedDate="Wed Aug 26 19:18:03 2026" EditedDate="Wed Aug 26 19:18:03 2026" SoftwareRevision="v35.04">
+<Description>
+<![CDATA[Driver for one IAI SCON actuator on EtherNet/IP in direct numerical specification mode.
+
+Call it as:  IAI_SCON_Axis( <backing tag>, <input image>, <output image> )
+with a CPS from the module input tag before the call and a CPS to the module output tag after it.
+
+To move: load Set_Position (0.01mm) and give Cmd_MoveAbs a rising edge. Sts_InPosition confirms arrival from the drive's PEND bit; Sts_MoveDone pulses for one scan. Targets outside Cfg_Pos_Min..Cfg_Pos_Max are refused and raise Sts_Fault_Range. A move that does not confirm inside Cfg_Move_Timeout raises Sts_Fault_Timeout.
+
+Cmd_JogUp / Cmd_JogDn jog while held.]]>
+</Description>
+<Parameters>
+<Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable input]]>
+</Description>
+</Parameter>
+<Parameter Name="EnableOut" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable output]]>
+</Description>
+</Parameter>
+<Parameter Name="Drv_In" TagType="Base" DataType="SCON_Inputs" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[SCON input image (copy from the module tag before this call)]]>
+</Description>
+</Parameter>
+<Parameter Name="Drv_Out" TagType="Base" DataType="SCON_Outputs" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[SCON output image (copy to the module tag after this call)]]>
+</Description>
+</Parameter>
+<Parameter Name="Cfg_Pos_Min" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Software lower travel limit in 0.01mm. A target below this is refused]]>
+</Description>
+</Parameter>
+<Parameter Name="Cfg_Pos_Max" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Software upper travel limit in 0.01mm. A target above this is refused]]>
+</Description>
+</Parameter>
+<Parameter Name="Cfg_Speed" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Move speed in 0.01mm/s]]>
+</Description>
+</Parameter>
+<Parameter Name="Cfg_Accel" TagType="Base" DataType="INT" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Acceleration in 0.01G]]>
+</Description>
+</Parameter>
+<Parameter Name="Cfg_Decel" TagType="Base" DataType="INT" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Deceleration in 0.01G]]>
+</Description>
+</Parameter>
+<Parameter Name="Cfg_Band" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[In-position band in 0.01mm]]>
+</Description>
+</Parameter>
+<Parameter Name="Cfg_Move_Timeout" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Move and home watchdog in ms. 0 falls back to 10000]]>
+</Description>
+</Parameter>
+<Parameter Name="Cfg_Jog_Fast" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[0 = jog speed 1, 1 = jog speed 2 (JVEL). Speeds come from the SCON parameters]]>
+</Description>
+</Parameter>
+<Parameter Name="Cmd_ServoOn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Level. Servo enable permissive]]>
+</Description>
+</Parameter>
+<Parameter Name="Cmd_Reset" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Level. Pulses the drive alarm reset and clears the soft faults]]>
+</Description>
+</Parameter>
+<Parameter Name="Cmd_Home" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Rising edge. Home the axis]]>
+</Description>
+</Parameter>
+<Parameter Name="Cmd_MoveAbs" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Rising edge. Move to Set_Position and confirm arrival]]>
+</Description>
+</Parameter>
+<Parameter Name="Set_Position" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Target absolute position in 0.01mm. Latched on the Cmd_MoveAbs edge]]>
+</Description>
+</Parameter>
+<Parameter Name="Cmd_JogUp" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Level, held to run. Jog in the extend/up direction]]>
+</Description>
+</Parameter>
+<Parameter Name="Cmd_JogDn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Level, held to run. Jog in the retract/down direction]]>
+</Description>
+</Parameter>
+<Parameter Name="Cmd_Stop" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Level. Holds the drive paused and blocks new commands]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Ready" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Servo on, homed, no fault, no E-stop]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_ServoOn" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Drive reports servo on (SV)]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Homed" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Drive reports home complete (HEND)]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Busy" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[A move, home or jog is in progress]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_InPosition" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Arrival confirmed by PEND. This is the move confirmation]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_MoveDone" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[One scan pulse when a commanded move completes]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_HomeDone" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[One scan pulse when homing completes]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Jogging" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[A jog button is held and the axis is jogging]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Fault" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Any fault: drive alarm, move timeout, or refused target]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Fault_Drive" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Drive alarm active (ALM). See Sts_AlarmCode]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Fault_Timeout" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Move or home did not confirm inside Cfg_Move_Timeout]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Fault_Range" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Last commanded target was outside the travel limits and was refused]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_EStop" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Drive reports E-stop (EMGS)]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Position" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Actual position in 0.01mm]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Speed" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Actual speed in 0.01mm/s]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Target" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Target accepted for the move in progress or last completed]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_AlarmCode" TagType="Base" DataType="INT" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Drive alarm code]]>
+</Description>
+</Parameter>
+<Parameter Name="Sts_Step" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Sequencer step. See the header comment in the Logic routine]]>
+</Description>
+</Parameter>
+</Parameters>
+<LocalTags>
+<LocalTag Name="MoveTMR" DataType="TIMER" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Move and home watchdog]]>
+</Description>
+</LocalTag>
+<LocalTag Name="ResetTMR" DataType="TIMER" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Alarm reset pulse]]>
+</Description>
+</LocalTag>
+<LocalTag Name="OS_Move" DataType="BOOL" Radix="Decimal" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cmd_MoveAbs edge memory]]>
+</Description>
+</LocalTag>
+<LocalTag Name="OS_Home" DataType="BOOL" Radix="Decimal" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cmd_Home edge memory]]>
+</Description>
+</LocalTag>
+<LocalTag Name="Req_Move" DataType="BOOL" Radix="Decimal" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cmd_MoveAbs rising edge]]>
+</Description>
+</LocalTag>
+<LocalTag Name="Req_Home" DataType="BOOL" Radix="Decimal" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cmd_Home rising edge]]>
+</Description>
+</LocalTag>
+</LocalTags>
+<Routines>
+<Routine Name="Logic" Type="ST">
+<STContent>
+<Line Number="0">
+<![CDATA[(* =====================================================================]]>
+</Line>
+<Line Number="1">
+<![CDATA[   IAI_SCON_Axis  --  driver for one IAI SCON actuator]]>
+</Line>
+<Line Number="2">
+<![CDATA[                      (EtherNet/IP, direct numerical specification mode)]]>
+</Line>
+<Line Number="3">
+<![CDATA[]]>
+</Line>
+<Line Number="4">
+<![CDATA[   One instance per actuator.  The calling program copies the module]]>
+</Line>
+<Line Number="5">
+<![CDATA[   image in and out around this call:]]>
+</Line>
+<Line Number="6">
+<![CDATA[]]>
+</Line>
+<Line Number="7">
+<![CDATA[       CPS( IAI_UpStacker:I , UpStack_Inputs , 1 )]]>
+</Line>
+<Line Number="8">
+<![CDATA[       IAI_SCON_Axis( UpStack_Axis , UpStack_Inputs , UpStack_Outputs )]]>
+</Line>
+<Line Number="9">
+<![CDATA[       CPS( UpStack_Outputs , IAI_UpStacker:O , 1 )]]>
+</Line>
+<Line Number="10">
+<![CDATA[]]>
+</Line>
+<Line Number="11">
+<![CDATA[   Everything else is done through the backing tag, e.g.]]>
+</Line>
+<Line Number="12">
+<![CDATA[       UpStack_Axis.Set_Position := 12500 ;]]>
+</Line>
+<Line Number="13">
+<![CDATA[       UpStack_Axis.Cmd_MoveAbs  := 1 ;    -- rising edge is the "go"]]>
+</Line>
+<Line Number="14">
+<![CDATA[       ... then wait for ...]]>
+</Line>
+<Line Number="15">
+<![CDATA[       UpStack_Axis.Sts_InPosition         -- arrival confirmed]]>
+</Line>
+<Line Number="16">
+<![CDATA[]]>
+</Line>
+<Line Number="17">
+<![CDATA[   UNITS -- native SCON units throughout:]]>
+</Line>
+<Line Number="18">
+<![CDATA[       position   0.01 mm      (12500 = 125.00 mm)]]>
+</Line>
+<Line Number="19">
+<![CDATA[       speed      0.01 mm/s    (10000 = 100.00 mm/s)]]>
+</Line>
+<Line Number="20">
+<![CDATA[       accel/dec  0.01 G       (   30 =   0.30 G)]]>
+</Line>
+<Line Number="21">
+<![CDATA[       timeout    ms]]>
+</Line>
+<Line Number="22">
+<![CDATA[]]>
+</Line>
+<Line Number="23">
+<![CDATA[   THE ONE MOVE COMMAND]]>
+</Line>
+<Line Number="24">
+<![CDATA[       Load Set_Position, then give Cmd_MoveAbs a rising edge.]]>
+</Line>
+<Line Number="25">
+<![CDATA[       The instruction range-checks the target, loads the drive,]]>
+</Line>
+<Line Number="26">
+<![CDATA[       pulses DSTR, and holds Sts_Busy until the drive reports]]>
+</Line>
+<Line Number="27">
+<![CDATA[       PEND (position complete).  Sts_InPosition is the confirmation.]]>
+</Line>
+<Line Number="28">
+<![CDATA[       Nothing else starts a positioning move.]]>
+</Line>
+<Line Number="29">
+<![CDATA[]]>
+</Line>
+<Line Number="30">
+<![CDATA[   ===================================================================== *)]]>
+</Line>
+<Line Number="31">
+<![CDATA[]]>
+</Line>
+<Line Number="32">
+<![CDATA[]]>
+</Line>
+<Line Number="33">
+<![CDATA[(* ---------------------------------------------------------------------]]>
+</Line>
+<Line Number="34">
+<![CDATA[   1.  Status mirror  --  everything the HMI and the calling program read]]>
+</Line>
+<Line Number="35">
+<![CDATA[   --------------------------------------------------------------------- *)]]>
+</Line>
+<Line Number="36">
+<![CDATA[Sts_Position    := Drv_In.Actual_Position;]]>
+</Line>
+<Line Number="37">
+<![CDATA[Sts_Speed       := Drv_In.Actual_Speed;]]>
+</Line>
+<Line Number="38">
+<![CDATA[Sts_AlarmCode   := Drv_In.Alarm_Code;]]>
+</Line>
+<Line Number="39">
+<![CDATA[Sts_ServoOn     := Drv_In.Servo_is_On;]]>
+</Line>
+<Line Number="40">
+<![CDATA[Sts_Homed       := Drv_In.Home_Complete;]]>
+</Line>
+<Line Number="41">
+<![CDATA[Sts_Fault_Drive := Drv_In.Alarm_Active;]]>
+</Line>
+<Line Number="42">
+<![CDATA[Sts_EStop       := Drv_In.E_Stop_Active;]]>
+</Line>
+<Line Number="43">
+<![CDATA[]]>
+</Line>
+<Line Number="44">
+<![CDATA[(* Sts_Fault_Range is deliberately NOT part of Sts_Fault. A refused target]]>
+</Line>
+<Line Number="45">
+<![CDATA[   is a bad command, not a broken machine: it must not drop Sts_Ready and]]>
+</Line>
+<Line Number="46">
+<![CDATA[   lock the operator out of simply retyping the height. It clears itself on]]>
+</Line>
+<Line Number="47">
+<![CDATA[   the next accepted move, or on a reset. *)]]>
+</Line>
+<Line Number="48">
+<![CDATA[Sts_Fault := Sts_Fault_Drive OR Sts_Fault_Timeout;]]>
+</Line>
+<Line Number="49">
+<![CDATA[]]>
+</Line>
+<Line Number="50">
+<![CDATA[Sts_Ready := Drv_In.Ready]]>
+</Line>
+<Line Number="51">
+<![CDATA[             AND Drv_In.Servo_is_On]]>
+</Line>
+<Line Number="52">
+<![CDATA[             AND Drv_In.Home_Complete]]>
+</Line>
+<Line Number="53">
+<![CDATA[             AND NOT Sts_Fault]]>
+</Line>
+<Line Number="54">
+<![CDATA[             AND NOT Sts_EStop;]]>
+</Line>
+<Line Number="55">
+<![CDATA[]]>
+</Line>
+<Line Number="56">
+<![CDATA[(* one-scan pulses -- cleared every scan, set by the state machine *)]]>
+</Line>
+<Line Number="57">
+<![CDATA[Sts_MoveDone := 0;]]>
+</Line>
+<Line Number="58">
+<![CDATA[Sts_HomeDone := 0;]]>
+</Line>
+<Line Number="59">
+<![CDATA[]]>
+</Line>
+<Line Number="60">
+<![CDATA[]]>
+</Line>
+<Line Number="61">
+<![CDATA[(* ---------------------------------------------------------------------]]>
+</Line>
+<Line Number="62">
+<![CDATA[   2.  Servo enable, pause, and alarm reset]]>
+</Line>
+<Line Number="63">
+<![CDATA[   --------------------------------------------------------------------- *)]]>
+</Line>
+<Line Number="64">
+<![CDATA[Drv_Out.Servo_On := Cmd_ServoOn;]]>
+</Line>
+<Line Number="65">
+<![CDATA[Drv_Out.Pause    := Cmd_Stop;]]>
+</Line>
+<Line Number="66">
+<![CDATA[]]>
+</Line>
+<Line Number="67">
+<![CDATA[(* RES is pulsed for 200 ms, and only while the drive is actually alarmed,]]>
+</Line>
+<Line Number="68">
+<![CDATA[   so holding the HMI reset button down cannot sit on the reset bit. *)]]>
+</Line>
+<Line Number="69">
+<![CDATA[ResetTMR.PRE         := 200;]]>
+</Line>
+<Line Number="70">
+<![CDATA[ResetTMR.TimerEnable := Cmd_Reset AND Drv_In.Alarm_Active;]]>
+</Line>
+<Line Number="71">
+<![CDATA[TONR(ResetTMR);]]>
+</Line>
+<Line Number="72">
+<![CDATA[Drv_Out.Reset := ResetTMR.TimerEnable AND NOT ResetTMR.DN;]]>
+</Line>
+<Line Number="73">
+<![CDATA[]]>
+</Line>
+<Line Number="74">
+<![CDATA[IF NOT Cmd_Reset THEN]]>
+</Line>
+<Line Number="75">
+<![CDATA[    ResetTMR.ACC := 0;]]>
+</Line>
+<Line Number="76">
+<![CDATA[    ResetTMR.DN  := 0;]]>
+</Line>
+<Line Number="77">
+<![CDATA[END_IF;]]>
+</Line>
+<Line Number="78">
+<![CDATA[]]>
+</Line>
+<Line Number="79">
+<![CDATA[(* a reset also clears the two soft faults raised by this instruction *)]]>
+</Line>
+<Line Number="80">
+<![CDATA[IF Cmd_Reset THEN]]>
+</Line>
+<Line Number="81">
+<![CDATA[    Sts_Fault_Timeout := 0;]]>
+</Line>
+<Line Number="82">
+<![CDATA[    Sts_Fault_Range   := 0;]]>
+</Line>
+<Line Number="83">
+<![CDATA[END_IF;]]>
+</Line>
+<Line Number="84">
+<![CDATA[]]>
+</Line>
+<Line Number="85">
+<![CDATA[]]>
+</Line>
+<Line Number="86">
+<![CDATA[(* ---------------------------------------------------------------------]]>
+</Line>
+<Line Number="87">
+<![CDATA[   3.  Motion parameters  --  refreshed every scan so an HMI edit takes]]>
+</Line>
+<Line Number="88">
+<![CDATA[       effect on the next move without a download]]>
+</Line>
+<Line Number="89">
+<![CDATA[   --------------------------------------------------------------------- *)]]>
+</Line>
+<Line Number="90">
+<![CDATA[Drv_Out.Target_Speed  := Cfg_Speed;]]>
+</Line>
+<Line Number="91">
+<![CDATA[Drv_Out.Acceleration  := Cfg_Accel;]]>
+</Line>
+<Line Number="92">
+<![CDATA[Drv_Out.Deceleration  := Cfg_Decel;]]>
+</Line>
+<Line Number="93">
+<![CDATA[Drv_Out.Position_Band := Cfg_Band;]]>
+</Line>
+<Line Number="94">
+<![CDATA[]]>
+</Line>
+<Line Number="95">
+<![CDATA[(* Never leave the move watchdog at zero -- an unconfigured instance]]>
+</Line>
+<Line Number="96">
+<![CDATA[   would fault the instant it was asked to move. *)]]>
+</Line>
+<Line Number="97">
+<![CDATA[IF Cfg_Move_Timeout > 0 THEN]]>
+</Line>
+<Line Number="98">
+<![CDATA[    MoveTMR.PRE := Cfg_Move_Timeout;]]>
+</Line>
+<Line Number="99">
+<![CDATA[ELSE]]>
+</Line>
+<Line Number="100">
+<![CDATA[    MoveTMR.PRE := 10000;]]>
+</Line>
+<Line Number="101">
+<![CDATA[END_IF;]]>
+</Line>
+<Line Number="102">
+<![CDATA[]]>
+</Line>
+<Line Number="103">
+<![CDATA[]]>
+</Line>
+<Line Number="104">
+<![CDATA[(* ---------------------------------------------------------------------]]>
+</Line>
+<Line Number="105">
+<![CDATA[   4.  Command edge detection]]>
+</Line>
+<Line Number="106">
+<![CDATA[   --------------------------------------------------------------------- *)]]>
+</Line>
+<Line Number="107">
+<![CDATA[Req_Move := Cmd_MoveAbs AND NOT OS_Move;]]>
+</Line>
+<Line Number="108">
+<![CDATA[OS_Move  := Cmd_MoveAbs;]]>
+</Line>
+<Line Number="109">
+<![CDATA[]]>
+</Line>
+<Line Number="110">
+<![CDATA[Req_Home := Cmd_Home AND NOT OS_Home;]]>
+</Line>
+<Line Number="111">
+<![CDATA[OS_Home  := Cmd_Home;]]>
+</Line>
+<Line Number="112">
+<![CDATA[]]>
+</Line>
+<Line Number="113">
+<![CDATA[]]>
+</Line>
+<Line Number="114">
+<![CDATA[(* ---------------------------------------------------------------------]]>
+</Line>
+<Line Number="115">
+<![CDATA[   5.  Abort  --  anything that makes motion unsafe drops the sequencer]]>
+</Line>
+<Line Number="116">
+<![CDATA[       back to NOT READY and clears every command bit to the drive]]>
+</Line>
+<Line Number="117">
+<![CDATA[   --------------------------------------------------------------------- *)]]>
+</Line>
+<Line Number="118">
+<![CDATA[IF Sts_Step > 0 AND]]>
+</Line>
+<Line Number="119">
+<![CDATA[   ( Drv_In.Alarm_Active OR Drv_In.E_Stop_Active]]>
+</Line>
+<Line Number="120">
+<![CDATA[     OR NOT Drv_In.Servo_is_On OR Sts_Fault_Timeout ) THEN]]>
+</Line>
+<Line Number="121">
+<![CDATA[]]>
+</Line>
+<Line Number="122">
+<![CDATA[    Drv_Out.Start_Move  := 0;]]>
+</Line>
+<Line Number="123">
+<![CDATA[    Drv_Out.Home        := 0;]]>
+</Line>
+<Line Number="124">
+<![CDATA[    Drv_Out.Jog_Forward := 0;]]>
+</Line>
+<Line Number="125">
+<![CDATA[    Drv_Out.Jog_Reverse := 0;]]>
+</Line>
+<Line Number="126">
+<![CDATA[    Sts_Busy        := 0;]]>
+</Line>
+<Line Number="127">
+<![CDATA[    Sts_Jogging     := 0;]]>
+</Line>
+<Line Number="128">
+<![CDATA[    Sts_InPosition  := 0;]]>
+</Line>
+<Line Number="129">
+<![CDATA[    Sts_Step        := 10;]]>
+</Line>
+<Line Number="130">
+<![CDATA[END_IF;]]>
+</Line>
+<Line Number="131">
+<![CDATA[]]>
+</Line>
+<Line Number="132">
+<![CDATA[]]>
+</Line>
+<Line Number="133">
+<![CDATA[(* ---------------------------------------------------------------------]]>
+</Line>
+<Line Number="134">
+<![CDATA[   6.  Sequencer]]>
+</Line>
+<Line Number="135">
+<![CDATA[        0   initialise]]>
+</Line>
+<Line Number="136">
+<![CDATA[        10  not ready      -- no servo, not homed, or drive alarm]]>
+</Line>
+<Line Number="137">
+<![CDATA[        20  idle           -- ready and holding position]]>
+</Line>
+<Line Number="138">
+<![CDATA[        30  move: range check and load the target]]>
+</Line>
+<Line Number="139">
+<![CDATA[        40  move: assert DSTR, wait for the drive to take it]]>
+</Line>
+<Line Number="140">
+<![CDATA[        50  move: wait for PEND -- this is the confirmation]]>
+</Line>
+<Line Number="141">
+<![CDATA[        60  move: confirmed in position]]>
+</Line>
+<Line Number="142">
+<![CDATA[        70  home: assert HOME]]>
+</Line>
+<Line Number="143">
+<![CDATA[        80  home: wait for HEND]]>
+</Line>
+<Line Number="144">
+<![CDATA[        90  jog            -- runs only while a jog button is held]]>
+</Line>
+<Line Number="145">
+<![CDATA[   --------------------------------------------------------------------- *)]]>
+</Line>
+<Line Number="146">
+<![CDATA[CASE Sts_Step OF]]>
+</Line>
+<Line Number="147">
+<![CDATA[]]>
+</Line>
+<Line Number="148">
+<![CDATA[    0:  (* ---- initialise ------------------------------------------- *)]]>
+</Line>
+<Line Number="149">
+<![CDATA[        Drv_Out.Start_Move  := 0;]]>
+</Line>
+<Line Number="150">
+<![CDATA[        Drv_Out.Home        := 0;]]>
+</Line>
+<Line Number="151">
+<![CDATA[        Drv_Out.Jog_Forward := 0;]]>
+</Line>
+<Line Number="152">
+<![CDATA[        Drv_Out.Jog_Reverse := 0;]]>
+</Line>
+<Line Number="153">
+<![CDATA[        Sts_Busy        := 0;]]>
+</Line>
+<Line Number="154">
+<![CDATA[        Sts_Jogging     := 0;]]>
+</Line>
+<Line Number="155">
+<![CDATA[        Sts_InPosition  := 0;]]>
+</Line>
+<Line Number="156">
+<![CDATA[        Sts_Step        := 10;]]>
+</Line>
+<Line Number="157">
+<![CDATA[]]>
+</Line>
+<Line Number="158">
+<![CDATA[    10: (* ---- not ready --------------------------------------------- *)]]>
+</Line>
+<Line Number="159">
+<![CDATA[        Sts_Busy       := 0;]]>
+</Line>
+<Line Number="160">
+<![CDATA[        Sts_InPosition := 0;]]>
+</Line>
+<Line Number="161">
+<![CDATA[        Drv_Out.Start_Move := 0;]]>
+</Line>
+<Line Number="162">
+<![CDATA[        Drv_Out.Home       := 0;]]>
+</Line>
+<Line Number="163">
+<![CDATA[]]>
+</Line>
+<Line Number="164">
+<![CDATA[        IF Drv_In.Servo_is_On AND NOT Drv_In.Alarm_Active AND NOT Drv_In.E_Stop_Active THEN]]>
+</Line>
+<Line Number="165">
+<![CDATA[            IF Drv_In.Home_Complete THEN]]>
+</Line>
+<Line Number="166">
+<![CDATA[                Sts_Step := 20;]]>
+</Line>
+<Line Number="167">
+<![CDATA[            ELSIF Req_Home THEN]]>
+</Line>
+<Line Number="168">
+<![CDATA[                Sts_Step := 70;]]>
+</Line>
+<Line Number="169">
+<![CDATA[            END_IF;]]>
+</Line>
+<Line Number="170">
+<![CDATA[        END_IF;]]>
+</Line>
+<Line Number="171">
+<![CDATA[]]>
+</Line>
+<Line Number="172">
+<![CDATA[    20: (* ---- idle: ready and holding ------------------------------- *)]]>
+</Line>
+<Line Number="173">
+<![CDATA[        Sts_Busy       := 0;]]>
+</Line>
+<Line Number="174">
+<![CDATA[        Sts_Jogging    := 0;]]>
+</Line>
+<Line Number="175">
+<![CDATA[        Drv_Out.Start_Move := 0;]]>
+</Line>
+<Line Number="176">
+<![CDATA[        Drv_Out.Home       := 0;]]>
+</Line>
+<Line Number="177">
+<![CDATA[        Sts_InPosition := Drv_In.Position_Complete AND NOT Drv_In.Moving;]]>
+</Line>
+<Line Number="178">
+<![CDATA[]]>
+</Line>
+<Line Number="179">
+<![CDATA[        IF NOT Cmd_Stop THEN]]>
+</Line>
+<Line Number="180">
+<![CDATA[            IF Req_Move THEN]]>
+</Line>
+<Line Number="181">
+<![CDATA[                Sts_Step := 30;]]>
+</Line>
+<Line Number="182">
+<![CDATA[            ELSIF Req_Home THEN]]>
+</Line>
+<Line Number="183">
+<![CDATA[                Sts_Step := 70;]]>
+</Line>
+<Line Number="184">
+<![CDATA[            ELSIF Cmd_JogUp XOR Cmd_JogDn THEN]]>
+</Line>
+<Line Number="185">
+<![CDATA[                Sts_Step := 90;]]>
+</Line>
+<Line Number="186">
+<![CDATA[            END_IF;]]>
+</Line>
+<Line Number="187">
+<![CDATA[        END_IF;]]>
+</Line>
+<Line Number="188">
+<![CDATA[]]>
+</Line>
+<Line Number="189">
+<![CDATA[    30: (* ---- move 1: range check, then load the target ------------- *)]]>
+</Line>
+<Line Number="190">
+<![CDATA[        IF Set_Position < Cfg_Pos_Min OR Set_Position > Cfg_Pos_Max THEN]]>
+</Line>
+<Line Number="191">
+<![CDATA[            (* Target refused.  Nothing is written to the drive and the]]>
+</Line>
+<Line Number="192">
+<![CDATA[               axis does not move -- the old code silently ignored an]]>
+</Line>
+<Line Number="193">
+<![CDATA[               out-of-range target, which looked like a dead machine. *)]]>
+</Line>
+<Line Number="194">
+<![CDATA[            Sts_Fault_Range := 1;]]>
+</Line>
+<Line Number="195">
+<![CDATA[            Sts_Step        := 20;]]>
+</Line>
+<Line Number="196">
+<![CDATA[        ELSE]]>
+</Line>
+<Line Number="197">
+<![CDATA[            Sts_Target          := Set_Position;]]>
+</Line>
+<Line Number="198">
+<![CDATA[            Drv_Out.Target_Position := Sts_Target;]]>
+</Line>
+<Line Number="199">
+<![CDATA[            Sts_Fault_Range     := 0;]]>
+</Line>
+<Line Number="200">
+<![CDATA[            Sts_InPosition      := 0;]]>
+</Line>
+<Line Number="201">
+<![CDATA[            MoveTMR.ACC         := 0;]]>
+</Line>
+<Line Number="202">
+<![CDATA[            MoveTMR.DN          := 0;]]>
+</Line>
+<Line Number="203">
+<![CDATA[            Sts_Step            := 40;]]>
+</Line>
+<Line Number="204">
+<![CDATA[        END_IF;]]>
+</Line>
+<Line Number="205">
+<![CDATA[]]>
+</Line>
+<Line Number="206">
+<![CDATA[    40: (* ---- move 2: assert DSTR until the drive accepts ----------- *)]]>
+</Line>
+<Line Number="207">
+<![CDATA[        Sts_Busy       := 1;]]>
+</Line>
+<Line Number="208">
+<![CDATA[        Sts_InPosition := 0;]]>
+</Line>
+<Line Number="209">
+<![CDATA[        Drv_Out.Start_Move := 1;]]>
+</Line>
+<Line Number="210">
+<![CDATA[]]>
+</Line>
+<Line Number="211">
+<![CDATA[        IF Drv_In.Moving OR NOT Drv_In.Position_Complete THEN]]>
+</Line>
+<Line Number="212">
+<![CDATA[            Sts_Step := 50;]]>
+</Line>
+<Line Number="213">
+<![CDATA[        END_IF;]]>
+</Line>
+<Line Number="214">
+<![CDATA[]]>
+</Line>
+<Line Number="215">
+<![CDATA[    50: (* ---- move 3: wait for PEND -- the confirmation ------------- *)]]>
+</Line>
+<Line Number="216">
+<![CDATA[        Sts_Busy       := 1;]]>
+</Line>
+<Line Number="217">
+<![CDATA[        Drv_Out.Start_Move := 0;]]>
+</Line>
+<Line Number="218">
+<![CDATA[]]>
+</Line>
+<Line Number="219">
+<![CDATA[        IF Drv_In.Position_Complete AND NOT Drv_In.Moving THEN]]>
+</Line>
+<Line Number="220">
+<![CDATA[            Sts_Step := 60;]]>
+</Line>
+<Line Number="221">
+<![CDATA[        END_IF;]]>
+</Line>
+<Line Number="222">
+<![CDATA[]]>
+</Line>
+<Line Number="223">
+<![CDATA[    60: (* ---- move 4: arrival confirmed ----------------------------- *)]]>
+</Line>
+<Line Number="224">
+<![CDATA[        Sts_Busy       := 0;]]>
+</Line>
+<Line Number="225">
+<![CDATA[        Sts_InPosition := 1;]]>
+</Line>
+<Line Number="226">
+<![CDATA[        Sts_MoveDone   := 1;]]>
+</Line>
+<Line Number="227">
+<![CDATA[        Sts_Step       := 20;]]>
+</Line>
+<Line Number="228">
+<![CDATA[]]>
+</Line>
+<Line Number="229">
+<![CDATA[    70: (* ---- home 1 ------------------------------------------------ *)]]>
+</Line>
+<Line Number="230">
+<![CDATA[        Sts_Busy    := 1;]]>
+</Line>
+<Line Number="231">
+<![CDATA[        Drv_Out.Home    := 1;]]>
+</Line>
+<Line Number="232">
+<![CDATA[        MoveTMR.ACC := 0;]]>
+</Line>
+<Line Number="233">
+<![CDATA[        MoveTMR.DN  := 0;]]>
+</Line>
+<Line Number="234">
+<![CDATA[]]>
+</Line>
+<Line Number="235">
+<![CDATA[        IF Drv_In.Homing THEN]]>
+</Line>
+<Line Number="236">
+<![CDATA[            Sts_Step := 80;]]>
+</Line>
+<Line Number="237">
+<![CDATA[        END_IF;]]>
+</Line>
+<Line Number="238">
+<![CDATA[]]>
+</Line>
+<Line Number="239">
+<![CDATA[    80: (* ---- home 2: wait for HEND --------------------------------- *)]]>
+</Line>
+<Line Number="240">
+<![CDATA[        Sts_Busy := 1;]]>
+</Line>
+<Line Number="241">
+<![CDATA[        Drv_Out.Home := 0;]]>
+</Line>
+<Line Number="242">
+<![CDATA[]]>
+</Line>
+<Line Number="243">
+<![CDATA[        IF Drv_In.Home_Complete AND NOT Drv_In.Homing THEN]]>
+</Line>
+<Line Number="244">
+<![CDATA[            Sts_HomeDone := 1;]]>
+</Line>
+<Line Number="245">
+<![CDATA[            Sts_Step     := 20;]]>
+</Line>
+<Line Number="246">
+<![CDATA[        END_IF;]]>
+</Line>
+<Line Number="247">
+<![CDATA[]]>
+</Line>
+<Line Number="248">
+<![CDATA[    90: (* ---- jog: held-to-run -------------------------------------- *)]]>
+</Line>
+<Line Number="249">
+<![CDATA[        Sts_Busy                 := 1;]]>
+</Line>
+<Line Number="250">
+<![CDATA[        Sts_Jogging              := 1;]]>
+</Line>
+<Line Number="251">
+<![CDATA[        Drv_Out.Inch_Select          := 0;]]>
+</Line>
+<Line Number="252">
+<![CDATA[        Drv_Out.Jog_Parameter_Select := Cfg_Jog_Fast;]]>
+</Line>
+<Line Number="253">
+<![CDATA[]]>
+</Line>
+<Line Number="254">
+<![CDATA[        Drv_Out.Jog_Forward := Cmd_JogUp AND NOT Cmd_JogDn AND NOT Cmd_Stop;]]>
+</Line>
+<Line Number="255">
+<![CDATA[        Drv_Out.Jog_Reverse := Cmd_JogDn AND NOT Cmd_JogUp AND NOT Cmd_Stop;]]>
+</Line>
+<Line Number="256">
+<![CDATA[]]>
+</Line>
+<Line Number="257">
+<![CDATA[        IF NOT (Cmd_JogUp XOR Cmd_JogDn) OR Cmd_Stop THEN]]>
+</Line>
+<Line Number="258">
+<![CDATA[            Drv_Out.Jog_Forward := 0;]]>
+</Line>
+<Line Number="259">
+<![CDATA[            Drv_Out.Jog_Reverse := 0;]]>
+</Line>
+<Line Number="260">
+<![CDATA[            Sts_Jogging     := 0;]]>
+</Line>
+<Line Number="261">
+<![CDATA[            Sts_Step        := 20;]]>
+</Line>
+<Line Number="262">
+<![CDATA[        END_IF;]]>
+</Line>
+<Line Number="263">
+<![CDATA[]]>
+</Line>
+<Line Number="264">
+<![CDATA[ELSE]]>
+</Line>
+<Line Number="265">
+<![CDATA[    Sts_Step := 0;]]>
+</Line>
+<Line Number="266">
+<![CDATA[]]>
+</Line>
+<Line Number="267">
+<![CDATA[END_CASE;]]>
+</Line>
+<Line Number="268">
+<![CDATA[]]>
+</Line>
+<Line Number="269">
+<![CDATA[]]>
+</Line>
+<Line Number="270">
+<![CDATA[(* ---------------------------------------------------------------------]]>
+</Line>
+<Line Number="271">
+<![CDATA[   7.  Move / home watchdog]]>
+</Line>
+<Line Number="272">
+<![CDATA[       If the drive never reports PEND (or HEND) inside the timeout, the]]>
+</Line>
+<Line Number="273">
+<![CDATA[       instruction faults instead of hanging.  The old program had no]]>
+</Line>
+<Line Number="274">
+<![CDATA[       such check -- a stalled actuator simply stopped the line with no]]>
+</Line>
+<Line Number="275">
+<![CDATA[       indication of why.]]>
+</Line>
+<Line Number="276">
+<![CDATA[   --------------------------------------------------------------------- *)]]>
+</Line>
+<Line Number="277">
+<![CDATA[MoveTMR.TimerEnable := (Sts_Step >= 40 AND Sts_Step <= 50)]]>
+</Line>
+<Line Number="278">
+<![CDATA[                       OR (Sts_Step >= 70 AND Sts_Step <= 80);]]>
+</Line>
+<Line Number="279">
+<![CDATA[TONR(MoveTMR);]]>
+</Line>
+<Line Number="280">
+<![CDATA[]]>
+</Line>
+<Line Number="281">
+<![CDATA[IF NOT MoveTMR.TimerEnable THEN]]>
+</Line>
+<Line Number="282">
+<![CDATA[    MoveTMR.ACC := 0;]]>
+</Line>
+<Line Number="283">
+<![CDATA[    MoveTMR.DN  := 0;]]>
+</Line>
+<Line Number="284">
+<![CDATA[END_IF;]]>
+</Line>
+<Line Number="285">
+<![CDATA[]]>
+</Line>
+<Line Number="286">
+<![CDATA[IF MoveTMR.DN THEN]]>
+</Line>
+<Line Number="287">
+<![CDATA[    Sts_Fault_Timeout := 1;]]>
+</Line>
+<Line Number="288">
+<![CDATA[END_IF;]]>
+</Line>
+</STContent>
+</Routine>
+<Routine Name="EnableInFalse" Type="ST">
+<STContent>
+<Line Number="0">
+<![CDATA[(* =====================================================================]]>
+</Line>
+<Line Number="1">
+<![CDATA[   IAI_SCON_Axis -- EnableInFalse]]>
+</Line>
+<Line Number="2">
+<![CDATA[]]>
+</Line>
+<Line Number="3">
+<![CDATA[   Runs when the calling rung goes false.  Every command bit to the]]>
+</Line>
+<Line Number="4">
+<![CDATA[   drive is dropped so the actuator cannot be left jogging or with DSTR]]>
+</Line>
+<Line Number="5">
+<![CDATA[   held if the rung that calls this instruction is ever conditioned off.]]>
+</Line>
+<Line Number="6">
+<![CDATA[   ===================================================================== *)]]>
+</Line>
+<Line Number="7">
+<![CDATA[Drv_Out.Start_Move  := 0;]]>
+</Line>
+<Line Number="8">
+<![CDATA[Drv_Out.Home        := 0;]]>
+</Line>
+<Line Number="9">
+<![CDATA[Drv_Out.Jog_Forward := 0;]]>
+</Line>
+<Line Number="10">
+<![CDATA[Drv_Out.Jog_Reverse := 0;]]>
+</Line>
+<Line Number="11">
+<![CDATA[Drv_Out.Servo_On    := 0;]]>
+</Line>
+<Line Number="12">
+<![CDATA[]]>
+</Line>
+<Line Number="13">
+<![CDATA[Sts_Busy        := 0;]]>
+</Line>
+<Line Number="14">
+<![CDATA[Sts_Jogging     := 0;]]>
+</Line>
+<Line Number="15">
+<![CDATA[Sts_InPosition  := 0;]]>
+</Line>
+<Line Number="16">
+<![CDATA[Sts_MoveDone    := 0;]]>
+</Line>
+<Line Number="17">
+<![CDATA[Sts_HomeDone    := 0;]]>
+</Line>
+<Line Number="18">
+<![CDATA[Sts_Ready       := 0;]]>
+</Line>
+<Line Number="19">
+<![CDATA[Sts_Step        := 0;]]>
+</Line>
+</STContent>
+</Routine>
+</Routines>
+</AddOnInstructionDefinition>
+</AddOnInstructionDefinitions>
+</Controller>
+</RSLogix5000Content>
