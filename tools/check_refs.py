@@ -10,7 +10,7 @@ For each generated program it resolves every operand in every rung against:
   - the program's own tags
   - the controller context tags carried in the export
   - module I/O tags  (Name:I..., Name:O...)
-  - the IAI_SCON_Axis parameter list, for Axis.<member> references
+  - the IAI AOI parameter lists, for backing-tag member references
   - the SCON_Inputs / SCON_Outputs members, for <image>.<member> references
   - routine names, for JSR targets
 
@@ -31,7 +31,7 @@ INSTRUCTIONS = {
     "MOV", "CPT", "ADD", "SUB", "MUL", "DIV", "CLR", "COP", "CPS", "FLL",
     "EQU", "NEQ", "GRT", "GEQ", "LES", "LEQ", "LIM", "MEQ",
     "TON", "TOF", "RTO", "RES", "JSR", "SBR", "RET", "GSV", "SSV",
-    "IAI_SCON_Axis",
+    "SCON_Status", "SCON_Operations", "SCON_Moves",
 }
 
 # Bare words that are GSV/SSV class and attribute names, not tags.
@@ -93,11 +93,17 @@ def check(path):
     udts = udt_members(root)
 
     aoi_params = {}
+    aoi_required = {}
     for aoi in root.iter("AddOnInstructionDefinition"):
         aoi_params[aoi.get("Name")] = {
             p.get("Name") for p in aoi.iter("Parameter")}
         aoi_params[aoi.get("Name")] |= {
             l.get("Name") for l in aoi.iter("LocalTag")}
+        # A ladder call passes the backing tag plus one argument per
+        # Required parameter, in declaration order.
+        aoi_required[aoi.get("Name")] = [
+            p.get("Name") for p in aoi.findall("Parameters/Parameter")
+            if p.get("Required") == "true"]
 
     def resolve(operand, where):
         raw = operand.strip()
@@ -149,6 +155,11 @@ def check(path):
             problems.append("%s: %s has no member %r (in %s)" % (
                 os.path.basename(path), dtype, member, where))
 
+    # Structural checks on the raw rung text, and duplicate-output
+    # detection: two OTEs driving the same bit is a Logix verify error and
+    # the classic way a step sequencer written in ladder goes wrong.
+    ote_owner = {}
+
     n_rungs = 0
     for routine in program.iter("Routine"):
         rname = routine.get("Name")
@@ -156,7 +167,35 @@ def check(path):
             n_rungs += 1
             text = (rung.findtext("Text") or "").strip()
             where = "%s rung %s" % (rname, rung.get("Number"))
+
+            if not text.endswith(";"):
+                problems.append("%s: %s does not end with ';'" % (
+                    os.path.basename(path), where))
+            if text.count("[") != text.count("]"):
+                problems.append("%s: %s has unbalanced branch brackets" % (
+                    os.path.basename(path), where))
+            if text.count("(") != text.count(")"):
+                problems.append("%s: %s has unbalanced parentheses" % (
+                    os.path.basename(path), where))
+
+            for bit in re.findall(r"OTE\(([^()]+)\)", text):
+                if bit in ote_owner:
+                    problems.append(
+                        "%s: %s is driven by OTE in both %s and %s "
+                        "(duplicate destructive bit)" % (
+                            os.path.basename(path), bit, ote_owner[bit], where))
+                else:
+                    ote_owner[bit] = where
             for instr, args in re.findall(r"([A-Za-z_]\w*)\(([^()]*(?:\([^()]*\)[^()]*)*)\)", text):
+                if instr in aoi_required:
+                    want = len(aoi_required[instr]) + 1     # + the backing tag
+                    got = len([a for a in args.split(",") if a.strip()])
+                    if got != want:
+                        problems.append(
+                            "%s: %s call has %d operands, the definition needs "
+                            "%d (backing tag + %d required parameters) in %s" % (
+                                os.path.basename(path), instr, got, want,
+                                want - 1, where))
                 if instr not in INSTRUCTIONS:
                     problems.append("%s: unknown instruction %r (in %s)" % (
                         os.path.basename(path), instr, where))
@@ -179,103 +218,8 @@ def check(path):
     return problems
 
 
-ST_KEYWORDS = {
-    "IF", "THEN", "ELSE", "ELSIF", "END_IF", "CASE", "OF", "END_CASE",
-    "FOR", "TO", "DO", "END_FOR", "WHILE", "END_WHILE", "REPEAT", "UNTIL",
-    "AND", "OR", "NOT", "XOR", "MOD", "TRUE", "FALSE",
-    "TONR", "TON", "TOF", "RTO", "CTU", "CTD",
-}
-
-TIMER_MEMBERS = {"PRE", "ACC", "DN", "EN", "TT", "TimerEnable", "Reset"}
-
-
-def strip_st_comments(text):
-    """Remove (* *) comments, tracking depth, and report any nesting.
-
-    Logix does not handle nested (* *) reliably, so a nested open is
-    reported as a problem rather than quietly accepted.
-    """
-    out, nested = [], []
-    depth, i, line = 0, 0, 1
-    while i < len(text):
-        if text.startswith("(*", i):
-            depth += 1
-            if depth > 1:
-                nested.append((line, text[i:i + 50].split("\n")[0]))
-            i += 2
-            continue
-        if text.startswith("*)", i):
-            depth = max(0, depth - 1)
-            i += 2
-            continue
-        if text[i] == "\n":
-            line += 1
-            out.append("\n")
-        elif depth == 0:
-            out.append(text[i])
-        i += 1
-    return "".join(out), nested, depth
-
-
-def check_aoi_st(path):
-    """Every identifier in the AOI's ST must be a parameter, a local, or a
-    keyword; every .member must exist on its type."""
-    root = load(path)
-    problems = []
-
-    aoi = next(iter(root.iter("AddOnInstructionDefinition")), None)
-    if aoi is None:
-        return ["%s: no AOI definition" % os.path.basename(path)]
-
-    names = {p.get("Name"): p.get("DataType") for p in aoi.iter("Parameter")}
-    names.update({l.get("Name"): l.get("DataType") for l in aoi.iter("LocalTag")})
-    scon = scon_members(root)
-
-    n_lines = 0
-    for routine in aoi.iter("Routine"):
-        rname = routine.get("Name")
-        text = "\n".join(l.text or "" for l in routine.iter("Line"))
-        n_lines += len(list(routine.iter("Line")))
-
-        code, nested, depth = strip_st_comments(text)
-        for line_no, snippet in nested:
-            problems.append("%s: %s line %d has a nested (* *) comment: %s"
-                            % (os.path.basename(path), rname, line_no, snippet))
-        if depth != 0:
-            problems.append("%s: %s has an unterminated (* comment"
-                            % (os.path.basename(path), rname))
-
-        seen = set()
-        for m in re.finditer(r"\b([A-Za-z_]\w*)(?:\.([A-Za-z_]\w*))?", code):
-            base, member = m.group(1), m.group(2)
-            if base in ST_KEYWORDS or (base, member) in seen:
-                continue
-            seen.add((base, member))
-            if base not in names:
-                problems.append("%s: %s uses unknown identifier %r"
-                                % (os.path.basename(path), rname, base))
-                continue
-            if not member:
-                continue
-            dtype = names[base]
-            if dtype in scon and member not in scon[dtype]:
-                problems.append("%s: %s -- %s has no member %r"
-                                % (os.path.basename(path), rname, dtype, member))
-            elif dtype == "TIMER" and member not in TIMER_MEMBERS:
-                problems.append("%s: %s -- TIMER has no member %r"
-                                % (os.path.basename(path), rname, member))
-
-    print("%-46s %2d ST routines %3d lines %3d params/locals" % (
-        os.path.basename(path),
-        len(list(aoi.iter("Routine"))), n_lines, len(names)))
-    return problems
-
-
 def main():
     problems = []
-    aoi_path = os.path.join(EXPORT, "IAI_SCON_Axis.L5X")
-    if os.path.exists(aoi_path):
-        problems += check_aoi_st(aoi_path)
     for name in sorted(os.listdir(EXPORT)):
         if name.endswith(".L5X") and name.startswith("Program"):
             problems += check(os.path.join(EXPORT, name))

@@ -5,9 +5,13 @@ Assemble importable Studio 5000 L5X files from the readable sources in src/.
     python3 tools/build_l5x.py
 
 Produces, in export/:
-    IAI_SCON_Axis.L5X                       the Add-On Instruction
+    SCON_*_AOI.L5X                          the three IAI Add-On Instructions,
+                                            copied through byte for byte
     Program050000_Station200_UpStacker.L5X  the up stacker program
     Program090000_Station600_DownStacker.L5X the down stacker program
+
+There is no custom Add-On Instruction. The only AOIs involved are IAI's own,
+and this script does not modify them.
 
 The two program files are built by taking the ORIGINAL export from source/
 and replacing only its <Program Use="Target"> element.  Everything else --
@@ -26,9 +30,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
 SOURCE = os.path.join(ROOT, "source")
 EXPORT = os.path.join(ROOT, "export")
+IAI_DIR = os.path.join(ROOT, "source", "iai")
 
-AOI_NAME = "IAI_SCON_Axis"
-AOI_REVISION = "1.0"
 SOFTWARE_REVISION = "35.04"
 
 STAMP = datetime.now(timezone.utc).strftime("%a %b %d %H:%M:%S %Y")
@@ -77,136 +80,30 @@ def read_csv_rows(path, columns):
 
 
 # ---------------------------------------------------------------------------
-# structured text
+# the IAI vendor Add-On Instructions
 # ---------------------------------------------------------------------------
 
-def st_routine(name, path, routine_description=None):
-    """An <STContent> routine, one <Line> per source line."""
-    with open(path, encoding="utf-8") as fh:
-        lines = fh.read().split("\n")
-    while lines and not lines[-1].strip():
-        lines.pop()
-
-    out = ['<Routine Name="%s" Type="ST">' % name]
-    if routine_description:
-        out.append(description(routine_description).rstrip("\n"))
-    out.append("<STContent>")
-    for i, line in enumerate(lines):
-        out.append('<Line Number="%d">\n%s\n</Line>' % (i, cdata(line)))
-    out.append("</STContent>")
-    out.append("</Routine>")
-    return "\n".join(out)
+VENDOR_AOI_FILE = os.path.join(ROOT, "source", "iai", "SCON_Moves_AOI.L5X")
+VENDOR_AOIS = ("SCON_Status", "SCON_Operations", "SCON_Moves")
 
 
-# ---------------------------------------------------------------------------
-# the Add-On Instruction
-# ---------------------------------------------------------------------------
+def vendor_aoi_context():
+    """The three IAI AOI definitions, verbatim, marked as context.
 
-def build_aoi_element(use):
-    """Build the <AddOnInstructionDefinition> element as text."""
-    params, locals_ = [], []
-    for row in read_csv_rows(os.path.join(SRC, "%s.params.csv" % AOI_NAME), 6):
-        if row[0].startswith("@local"):
-            # "@local NAME , DATATYPE , description" -- only three fields
-            locals_.append((row[0].split(None, 1)[1].strip(), row[1],
-                            ", ".join(c for c in row[2:] if c)))
-        else:
-            params.append(row)
-
-    out = []
-    out.append(
-        '<AddOnInstructionDefinition Use="%s" Name="%s" Revision="%s" '
-        'ExecutePrescan="false" ExecutePostscan="false" '
-        'ExecuteEnableInFalse="true" CreatedDate="%s" '
-        'EditedDate="%s" SoftwareRevision="v%s">'
-        % (use, AOI_NAME, AOI_REVISION, STAMP, STAMP, SOFTWARE_REVISION))
-
-    out.append(description(
-        "Driver for one IAI SCON actuator on EtherNet/IP in direct numerical "
-        "specification mode.\n\n"
-        "Call it as:  IAI_SCON_Axis( <backing tag>, <input image>, <output image> )\n"
-        "with a CPS from the module input tag before the call and a CPS to the "
-        "module output tag after it.\n\n"
-        "To move: load Set_Position (0.01mm) and give Cmd_MoveAbs a rising edge. "
-        "Sts_InPosition confirms arrival from the drive's PEND bit; Sts_MoveDone "
-        "pulses for one scan. Targets outside Cfg_Pos_Min..Cfg_Pos_Max are refused "
-        "and raise Sts_Fault_Range. A move that does not confirm inside "
-        "Cfg_Move_Timeout raises Sts_Fault_Timeout.\n\n"
-        "Cmd_JogUp / Cmd_JogDn jog while held.").rstrip("\n"))
-
-    out.append("<Parameters>")
-    for name, usage, dtype, required, visible, desc in params:
-        if usage == "InOut":
-            out.append(
-                '<Parameter Name="%s" TagType="Base" DataType="%s" '
-                'Usage="InOut" Required="%s" Visible="%s" Constant="false">'
-                % (name, dtype, required, visible))
-        else:
-            radix = "Decimal" if dtype in ("BOOL", "SINT", "INT", "DINT") else "NullType"
-            access = "Read/Write"
-            if name in ("EnableIn", "EnableOut"):
-                access = "Read Only"
-            out.append(
-                '<Parameter Name="%s" TagType="Base" DataType="%s" Usage="%s" '
-                'Radix="%s" Required="%s" Visible="%s" ExternalAccess="%s">'
-                % (name, dtype, usage, radix, required, visible, access))
-        out.append(description(desc).rstrip("\n"))
-        out.append("</Parameter>")
-    out.append("</Parameters>")
-
-    out.append("<LocalTags>")
-    for name, dtype, desc in locals_:
-        radix = ' Radix="Decimal"' if dtype in ("BOOL", "SINT", "INT", "DINT") else ""
-        out.append('<LocalTag Name="%s" DataType="%s"%s ExternalAccess="Read/Write">'
-                   % (name, dtype, radix))
-        out.append(description(desc).rstrip("\n"))
-        out.append("</LocalTag>")
-    out.append("</LocalTags>")
-
-    out.append("<Routines>")
-    out.append(st_routine("Logic", os.path.join(SRC, "%s.st" % AOI_NAME)))
-    out.append(st_routine("EnableInFalse",
-                          os.path.join(SRC, "%s.EnableInFalse.st" % AOI_NAME)))
-    out.append("</Routines>")
-    out.append("</AddOnInstructionDefinition>")
-    return "\n".join(l for l in out if l)
-
-
-def build_aoi_file():
-    """Standalone AOI export. Carries the two SCON data types as context."""
-    original = open(os.path.join(
-        SOURCE, "Program050000_Station200_UpStacker_Program.L5X"),
-        encoding="utf-8-sig").read()
-
-    types = []
-    for name in ("SCON_Inputs", "SCON_Outputs"):
-        m = re.search(r'(<DataType Name="%s".*?</DataType>)' % name, original, re.S)
+    They are not modified in any way -- the only edit is Use="Target"
+    to Use="Context", which is what tells Studio 5000 these are
+    dependencies of the program rather than things to import.
+    """
+    text = open(VENDOR_AOI_FILE, encoding="utf-8-sig").read()
+    blocks = []
+    for name in VENDOR_AOIS:
+        m = re.search(
+            r'(<AddOnInstructionDefinition Use="[^"]*" Name="%s".*?'
+            r'</AddOnInstructionDefinition>)' % name, text, re.S)
         if not m:
-            sys.exit("could not find data type %s in the original export" % name)
-        types.append(m.group(1))
-
-    controller = re.search(r'<Controller Use="Context" Name="([^"]+)"', original).group(1)
-
-    return "\n".join([
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
-        '<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="%s" '
-        'TargetName="%s" TargetType="AddOnInstructionDefinition" '
-        'TargetRevision="%s" TargetLastEdited="%s" ContainsContext="true" '
-        'ExportDate="%s" ExportOptions="References NoRawData L5KData '
-        'DecoratedData Context Dependencies ForceProtectedEncoding '
-        'AllProjDocTrans">'
-        % (SOFTWARE_REVISION, AOI_NAME, AOI_REVISION, STAMP, STAMP),
-        '<Controller Use="Context" Name="%s">' % controller,
-        '<DataTypes Use="Context">',
-        "\n".join(types),
-        '</DataTypes>',
-        '<AddOnInstructionDefinitions Use="Context">',
-        build_aoi_element("Target"),
-        '</AddOnInstructionDefinitions>',
-        '</Controller>',
-        '</RSLogix5000Content>',
-        '',
-    ])
+            sys.exit("vendor AOI %s not found in %s" % (name, VENDOR_AOI_FILE))
+        blocks.append(m.group(1).replace('Use="Target"', 'Use="Context"', 1))
+    return chr(10).join(blocks)
 
 
 # ---------------------------------------------------------------------------
@@ -218,7 +115,10 @@ def build_tags(tags_csv, cognex_defaults=None):
     for row in read_csv_rows(tags_csv, 5):
         name, dtype, dims, default, desc = row
 
-        attrs = ['Name="%s"' % name, 'TagType="Base"', 'DataType="%s"' % dtype]
+        # Attribute set and order copied from Studio 5000's own output --
+        # see the controller tags in the original export.
+        attrs = ['Name="%s"' % name, 'Class="Standard"', 'TagType="Base"',
+                 'DataType="%s"' % dtype]
         if dims:
             attrs.append('Dimensions="%s"' % " ".join(dims.split()))
         if dtype in ("BOOL", "SINT", "INT", "DINT"):
@@ -338,8 +238,9 @@ def build_program_file(original_name, program_name, tags_csv, rungs_file,
     original = open(os.path.join(SOURCE, original_name), encoding="utf-8-sig").read()
 
     program = "\n".join([
-        '<Program Use="Target" Name="%s" TestEdits="false" MainRoutineName="R000_Main" '
-        'Disabled="false" UseAsFolder="false">' % program_name,
+        '<Program Use="Target" Name="%s" TestEdits="false" '
+        'MainRoutineName="R000_Main" Disabled="false" Class="Standard" '
+        'UseAsFolder="false">' % program_name,
         build_tags(tags_csv, cognex_defaults),
         build_routines(rungs_file),
         '</Program>',
@@ -354,7 +255,7 @@ def build_program_file(original_name, program_name, tags_csv, rungs_file,
     # Declare the AOI so the program's dependency on it is explicit.
     if "<AddOnInstructionDefinitions" not in new:
         aoi_block = ('<AddOnInstructionDefinitions Use="Context">\n%s\n'
-                     '</AddOnInstructionDefinitions>\n' % build_aoi_element("Context"))
+                     '</AddOnInstructionDefinitions>\n' % vendor_aoi_context())
         new, n = re.subn(r'(</DataTypes>\n)', lambda m: m.group(1) + aoi_block,
                          new, count=1)
         if n != 1:
@@ -399,7 +300,16 @@ def main():
             sys.exit("%s is not well-formed XML: %s" % (filename, exc))
         written.append((filename, os.path.getsize(path)))
 
-    write("%s.L5X" % AOI_NAME, build_aoi_file())
+    # The vendor AOI files are copied through byte for byte. They are IAI's,
+    # not ours, and nothing here modifies them.
+    for name in sorted(os.listdir(IAI_DIR)):
+        if name.endswith(".L5X"):
+            src = os.path.join(IAI_DIR, name)
+            with open(src, "rb") as fh:
+                blob = fh.read()
+            with open(os.path.join(EXPORT, name), "wb") as fh:
+                fh.write(blob)
+            written.append((name + "  (IAI, unmodified)", len(blob)))
 
     write("Program050000_Station200_UpStacker.L5X", build_program_file(
         "Program050000_Station200_UpStacker_Program.L5X",

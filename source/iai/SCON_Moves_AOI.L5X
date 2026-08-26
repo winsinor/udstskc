@@ -1,0 +1,1062 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.04" TargetName="SCON_Moves" TargetType="AddOnInstructionDefinition" TargetClass="Standard" TargetRevision="2.0 " TargetLastEdited="2017-06-23T11:33:46.015Z" ContainsContext="true" Owner="KraussMaffei Group, KraussMaffei Group" ExportDate="Wed Aug 26 16:24:07 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans"
+>
+<Controller Use="Context" Name="RS_Rev35011_691904_NPE">
+<DataTypes Use="Context">
+<DataType Name="SCON_Inputs" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Actual_Position" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Command_Current" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Actual_Speed" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Alarm_Code" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="OCCUPIED_n14_n15" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="Load_Cell_Value" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Total_Moving_Count" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Total_Moving_Distance" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZSCON_Input8" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Battery_Alarm" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[BALM]]>
+</Description>
+</Member>
+<Member Name="Loadcell_Cal_Complete" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CEND]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b4" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b5" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b6" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n28b7" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input8" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n29" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Input18" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Position_Complete" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PEND]]>
+</Description>
+</Member>
+<Member Name="Home_Complete" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HEND]]>
+</Description>
+</Member>
+<Member Name="Moving" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[MOVE]]>
+</Description>
+</Member>
+<Member Name="Alarm_Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ALM]]>
+</Description>
+</Member>
+<Member Name="Servo_is_On" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[SV]]>
+</Description>
+</Member>
+<Member Name="Push_Failed" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PSFL]]>
+</Description>
+</Member>
+<Member Name="In_Push_Zone" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PUSHS]]>
+</Description>
+</Member>
+<Member Name="Homing" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input18" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[GHMS]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Input27" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Manual_Mode" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RMDS]]>
+</Description>
+</Member>
+<Member Name="Torque_Level_Reached" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[TRQS]]>
+</Description>
+</Member>
+<Member Name="Load_Output_Reached" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[LOAD]]>
+</Description>
+</Member>
+<Member Name="In_PZone" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PZONE]]>
+</Description>
+</Member>
+<Member Name="In_Zone_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ZONE1]]>
+</Description>
+</Member>
+<Member Name="In_Zone_2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ZONE2]]>
+</Description>
+</Member>
+<Member Name="Ready" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RDY]]>
+</Description>
+</Member>
+<Member Name="E_Stop_Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Input27" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EMGS]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="SCON_Outputs" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Target_Position" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Desired Absolute Position in .01mm]]>
+</Description>
+</Member>
+<Member Name="Position_Band" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Allowable Bandwidth of Move in .01mm]]>
+</Description>
+</Member>
+<Member Name="Target_Speed" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Desired speed of move .01mm/sec]]>
+</Description>
+</Member>
+<Member Name="Zone_Boundary_Pos" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Upper Limit of PZONE flag]]>
+</Description>
+</Member>
+<Member Name="Zone_Boundary_Neg" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Lower Limit of PZONE flag]]>
+</Description>
+</Member>
+<Member Name="Acceleration" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Acceleration in .01G]]>
+</Description>
+</Member>
+<Member Name="Deceleration" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Deceleration in .01G]]>
+</Description>
+</Member>
+<Member Name="Push_Percent" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Load_Threshold_Percent" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Sets the load current Threshold 0 (0%) to 255 (100%)]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Outpu9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="OCCUPIED_n28b0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Push_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PUSH]]>
+</Description>
+</Member>
+<Member Name="Push_Direction" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[DIR]]>
+</Description>
+</Member>
+<Member Name="Increment_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INC]]>
+</Description>
+</Member>
+<Member Name="Servo_Gain_Bit_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[GSL0]]>
+</Description>
+</Member>
+<Member Name="Servo_Gain_Bit_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[GSL1]]>
+</Description>
+</Member>
+<Member Name="Acc_Dec_Mode_Bit_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[MOD0]]>
+</Description>
+</Member>
+<Member Name="Acc_Dec_Mode_Bit_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu9" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[MOD1]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Outpu18" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Stop_Mode_Bit_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ASO0]]>
+</Description>
+</Member>
+<Member Name="Stop_Mode_Bit_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[ASO1]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n29b2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="OCCUPIED_n29b3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Vibration_Damp_Bit_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[NTC0]]>
+</Description>
+</Member>
+<Member Name="Vibration_Damp_Bit_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[NTC1]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n29b6" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="OCCUPIED_n29b7" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu18" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZSCON_Outpu27" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Start_Move" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[DSTR]]>
+</Description>
+</Member>
+<Member Name="Home" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HOME]]>
+</Description>
+</Member>
+<Member Name="Pause" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[STP]]>
+</Description>
+</Member>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RES]]>
+</Description>
+</Member>
+<Member Name="Servo_On" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[SON]]>
+</Description>
+</Member>
+<Member Name="Inch_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[JISL]]>
+</Description>
+</Member>
+<Member Name="Jog_Parameter_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[JVEL]]>
+</Description>
+</Member>
+<Member Name="Jog_Reverse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu27" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[JOG-]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSCON_Outpu36" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Jog_Forward" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[JOG+]]>
+</Description>
+</Member>
+<Member Name="Calibrate" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CLBR]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n31b1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n31b2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n31b3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="OCCUPIED_n31b4" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[do not use]]>
+</Description>
+</Member>
+<Member Name="Manual_Select" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RMOD]]>
+</Description>
+</Member>
+<Member Name="Release_Brake" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSCON_Outpu36" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[BKRL]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+</DataTypes>
+<AddOnInstructionDefinitions Use="Context">
+<AddOnInstructionDefinition Use="Target" Name="SCON_Moves" Class="Standard" Revision="2.0" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="true" CreatedDate="2014-10-23T20:31:36.954Z" CreatedBy="Not Available" EditedDate="2017-06-23T11:33:46.015Z" EditedBy="ATLANTA-E-PC\Atlanta Engineer"
+ SoftwareRevision="v20.01">
+<Parameters>
+<Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Input - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="EnableOut" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Output - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="EN" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Home" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Start_Move" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Target_Position" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Target_Speed" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Accel" TagType="Base" DataType="INT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="INT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Decel" TagType="Base" DataType="INT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="INT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Position_Band" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Increment_Select" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Push_Select" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Push_Direction" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Push_Percent" TagType="Base" DataType="INT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="INT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Load_Threshold_Percent" TagType="Base" DataType="INT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="INT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="PZone_Upper_Limit" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="PZone_Lower_Limit" TagType="Base" DataType="DINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Map_Axis_Inputs" TagType="Base" DataType="SCON_Inputs" Usage="InOut" Required="true" Visible="true" Constant="false"/>
+<Parameter Name="Map_Axis_Outputs" TagType="Base" DataType="SCON_Outputs" Usage="InOut" Required="true" Visible="true" Constant="false"/>
+</Parameters>
+<LocalTags>
+<LocalTag Name="One_shot" DataType="SINT" Radix="Decimal" ExternalAccess="None">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</LocalTag>
+</LocalTags>
+<Routines>
+<Routine Name="EnableInFalse" Type="RLL">
+<Description>
+<![CDATA[Executes when the rung is false]]>
+</Description>
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[OTU(EN);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Logic" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[OTL(EN);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(Increment_Select)OTE(Map_Axis_Outputs.Increment_Select);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIC(Push_Select)OTE(Map_Axis_Outputs.Push_Select);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(Push_Direction)OTE(Map_Axis_Outputs.Push_Direction);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[XIC(Home)ONS(One_shot.0)XIC(Map_Axis_Inputs.Servo_is_On)XIO(Map_Axis_Outputs.Start_Move)OTL(Map_Axis_Outputs.Home);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Outputs.Home)XIC(Map_Axis_Inputs.Homing)OTU(Map_Axis_Outputs.Home);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Comment>
+<![CDATA[When The AOI is told to Go to Position all the data that relates to the move will be read in and the move request will be started]]>
+</Comment>
+<Text>
+<![CDATA[XIC(Start_Move)ONS(One_shot.1)[MOV(Target_Position,Map_Axis_Outputs.Target_Position) MOV(Target_Speed,Map_Axis_Outputs.Target_Speed) ,MOV(Accel,Map_Axis_Outputs.Acceleration) MOV(Decel,Map_Axis_Outputs.Deceleration) MOV(Position_Band,Map_Axis_Outputs.Position_Band) ,MOV(PZone_Lower_Limit,Map_Axis_Outputs.Zone_Boundary_Neg) MOV(PZone_Upper_Limit,Map_Axis_Outputs.Zone_Boundary_Pos) ,XIC(Push_Select) CPT(Map_Axis_Outputs.Push_Percent,(Push_Percent * 255) * .01) CPT(Map_Axis_Outputs.Load_Threshold_Percent,(Load_Threshold_Percent * 255) * .01) ,XIO(Push_Select) CLR(Map_Axis_Outputs.Push_Percent) CLR(Map_Axis_Outputs.Load_Threshold_Percent) ]OTL(Map_Axis_Outputs.Start_Move);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[[XIC(Map_Axis_Outputs.Start_Move) XIO(Map_Axis_Inputs.Position_Complete) XIO(Map_Axis_Inputs.Push_Failed) ,XIO(Map_Axis_Inputs.Home_Complete) ,XIC(Map_Axis_Inputs.Alarm_Active) ]OTU(Map_Axis_Outputs.Start_Move);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+</Routines>
+<Dependencies>
+<Dependency Type="DataType" Name="SCON_Inputs"/>
+<Dependency Type="DataType" Name="SCON_Outputs"/>
+</Dependencies>
+</AddOnInstructionDefinition>
+<AddOnInstructionDefinition Use="Target" Name="SCON_Operations" Class="Standard" Revision="2.0" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="true" CreatedDate="2014-10-23T20:31:36.954Z" CreatedBy="ATLANTA-E-PC\Atlanta Engineer" EditedDate="2017-03-28T19:59:39.561Z" EditedBy="ATLANTA-E-PC\Atlanta Engineer"
+ SoftwareRevision="v20.01">
+<Parameters>
+<Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Input - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="EnableOut" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Output - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="EN" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Servo_On" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Pause" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Inch_Select" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Jog_Forward" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Jog_Reverse" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Reset" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Release_Brake" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Map_Axis_Outputs" TagType="Base" DataType="SCON_Outputs" Usage="InOut" Required="true" Visible="true" Constant="false"/>
+</Parameters>
+<LocalTags/>
+<Routines>
+<Routine Name="EnableInFalse" Type="RLL">
+<Description>
+<![CDATA[Executes when the rung is false]]>
+</Description>
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[OTU(EN);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Logic" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[OTL(EN);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(Servo_On)OTE(Map_Axis_Outputs.Servo_On);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIC(Inch_Select)OTE(Map_Axis_Outputs.Inch_Select);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(Jog_Forward)OTE(Map_Axis_Outputs.Jog_Forward);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[XIC(Jog_Reverse)OTE(Map_Axis_Outputs.Jog_Reverse);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[XIC(Pause)OTE(Map_Axis_Outputs.Pause);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[XIC(Reset)OTE(Map_Axis_Outputs.Reset);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIC(Release_Brake)OTE(Map_Axis_Outputs.Release_Brake);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+</Routines>
+<Dependencies>
+<Dependency Type="DataType" Name="SCON_Outputs"/>
+</Dependencies>
+</AddOnInstructionDefinition>
+<AddOnInstructionDefinition Use="Target" Name="SCON_Status" Class="Standard" Revision="2.0" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="true" CreatedDate="2014-10-23T20:31:36.954Z" CreatedBy="Not Available" EditedDate="2017-05-24T16:36:08.213Z" EditedBy="ATLANTA-E-PC\Atlanta Engineer"
+ SoftwareRevision="v20.01">
+<Parameters>
+<Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Input - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="EnableOut" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Output - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="EN" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Actual_Position" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Actual_Speed" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Alarm_Active" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[ALM]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Alarm_Code" TagType="Base" DataType="INT" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="INT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Battery_Alarm" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Command_Current" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Home_Complete" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[HOME]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Homing" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[GHMS]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="E_Stop_Active" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[EMGS]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="In_Push_Zone" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[PUSHS]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="In_PZone" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[PZONE]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="In_Zone_1" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[ZONE1]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="In_Zone_2" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[ZONE2]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Load_Output_Reached" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Manual_Mode" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[RMDS]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Moving" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[MOVE]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Position_Complete" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[PEND]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Push_Failed" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[PSFL]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Ready" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[RDY]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Servo_On" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[SV]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Torque_Reached" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[TRQS]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Total_Moving_Count" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Total_Moving_Distance" TagType="Base" DataType="DINT" Usage="Output" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read Only">
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="Map_Axis_Inputs" TagType="Base" DataType="SCON_Inputs" Usage="InOut" Required="true" Visible="true" Constant="false"/>
+</Parameters>
+<LocalTags/>
+<Routines>
+<Routine Name="EnableInFalse" Type="RLL">
+<Description>
+<![CDATA[Executes when the rung is false]]>
+</Description>
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[OTU(EN);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Logic" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[OTL(EN);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Ready)OTE(Ready);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.E_Stop_Active)OTE(E_Stop_Active);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Alarm_Active)OTE(Alarm_Active);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Servo_is_On)OTE(Servo_On);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Homing)OTE(Homing);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Home_Complete)OTE(Home_Complete);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Moving)OTE(Moving);]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Position_Complete)OTE(Position_Complete);]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Manual_Mode)OTE(Manual_Mode);]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.In_PZone)OTE(In_PZone);]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.In_Zone_1)OTE(In_Zone_1);]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.In_Zone_2)OTE(In_Zone_2);]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Torque_Level_Reached)OTE(Torque_Reached);]]>
+</Text>
+</Rung>
+<Rung Number="14" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Load_Output_Reached)OTE(Load_Output_Reached);]]>
+</Text>
+</Rung>
+<Rung Number="15" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.In_Push_Zone)OTE(In_Push_Zone);]]>
+</Text>
+</Rung>
+<Rung Number="16" Type="N">
+<Text>
+<![CDATA[XIC(Map_Axis_Inputs.Push_Failed)OTE(Push_Failed);]]>
+</Text>
+</Rung>
+<Rung Number="17" Type="N">
+<Text>
+<![CDATA[MOV(Map_Axis_Inputs.Actual_Position,Actual_Position)MOV(Map_Axis_Inputs.Actual_Speed,Actual_Speed)MOV(Map_Axis_Inputs.Command_Current,Command_Current)MOV(Map_Axis_Inputs.Alarm_Code,Alarm_Code);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+</Routines>
+<Dependencies>
+<Dependency Type="DataType" Name="SCON_Inputs"/>
+</Dependencies>
+</AddOnInstructionDefinition>
+</AddOnInstructionDefinitions>
+</Controller>
+</RSLogix5000Content>

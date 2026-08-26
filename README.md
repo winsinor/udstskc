@@ -8,17 +8,22 @@ rebuilt around a single confirmed move command.
 
 The original had no way to command a height. The only thing that started a
 move was the layer counter changing value, nothing ever confirmed arrival,
-and there was no manual mode at all — the SCON jog bits were mapped in the
-UDT and never used. Both actuators now run on one Add-On Instruction with a
-single move command (`Set_Position` + a `Cmd_MoveAbs` edge) that confirms
-arrival from the drive's own PEND bit, plus held-to-run jog with software
-travel limits and a two-step set-then-confirm height entry.
+and there was no manual mode at all. Both actuators now run through IAI's own
+`SCON_Status` / `SCON_Operations` / `SCON_Moves` Add-On Instructions — which
+shipped with the drives and were never used — driven by a plain-ladder step
+sequencer in the program. A single move command confirms arrival from the
+drive's POSITION COMPLETE bit, with held-to-run jog inside software travel
+limits and a two-step set-then-confirm height entry.
+
+**No custom Add-On Instruction.** The only AOIs are IAI's, imported
+unmodified; everything else is ordinary ladder you can open and watch.
 
 ## Layout
 
 ```
 source/    the original exports, untouched, for reference
-src/       the readable sources -- ST, ladder, tag lists
+source/iai/  IAI's three SCON Add-On Instructions, as supplied
+src/       the readable sources -- ladder and tag lists
 tools/     build and verification scripts
 export/    generated .L5X files, ready to import
 docs/      ANALYSIS.md -- what the original did, and what was wrong with it
@@ -27,7 +32,9 @@ docs/      ANALYSIS.md -- what the original did, and what was wrong with it
 
 ## Import order
 
-1. `export/IAI_SCON_Axis.L5X` (the AOI, first)
+1. `export/SCON_Moves_AOI.L5X` — installs all three IAI instructions
+   (`SCON_Status`, `SCON_Operations`, `SCON_Moves`) in one file. Skip if
+   they are already in the project.
 2. `export/Program050000_Station200_UpStacker.L5X`
 3. `export/Program090000_Station600_DownStacker.L5X`
 
@@ -48,6 +55,16 @@ Full tag reference in [`docs/REFACTOR.md`](docs/REFACTOR.md).
 python3 tools/build_l5x.py     # regenerate export/ from src/
 python3 tools/check_refs.py    # verify every tag and identifier resolves
 ```
+
+## Before you import
+
+Everything here was built and checked offline — there is no Studio 5000 in
+the environment it was written in, so **none of it has been compiled**.
+`tools/check_refs.py` verifies every operand, instruction, bracket and
+duplicate output mechanically, and the program files are the original exports
+with only the `<Program>` element swapped, but that is not the same as a
+successful verify. Import into a copy of the project first. See
+[what has and has not been verified](docs/REFACTOR.md#what-has-and-has-not-been-verified).
 
 ## Read this before commissioning
 

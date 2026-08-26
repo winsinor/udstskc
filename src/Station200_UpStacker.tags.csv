@@ -10,8 +10,76 @@
 #
 # HMI path for these:  Program:Program050000_Station200_UpStacker.<name>
 
-# ---- the axis ---------------------------------------------------------
-Axis , IAI_SCON_Axis , , , Up stacker actuator. All motion goes through this instruction
+# ---- IAI vendor instruction backing tags -----------------------------
+UpAxis_Sts , SCON_Status     , , , SCON_Status backing tag
+UpAxis_Ops , SCON_Operations , , , SCON_Operations backing tag
+UpAxis_Mov , SCON_Moves      , , , SCON_Moves backing tag
+
+# ---- status, unpacked by SCON_Status ---------------------------------
+UpAxis_Position          , DINT , , 0 , Actual position in 0.01mm
+UpAxis_Speed             , DINT , , 0 , Actual speed in 0.01mm/s
+UpAxis_AlarmActive       , BOOL , , 0 , Drive alarm active (ALM)
+UpAxis_AlarmCode         , INT  , , 0 , Drive alarm code
+UpAxis_BatteryAlarm      , BOOL , , 0 , Battery alarm (BALM)
+UpAxis_CommandCurrent    , DINT , , 0 , Command current
+UpAxis_HomeComplete      , BOOL , , 0 , Home complete (HEND)
+UpAxis_Homing            , BOOL , , 0 , Homing in progress (GHMS)
+UpAxis_EStop             , BOOL , , 0 , Drive E-stop (EMGS)
+UpAxis_InPushZone        , BOOL , , 0 , In push zone (PUSHS)
+UpAxis_InPZone           , BOOL , , 0 , In PZONE
+UpAxis_InZone1           , BOOL , , 0 , In zone 1 (ZONE1)
+UpAxis_InZone2           , BOOL , , 0 , In zone 2 (ZONE2)
+UpAxis_LoadReached       , BOOL , , 0 , Load output reached (LOAD)
+UpAxis_DriveManualMode   , BOOL , , 0 , Drive is in manual mode (RMDS). Not the HMI Man_Mode
+UpAxis_Moving            , BOOL , , 0 , Moving (MOVE)
+UpAxis_PositionComplete  , BOOL , , 0 , Position complete (PEND). The arrival flag
+UpAxis_PushFailed        , BOOL , , 0 , Push failed (PSFL)
+UpAxis_DriveReady        , BOOL , , 0 , Drive ready (RDY)
+UpAxis_ServoOn           , BOOL , , 0 , Servo is on (SV)
+UpAxis_TorqueReached     , BOOL , , 0 , Torque level reached (TRQS)
+UpAxis_TotalMoveCount    , DINT , , 0 , Total moving count
+UpAxis_TotalMoveDistance , DINT , , 0 , Total moving distance
+
+# ---- commands into SCON_Operations and SCON_Moves --------------------
+UpAxis_Cmd_ServoOn       , BOOL , , 0 , Servo enable, into SCON_Operations
+UpAxis_Cmd_Pause         , BOOL , , 0 , Pause (STP), into SCON_Operations
+UpAxis_Cmd_Inch          , BOOL , , 0 , Inch select (JISL). Left off: continuous jog
+UpAxis_Cmd_JogFwd        , BOOL , , 0 , Jog forward (JOG+), into SCON_Operations
+UpAxis_Cmd_JogRev        , BOOL , , 0 , Jog reverse (JOG-), into SCON_Operations
+UpAxis_Cmd_Reset         , BOOL , , 0 , Alarm reset pulse, into SCON_Operations
+UpAxis_Cmd_BrakeRelease  , BOOL , , 0 , Brake release (BKRL). Left off
+UpAxis_Cmd_Home          , BOOL , , 0 , Home request, into SCON_Moves
+UpAxis_Cmd_StartMove     , BOOL , , 0 , Move start pulse, into SCON_Moves
+UpAxis_Target            , DINT , , 0 , Target position handed to SCON_Moves, 0.01mm
+
+# ---- SCON_Moves options this machine does not use --------------------
+UpAxis_Increment_Select  , BOOL , , 0 , Relative move select (INC). Off: absolute moves
+UpAxis_Push_Select       , BOOL , , 0 , Push mode select. Off: positioning only
+UpAxis_Push_Direction    , BOOL , , 0 , Push direction. Unused
+UpAxis_Push_Percent      , INT  , , 0 , Push force percent. Unused
+UpAxis_Load_Threshold    , INT  , , 0 , Load threshold percent. Unused
+UpAxis_PZone_Upper       , DINT , , 0 , PZONE upper limit. Unused
+UpAxis_PZone_Lower       , DINT , , 0 , PZONE lower limit. Unused
+
+# ---- the step sequencer ----------------------------------------------
+UpAxis_Step         , DINT  , , 0 , Sequencer step. See the header of R100_AxisControl
+UpAxis_Set_Position , DINT  , , 0 , Height requested by whichever mode owns the axis
+UpAxis_Move_Req     , BOOL  , , 0 , One-scan move request
+UpAxis_Home_Req     , BOOL  , , 0 , One-scan home request
+UpAxis_Reset_Req    , BOOL  , , 0 , Reset requested from the HMI or the machine reset
+UpAxis_Motion_OK    , BOOL  , , 0 , Servo on, no alarm, no E-stop, no timeout
+UpAxis_Ready        , BOOL  , , 0 , Ready to accept a command
+UpAxis_Busy         , BOOL  , , 0 , A move, home or jog is in progress
+UpAxis_InPosition   , BOOL  , , 0 , Arrival confirmed by POSITION COMPLETE
+UpAxis_MoveDone     , BOOL  , , 0 , One-scan pulse when a commanded move completes
+UpAxis_Jogging      , BOOL  , , 0 , Jogging
+UpAxis_Fault        , BOOL  , , 0 , Drive alarm or move timeout
+UpAxis_Fault_Timeout, BOOL  , , 0 , Move or home did not confirm inside Cfg_MoveTimeout
+UpAxis_Fault_Range  , BOOL  , , 0 , Last target was outside the travel limits and was refused
+UpAxis_Move_TMR     , TIMER , , , Move and home watchdog
+UpAxis_Reset_TMR    , TIMER , , , Alarm reset pulse
+UpAxis_ONS          , DINT  , , 0 , One-shot storage for R100_AxisControl
+
 
 # ---- axis configuration ----------------------------------------------
 Cfg_PosBand     , DINT , , 50    , In-position band in 0.01mm (50 = 0.50mm)

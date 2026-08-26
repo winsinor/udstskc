@@ -1,73 +1,86 @@
 # The refactored program
 
-## One instruction owns the actuator
+## The vendor instructions do the drive interface
 
-`IAI_SCON_Axis` is an Add-On Instruction wrapping one SCON drive. Both
-stations use the same one, so the up stacker and the down stacker behave
-identically and there is a single place to fix a motion bug.
+IAI supplies three Add-On Instructions with the SCON drives. They were in the
+project all along and the original program used none of them — it hand-wrote
+the bit manipulation instead. They are now the whole drive interface, imported
+unmodified:
 
-```
-CPS( IAI_UpStacker:I , UpStack_Inputs , 1 )
-IAI_SCON_Axis( Axis , UpStack_Inputs , UpStack_Outputs )
-CPS( UpStack_Outputs , IAI_UpStacker:O , 1 )
-```
+| Instruction | What it does |
+|---|---|
+| `SCON_Status` | unpacks the drive input image into readable tags |
+| `SCON_Operations` | writes servo on, pause, jog, reset, brake release |
+| `SCON_Moves` | writes home and the positioning move, and owns the START (DSTR) handshake |
 
-Only those three operands are on the instruction face. Everything else is on
-the backing tag: `Axis.Cmd_MoveAbs`, `Axis.Sts_InPosition`, `Axis.Sts_Step`.
+`SCON_Moves` is the important one. Its rung 6 latches START and loads the
+move data on a rising edge; its rung 7 drops START once the drive
+acknowledges by clearing POSITION COMPLETE. That is the handshake the
+original program never performed, and it comes from the vendor — nothing
+here reimplements it.
 
-The body is Structured Text. A ten-step sequencer reads as ten steps in ST;
-as ladder it would be another forty rungs of latches, which is roughly how
-the program got into the state it was in.
+Everything else is plain ladder in the program. **There is no custom
+Add-On Instruction.**
 
-### The one move command
+## The step sequencer
 
-```
-Axis.Set_Position := 12500        (* 125.00 mm, units are 0.01 mm *)
-Axis.Cmd_MoveAbs  := rising edge  (* go *)
-
-Axis.Sts_Busy                     (* running *)
-Axis.Sts_InPosition               (* arrived -- from the drive's PEND bit *)
-Axis.Sts_MoveDone                 (* one-scan pulse on arrival *)
-```
-
-Nothing else starts a positioning move. The instruction range-checks the
-target against `Cfg_Pos_Min`/`Cfg_Pos_Max`, loads the drive, pulses DSTR,
-waits for the drive to accept it, then waits for PEND.
-
-### Sequencer steps
-
-`Axis.Sts_Step` says exactly where the axis is, which is the tag to watch
-when troubleshooting:
+Plain ladder in `R100_AxisControl`. `<prefix>_Step` (`UpAxis_Step`,
+`DnAxis_Step`) is the tag to watch:
 
 | Step | Meaning |
 |---:|---|
 | 0 | initialising |
-| 10 | not ready — no servo, not homed, or drive alarm |
+| 10 | not ready — no servo, not homed, drive alarm, or E-stop |
 | 20 | idle, ready and holding position |
-| 30 | move: range check and load the target |
-| 40 | move: DSTR asserted, waiting for the drive to accept |
-| 50 | move: running, waiting for PEND |
-| 60 | move: arrival confirmed |
-| 70 | home: HOME asserted |
-| 80 | home: waiting for HEND |
+| 30 | move: range-check the target and load it |
+| 35 | move: hand the move to `SCON_Moves` (one scan) |
+| 40 | move: waiting for the drive to accept it |
+| 50 | move: running, waiting for POSITION COMPLETE |
+| 60 | move: arrival confirmed (one scan) |
+| 70 | home: hand the home request to `SCON_Moves` |
+| 80 | home: waiting for HOME COMPLETE |
 | 90 | jogging |
+
+Two rules keep it correct, and both matter if you edit it:
+
+1. **Every command tag is written by exactly one rung**, and that rung names
+   the step that owns it. No duplicate destructive bits. `tools/check_refs.py`
+   enforces this.
+2. **The transition rungs are in descending step order.** That is what limits
+   the sequencer to one step per scan. In ascending order a move would run
+   30-35-40 in a single scan and the start pulse would never reach
+   `SCON_Moves`.
+
+Stuck at 40 means the drive is not accepting the command; stuck at 50 means
+it accepted and is not arriving. Different faults, and now distinguishable.
+
+### The move command
+
+```
+<prefix>_Set_Position   the height you want, 0.01 mm
+<prefix>_Move_Req       one-scan pulse: go
+
+<prefix>_Busy           running
+<prefix>_InPosition     arrived -- from the drive's POSITION COMPLETE
+<prefix>_MoveDone       one-scan pulse on arrival
+```
 
 ### Faults
 
-| Output | Raised when |
+| Tag | Raised when |
 |---|---|
-| `Sts_Fault_Drive` | drive alarm (ALM). Code in `Sts_AlarmCode` |
-| `Sts_Fault_Timeout` | move or home did not confirm inside `Cfg_Move_Timeout` |
-| `Sts_Fault_Range` | commanded target was outside the travel limits, and was refused |
-| `Sts_EStop` | drive E-stop (EMGS) |
+| `<prefix>_AlarmActive` | drive alarm (ALM). Code in `<prefix>_AlarmCode` |
+| `<prefix>_Fault_Timeout` | move or home did not confirm inside `Cfg_MoveTimeout` |
+| `<prefix>_Fault_Range` | commanded target was outside the travel limits, and was refused |
+| `<prefix>_EStop` | drive E-stop (EMGS) |
 
-`Sts_Fault` is the drive alarm or the timeout. `Sts_Fault_Range` is
+`<prefix>_Fault` is the drive alarm or the timeout. `_Fault_Range` is
 deliberately excluded — a mistyped height is a bad command, not a broken
-machine, and must not lock the operator out of simply retyping it. It clears
-on the next accepted move or on reset.
+machine, and must not lock the operator out of retyping it.
 
-`EnableInFalse` drops every command bit to the drive, so the actuator cannot
-be left jogging if the calling rung is ever conditioned off.
+`<prefix>_Motion_OK` gates every command rung, so a fault drops the command
+bits in the same scan it appears; the abort rung then sends the sequencer
+back to step 10.
 
 ## Program layout
 
@@ -76,7 +89,7 @@ Both programs, same five routines:
 | Routine | Job |
 |---|---|
 | `R000_Main` | JSRs, in scan order |
-| `R100_AxisControl` | the only routine that touches the drive: I/O copy, servo permissive, config, manual/auto arbitration, the AOI call, comms faults |
+| `R100_AxisControl` | the only routine that touches the drive: I/O copy, the three vendor instructions, servo permissive, config, manual/auto arbitration, the step sequencer, watchdog, comms faults |
 | `R200_Manual` | manual height control and jog |
 | `R300_AutoSequence` | layer number to height, auto move requests, tray walk |
 | `R400_TrayData` | Cognex results into the tray array, robot handshake |
@@ -86,6 +99,11 @@ Scan order note: `R100` runs first, so it consumes the move requests `R200`
 and `R300` produced on the previous scan and their status reads are always
 fresh. One scan of command latency, which at a normal scan time is nothing
 for a stacker.
+
+`R100` is longer than the others (about 46 short rungs) because it is the
+whole axis, read top to bottom: read the drive, decide, sequence, write the
+drive. That is the cost of not hiding it in an instruction, and it is the
+point — every part of it is visible on a rung you can watch online.
 
 ## Manual operation
 
@@ -132,13 +150,16 @@ Program-scoped, so the path is
 | `Man_Move_Active` | BOOL | lamp: move running |
 | `Man_Move_Confirmed` | BOOL | lamp: arrived |
 | `Man_Rejected` | BOOL | lamp: entry out of range |
-| `Axis.Sts_Position` | DINT | actual height, 0.01 mm |
-| `Axis.Sts_Target` | DINT | commanded height |
-| `Axis.Sts_Step` | DINT | sequencer step, per the table above |
-| `Axis.Sts_AlarmCode` | INT | drive alarm code |
+| `UpAxis_Position` | DINT | actual height, 0.01 mm |
+| `UpAxis_Target` | DINT | commanded height |
+| `UpAxis_Step` | DINT | sequencer step, per the table above |
+| `UpAxis_AlarmCode` | INT | drive alarm code |
+
+(Down stacker: same names with the `DnAxis_` prefix.)
 
 `UpStack_Target_Position` / `DwnStack_Target_Position` are still written
-every scan from `Axis.Sts_Target`, so existing HMI screens pointing at them
+every scan from `UpAxis_Target` / `DnAxis_Target`, so existing HMI screens
+pointing at them
 keep working.
 
 ## What changed in behaviour, deliberately
@@ -149,7 +170,7 @@ structural.
 1. **Interlocks now require confirmed in-position.**
    `Upstack_Count_Permission`, `DwnStack_Count_Permission` and the Cognex
    trigger were gated on "not moving"; they are gated on
-   `Axis.Sts_InPosition` now. This closes the window where a permission
+   `UpAxis_InPosition` / `DnAxis_InPosition` now. This closes the window where a permission
    could release against an axis that had not started moving yet.
 
 2. **Stack completion is no longer blocked.** The `XIC(WinTest.0)` gate is
@@ -208,12 +229,13 @@ Things this refactor cannot verify from an offline export:
   increasing position is up, which is consistent with the layer arithmetic
   (layer 0 is the top of travel). Confirm on first power-up. If it is
   reversed, swap the two `OTE`s at the end of `R200_Manual`.
-- **Jog speed.** `Cmd_JogUp`/`Cmd_JogDn` use the drive's JOG bits, and the
-  jog speeds come from the SCON's own parameters, not from the PLC.
-  `Cfg_JogFast` picks between jog speed 1 and 2 via JVEL. Check what those
-  parameters are set to on your drives before jogging with the guard open.
-  `Manual_Select` (RMOD) is deliberately left at 0 — the drive stays in auto
-  mode, where both positioning and jog work.
+- **Jog speed.** Jog goes through `SCON_Operations` (JOG+/JOG-), and the jog
+  speeds come from the SCON's own parameters, not from the PLC. `Cfg_JogFast`
+  picks between jog speed 1 and 2 via JVEL — that bit is written directly to
+  the output image because `SCON_Operations` does not expose it. Check what
+  those drive parameters are set to before jogging with the guard open.
+  `Manual_Select` (RMOD) is left at 0: the drive stays in auto mode, where
+  both positioning and jog work.
 - **`Cfg_PosBand`** defaults to 50 (0.50 mm) and **`Cfg_MoveTimeout`** to
   15000 ms. Both are guesses at sane values; tune them to the machine.
 - **Accel/decel are 1** (0.01 G) in the existing config, carried over
@@ -223,9 +245,51 @@ Things this refactor cannot verify from an offline export:
   same behaviour, only split into readable rungs. It has not been redesigned,
   and it has not been tested.
 
+## What has and has not been verified
+
+Everything here was built and checked offline. There is no Studio 5000 in this
+environment, so **nothing below has been compiled or downloaded**, and this is
+not a claim that the import will be clean.
+
+Checked mechanically by `tools/check_refs.py`, on every rung of both programs:
+
+- every operand resolves to a program tag, a controller tag, a module name,
+  an alias tag, a UDT member or a routine name
+- every instruction mnemonic is a real one
+- every rung ends in a semicolon; branch brackets and parentheses balance
+- no bit is driven by two OTEs (the duplicate destructive bit Logix rejects)
+- each `SCON_*` call passes the backing tag plus one argument per Required
+  parameter, counted from IAI's own definition
+
+Checked by construction:
+
+- the program files are the original exports with only the `<Program>`
+  element replaced, so the controller context, data types, modules and tag
+  dependencies are byte-for-byte the originals
+- tag and Program elements use the same attribute set Studio 5000 emits
+- the three IAI AOI files are copied through unmodified (SHA-256 identical to
+  the vendor files)
+- structured tags (TIMER, the AOI backing tags) carry no `<Data>` element, so
+  Studio 5000 initialises them from the type definition rather than from a
+  hand-built structure that could have a member wrong
+
+**The one thing that could not be verified offline:** the argument list of an
+AOI call. Logix passes the backing tag plus every `Required` parameter in
+declaration order, which is what is generated here. IAI's AOIs also declare an
+`EN` output as `Visible` but not `Required`; if Studio 5000 disagrees about
+whether that takes an argument slot, the three `SCON_*` rungs in
+`R100_AxisControl` will be rejected on import. Each call is on its own rung
+with nothing else in it, so the fix is to delete that rung and drag the
+instruction in from the toolbar. Nothing else in either program is affected.
+
+Import into a copy of the project, or an offline one, and verify before you
+download.
+
 ## Import order
 
-1. `export/IAI_SCON_Axis.L5X` — the Add-On Instruction, first.
+1. `export/SCON_Moves_AOI.L5X` — one file, installs all three IAI
+   instructions. Skip it if they are already in the project; it is IAI's
+   file byte for byte, so importing it again changes nothing.
 2. `export/Program050000_Station200_UpStacker.L5X`
 3. `export/Program090000_Station600_DownStacker.L5X`
 
@@ -249,10 +313,15 @@ python3 tools/check_refs.py    # resolve every tag and ST identifier
 ```
 
 `check_refs.py` cross-checks every operand in every rung against the program
-tags, controller tags, module names, AOI parameters and UDT members, and
-every identifier in the AOI's Structured Text against its parameters and
-locals. It also rejects nested `(* *)` comments, which Logix will not
-compile. It caught two real defects while this was being written.
+tags, controller tags, module names, vendor AOI parameters and UDT members.
+It also checks that every rung ends in a semicolon, that branch brackets and
+parentheses balance, and that no bit is driven by two OTEs — the duplicate
+destructive bit that Logix rejects on verify and the classic way a ladder
+step sequencer goes wrong.
+
+The AOI call operand lists are generated from IAI's own definitions rather
+than typed by hand: Logix expects every Required parameter in declaration
+order, and `SCON_Status` alone takes 25 operands.
 
 It is not a Studio 5000 compiler. It will not catch a semantic error, and it
 cannot tell you the machine is safe.

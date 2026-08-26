@@ -5,8 +5,76 @@
 # Same layout as the up stacker so the two stations read identically.
 # HMI path:  Program:Program090000_Station600_DownStacker.<name>
 
-# ---- the axis ---------------------------------------------------------
-Axis , IAI_SCON_Axis , , , Down stacker actuator. All motion goes through this instruction
+# ---- IAI vendor instruction backing tags -----------------------------
+DnAxis_Sts , SCON_Status     , , , SCON_Status backing tag
+DnAxis_Ops , SCON_Operations , , , SCON_Operations backing tag
+DnAxis_Mov , SCON_Moves      , , , SCON_Moves backing tag
+
+# ---- status, unpacked by SCON_Status ---------------------------------
+DnAxis_Position          , DINT , , 0 , Actual position in 0.01mm
+DnAxis_Speed             , DINT , , 0 , Actual speed in 0.01mm/s
+DnAxis_AlarmActive       , BOOL , , 0 , Drive alarm active (ALM)
+DnAxis_AlarmCode         , INT  , , 0 , Drive alarm code
+DnAxis_BatteryAlarm      , BOOL , , 0 , Battery alarm (BALM)
+DnAxis_CommandCurrent    , DINT , , 0 , Command current
+DnAxis_HomeComplete      , BOOL , , 0 , Home complete (HEND)
+DnAxis_Homing            , BOOL , , 0 , Homing in progress (GHMS)
+DnAxis_EStop             , BOOL , , 0 , Drive E-stop (EMGS)
+DnAxis_InPushZone        , BOOL , , 0 , In push zone (PUSHS)
+DnAxis_InPZone           , BOOL , , 0 , In PZONE
+DnAxis_InZone1           , BOOL , , 0 , In zone 1 (ZONE1)
+DnAxis_InZone2           , BOOL , , 0 , In zone 2 (ZONE2)
+DnAxis_LoadReached       , BOOL , , 0 , Load output reached (LOAD)
+DnAxis_DriveManualMode   , BOOL , , 0 , Drive is in manual mode (RMDS). Not the HMI Man_Mode
+DnAxis_Moving            , BOOL , , 0 , Moving (MOVE)
+DnAxis_PositionComplete  , BOOL , , 0 , Position complete (PEND). The arrival flag
+DnAxis_PushFailed        , BOOL , , 0 , Push failed (PSFL)
+DnAxis_DriveReady        , BOOL , , 0 , Drive ready (RDY)
+DnAxis_ServoOn           , BOOL , , 0 , Servo is on (SV)
+DnAxis_TorqueReached     , BOOL , , 0 , Torque level reached (TRQS)
+DnAxis_TotalMoveCount    , DINT , , 0 , Total moving count
+DnAxis_TotalMoveDistance , DINT , , 0 , Total moving distance
+
+# ---- commands into SCON_Operations and SCON_Moves --------------------
+DnAxis_Cmd_ServoOn       , BOOL , , 0 , Servo enable, into SCON_Operations
+DnAxis_Cmd_Pause         , BOOL , , 0 , Pause (STP), into SCON_Operations
+DnAxis_Cmd_Inch          , BOOL , , 0 , Inch select (JISL). Left off: continuous jog
+DnAxis_Cmd_JogFwd        , BOOL , , 0 , Jog forward (JOG+), into SCON_Operations
+DnAxis_Cmd_JogRev        , BOOL , , 0 , Jog reverse (JOG-), into SCON_Operations
+DnAxis_Cmd_Reset         , BOOL , , 0 , Alarm reset pulse, into SCON_Operations
+DnAxis_Cmd_BrakeRelease  , BOOL , , 0 , Brake release (BKRL). Left off
+DnAxis_Cmd_Home          , BOOL , , 0 , Home request, into SCON_Moves
+DnAxis_Cmd_StartMove     , BOOL , , 0 , Move start pulse, into SCON_Moves
+DnAxis_Target            , DINT , , 0 , Target position handed to SCON_Moves, 0.01mm
+
+# ---- SCON_Moves options this machine does not use --------------------
+DnAxis_Increment_Select  , BOOL , , 0 , Relative move select (INC). Off: absolute moves
+DnAxis_Push_Select       , BOOL , , 0 , Push mode select. Off: positioning only
+DnAxis_Push_Direction    , BOOL , , 0 , Push direction. Unused
+DnAxis_Push_Percent      , INT  , , 0 , Push force percent. Unused
+DnAxis_Load_Threshold    , INT  , , 0 , Load threshold percent. Unused
+DnAxis_PZone_Upper       , DINT , , 0 , PZONE upper limit. Unused
+DnAxis_PZone_Lower       , DINT , , 0 , PZONE lower limit. Unused
+
+# ---- the step sequencer ----------------------------------------------
+DnAxis_Step         , DINT  , , 0 , Sequencer step. See the header of R100_AxisControl
+DnAxis_Set_Position , DINT  , , 0 , Height requested by whichever mode owns the axis
+DnAxis_Move_Req     , BOOL  , , 0 , One-scan move request
+DnAxis_Home_Req     , BOOL  , , 0 , One-scan home request
+DnAxis_Reset_Req    , BOOL  , , 0 , Reset requested from the HMI or the machine reset
+DnAxis_Motion_OK    , BOOL  , , 0 , Servo on, no alarm, no E-stop, no timeout
+DnAxis_Ready        , BOOL  , , 0 , Ready to accept a command
+DnAxis_Busy         , BOOL  , , 0 , A move, home or jog is in progress
+DnAxis_InPosition   , BOOL  , , 0 , Arrival confirmed by POSITION COMPLETE
+DnAxis_MoveDone     , BOOL  , , 0 , One-scan pulse when a commanded move completes
+DnAxis_Jogging      , BOOL  , , 0 , Jogging
+DnAxis_Fault        , BOOL  , , 0 , Drive alarm or move timeout
+DnAxis_Fault_Timeout, BOOL  , , 0 , Move or home did not confirm inside Cfg_MoveTimeout
+DnAxis_Fault_Range  , BOOL  , , 0 , Last target was outside the travel limits and was refused
+DnAxis_Move_TMR     , TIMER , , , Move and home watchdog
+DnAxis_Reset_TMR    , TIMER , , , Alarm reset pulse
+DnAxis_ONS          , DINT  , , 0 , One-shot storage for R100_AxisControl
+
 
 # ---- axis configuration ----------------------------------------------
 Cfg_PosBand     , DINT , , 50    , In-position band in 0.01mm (50 = 0.50mm)

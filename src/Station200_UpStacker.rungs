@@ -21,89 +21,237 @@ JSR(R400_TrayData,0);
 JSR(R900_Alarms,0);
 
 
-@ROUTINE R100_AxisControl | The only routine that talks to the actuator.
+@ROUTINE R100_AxisControl | The only routine that talks to the actuator. Read it top to bottom.
+# =====================================================================
+# UP STACKER AXIS
+#
+# The three SCON_* instructions are IAI's own Add-On Instructions,
+# imported unmodified from the vendor files. They do exactly three
+# things and nothing else:
+#
+#   SCON_Status      unpacks the drive input image into readable tags
+#   SCON_Operations  writes servo on, pause, jog, reset, brake release
+#   SCON_Moves       writes home and the positioning move, and owns the
+#                    START (DSTR) handshake -- it latches START, loads
+#                    the move data, and drops START once the drive
+#                    acknowledges by clearing POSITION COMPLETE
+#
+# Everything else below is plain ladder in this program. No custom AOI.
+#
+# THE STEP SEQUENCER  --  UpAxis_Step is the tag to watch
+#
+#    0  initialising
+#   10  not ready: no servo, not homed, drive alarm, or E-stop
+#   20  idle, ready and holding position
+#   30  move: range-check the target and load it
+#   35  move: hand the move to SCON_Moves (one scan)
+#   40  move: waiting for the drive to accept it
+#   50  move: running, waiting for POSITION COMPLETE
+#   60  move: arrival confirmed (one scan)
+#   70  home: hand the home request to SCON_Moves
+#   80  home: waiting for HOME COMPLETE
+#   90  jogging
+#
+# Two rules make this safe, and both matter if you edit it:
+#
+#   1. Every command tag is written by exactly ONE rung, and that rung
+#      names the step that owns it. No duplicate destructive bits.
+#   2. The transition rungs are in DESCENDING step order. That is what
+#      limits the sequencer to one step per scan -- in ascending order a
+#      move would run 30-35-40 in a single scan and the start pulse
+#      would never reach the instruction.
+# =====================================================================
 # ---------------------------------------------------------------------
-# Copy the drive input image in.
-# Everything downstream reads UpStack_Inputs, never the module tag.
+# 1. Read the drive, then unpack it with the vendor status instruction.
+#    Everything below reads the UpAxis_ status tags, never the module tag.
 # ---------------------------------------------------------------------
 CPS(IAI_UpStacker:I,UpStack_Inputs,1);
 
+SCON_Status(UpAxis_Sts,UpAxis_Position,UpAxis_Speed,UpAxis_AlarmActive,UpAxis_AlarmCode,UpAxis_BatteryAlarm,UpAxis_CommandCurrent,UpAxis_HomeComplete,UpAxis_Homing,UpAxis_EStop,UpAxis_InPushZone,UpAxis_InPZone,UpAxis_InZone1,UpAxis_InZone2,UpAxis_LoadReached,UpAxis_DriveManualMode,UpAxis_Moving,UpAxis_PositionComplete,UpAxis_PushFailed,UpAxis_DriveReady,UpAxis_ServoOn,UpAxis_TorqueReached,UpAxis_TotalMoveCount,UpAxis_TotalMoveDistance,UpStack_Inputs);
+
 # ---------------------------------------------------------------------
-# Servo permissive and the motor power contactor.
-#
-# CR614 = UPSTACKER MOTOR POWER ON, PLC1602 slot 6, O0614.
-# Unlocking the doors drops the servo, which is what makes it safe to
-# leave the manual jog buttons live -- with the doors unlocked nothing
-# can move regardless of what the operator presses.
+# 2. Servo permissive and the motor power contactor (CR614).
+#    Unlocking the doors drops the servo, so with the doors unlocked
+#    nothing moves no matter what is pressed on the faceplate.
 # ---------------------------------------------------------------------
 XIC(POWER_OK_24VB)XIO(Unlock_Doors)
-[OTE(Axis.Cmd_ServoOn) ,OTE(CR614) ];
+[OTE(UpAxis_Cmd_ServoOn) ,OTE(CR614) ];
 
 # ---------------------------------------------------------------------
-# Load the axis configuration every scan, so an HMI edit to a travel
-# limit or a speed takes effect on the next move without a download.
+# 3. Motion parameters and timer presets, refreshed every scan so an HMI
+#    edit takes effect on the next move without a download.
+#    SCON_Moves latches these into the drive on the start pulse.
 # ---------------------------------------------------------------------
-[MOV(Cfg_UpStack_LowMax_POS,Axis.Cfg_Pos_Min)
-,MOV(Cfg_UpStack_HighMax_POS,Axis.Cfg_Pos_Max)
-,MOV(UpStack_Target_Speed,Axis.Cfg_Speed)
-,MOV(UpStack_Output_Acceleration,Axis.Cfg_Accel)
-,MOV(UpStack_Output_Deceleration,Axis.Cfg_Decel)
-,MOV(Cfg_PosBand,Axis.Cfg_Band)
-,MOV(Cfg_MoveTimeout,Axis.Cfg_Move_Timeout)
-,XIC(Cfg_JogFast) OTE(Axis.Cfg_Jog_Fast) ];
+[MOV(Cfg_MoveTimeout,UpAxis_Move_TMR.PRE)
+,MOV(200,UpAxis_Reset_TMR.PRE) ];
+
+# Jog speed select (JVEL). SCON_Operations does not expose this bit, so
+# it is written straight to the output image -- the vendor instruction
+# does not touch it, so there is no conflict. Jog speeds themselves come
+# from the drive's own parameters.
+XIC(Cfg_JogFast)OTE(UpStack_Outputs.Jog_Parameter_Select);
 
 # ---------------------------------------------------------------------
-# Who owns the axis: manual or the auto sequence. One or the other,
-# never both. This is the single arbitration point in the program.
+# 4. Pause, and the alarm reset pulse. RES is pulsed for 200ms and only
+#    while the drive is actually alarmed, so holding the HMI reset
+#    button cannot sit on the bit.
 # ---------------------------------------------------------------------
-XIC(Man_Mode)MOV(Man_Target_Position,Axis.Set_Position);
+XIC(Man_Stop_PB)OTE(UpAxis_Cmd_Pause);
 
-XIO(Man_Mode)MOV(Auto_Target_Position,Axis.Set_Position);
+[XIC(FaultReset) ,XIC(Man_Reset_PB) ]OTE(UpAxis_Reset_Req);
 
-# The move command itself. Both sources are one-scan pulses; the
-# instruction takes the rising edge.
+XIC(UpAxis_Reset_Req)XIC(UpAxis_AlarmActive)
+TON(UpAxis_Reset_TMR,?,?)XIO(UpAxis_Reset_TMR.DN)OTE(UpAxis_Cmd_Reset);
+
+XIC(UpAxis_Reset_Req)[OTU(UpAxis_Fault_Timeout) ,OTU(UpAxis_Fault_Range) ];
+
+# ---------------------------------------------------------------------
+# 5. Who owns the axis: manual or the auto sequence. One or the other,
+#    never both. This is the single arbitration point in the program.
+# ---------------------------------------------------------------------
+XIC(Man_Mode)MOV(Man_Target_Position,UpAxis_Set_Position);
+
+XIO(Man_Mode)MOV(Auto_Target_Position,UpAxis_Set_Position);
+
+# Both sources are one-scan pulses produced by R200/R300 on the previous
+# scan, so no edge detection is needed here.
 [XIC(Man_Mode) XIC(Man_Move_Cmd)
-,XIO(Man_Mode) XIC(Auto_Move_Cmd) ]OTE(Axis.Cmd_MoveAbs);
+,XIO(Man_Mode) XIC(Auto_Move_Cmd) ]OTE(UpAxis_Move_Req);
+
+XIC(Man_Mode)XIC(Man_Home_PB)ONS(UpAxis_ONS.0)OTE(UpAxis_Home_Req);
 
 # ---------------------------------------------------------------------
-# Jog, home, stop and reset. Jog is manual-only by construction --
-# R200 never sets Man_JogUp/Man_JogDn unless Man_Mode is on.
+# 6. Derived status. The rest of the program reads these.
 # ---------------------------------------------------------------------
-XIC(Man_JogUp)OTE(Axis.Cmd_JogUp);
+[XIC(UpAxis_AlarmActive) ,XIC(UpAxis_Fault_Timeout) ]OTE(UpAxis_Fault);
 
-XIC(Man_JogDn)OTE(Axis.Cmd_JogDn);
+XIC(UpAxis_DriveReady)XIC(UpAxis_ServoOn)XIC(UpAxis_HomeComplete)
+XIO(UpAxis_EStop)XIO(UpAxis_Fault)OTE(UpAxis_Ready);
 
-XIC(Man_Mode)XIC(Man_Home_PB)OTE(Axis.Cmd_Home);
+# Motion is allowed. Every command rung is gated on this, so a fault
+# drops the command bits in the same scan it appears.
+XIC(UpAxis_ServoOn)XIO(UpAxis_AlarmActive)XIO(UpAxis_EStop)
+XIO(UpAxis_Fault_Timeout)OTE(UpAxis_Motion_OK);
 
-XIC(Man_Stop_PB)OTE(Axis.Cmd_Stop);
+GEQ(UpAxis_Step,30)LEQ(UpAxis_Step,90)OTE(UpAxis_Busy);
 
-[XIC(FaultReset) ,XIC(Man_Reset_PB) ]OTE(Axis.Cmd_Reset);
+# In position: the drive's own POSITION COMPLETE while idle, or the
+# confirmed arrival at step 60. This is the move confirmation.
+[EQU(UpAxis_Step,20) XIC(UpAxis_PositionComplete) XIO(UpAxis_Moving)
+,EQU(UpAxis_Step,60) ]OTE(UpAxis_InPosition);
+
+# Step 60 lasts exactly one scan, so this is a one-scan done pulse.
+EQU(UpAxis_Step,60)OTE(UpAxis_MoveDone);
+
+EQU(UpAxis_Step,90)OTE(UpAxis_Jogging);
 
 # ---------------------------------------------------------------------
-# The axis itself.
-#
-#   IAI_SCON_Axis( backing tag , input image , output image )
-#
-# Commands and status are on the backing tag: Axis.Cmd_MoveAbs,
-# Axis.Sts_InPosition, Axis.Sts_Position, Axis.Sts_Step ...
+# 7. Commands into the vendor instructions. ONE rung each -- do not add
+#    a second writer.
 # ---------------------------------------------------------------------
-IAI_SCON_Axis(Axis,UpStack_Inputs,UpStack_Outputs);
+XIC(UpAxis_Motion_OK)EQU(UpAxis_Step,35)OTE(UpAxis_Cmd_StartMove);
+
+XIC(UpAxis_Motion_OK)EQU(UpAxis_Step,70)OTE(UpAxis_Cmd_Home);
+
+# JOG DIRECTION -- CHECK ON COMMISSIONING. This assumes extend (JOG+)
+# raises the stacker, i.e. increasing position is up, which matches the
+# layer arithmetic. If it is reversed, swap these two rungs.
+XIC(UpAxis_Motion_OK)EQU(UpAxis_Step,90)XIC(Man_JogUp)XIO(Man_JogDn)
+OTE(UpAxis_Cmd_JogFwd);
+
+XIC(UpAxis_Motion_OK)EQU(UpAxis_Step,90)XIC(Man_JogDn)XIO(Man_JogUp)
+OTE(UpAxis_Cmd_JogRev);
 
 # ---------------------------------------------------------------------
-# Copy the drive output image back out.
+# 8. Step transitions, in DESCENDING order -- see the note at the top.
 # ---------------------------------------------------------------------
+# 90 -> 20  both buttons released, both pressed, or stop
+EQU(UpAxis_Step,90)
+[XIO(Man_JogUp) XIO(Man_JogDn)
+,XIC(Man_JogUp) XIC(Man_JogDn)
+,XIC(Man_Stop_PB) ]MOV(20,UpAxis_Step);
+
+# 80 -> 20  homing finished
+EQU(UpAxis_Step,80)XIC(UpAxis_HomeComplete)XIO(UpAxis_Homing)MOV(20,UpAxis_Step);
+
+# 70 -> 80  drive has started homing
+EQU(UpAxis_Step,70)XIC(UpAxis_Homing)MOV(80,UpAxis_Step);
+
+# 60 -> 20  arrival already reported, go back to idle
+EQU(UpAxis_Step,60)MOV(20,UpAxis_Step);
+
+# 50 -> 60  POSITION COMPLETE: the move is confirmed
+EQU(UpAxis_Step,50)XIC(UpAxis_PositionComplete)XIO(UpAxis_Moving)MOV(60,UpAxis_Step);
+
+# 40 -> 50  the drive has accepted the move
+EQU(UpAxis_Step,40)
+[XIC(UpAxis_Moving) ,XIO(UpAxis_PositionComplete) ]MOV(50,UpAxis_Step);
+
+# 35 -> 40  the start pulse has been handed to SCON_Moves
+EQU(UpAxis_Step,35)MOV(40,UpAxis_Step);
+
+# 30 -> 35  target in range: load it and go
+# 30 -> 20  target refused: flag it and stay put. The old program simply
+#           dropped an out-of-range target with no indication.
+EQU(UpAxis_Step,30)
+[GEQ(UpAxis_Set_Position,Cfg_UpStack_LowMax_POS) LEQ(UpAxis_Set_Position,Cfg_UpStack_HighMax_POS)
+ [MOV(UpAxis_Set_Position,UpAxis_Target) ,OTU(UpAxis_Fault_Range) ,MOV(35,UpAxis_Step) ]
+,[LES(UpAxis_Set_Position,Cfg_UpStack_LowMax_POS) ,GRT(UpAxis_Set_Position,Cfg_UpStack_HighMax_POS) ]
+ [OTL(UpAxis_Fault_Range) ,MOV(20,UpAxis_Step) ] ];
+
+# 20 -> 30 move, 20 -> 70 home, 20 -> 90 jog
+EQU(UpAxis_Step,20)XIO(Man_Stop_PB)
+[XIC(UpAxis_Move_Req) MOV(30,UpAxis_Step)
+,XIC(UpAxis_Home_Req) MOV(70,UpAxis_Step)
+,[XIC(Man_JogUp) XIO(Man_JogDn) ,XIC(Man_JogDn) XIO(Man_JogUp) ]
+ MOV(90,UpAxis_Step) ];
+
+# 10 -> 20 ready, or 10 -> 70 if homing was asked for
+EQU(UpAxis_Step,10)XIC(UpAxis_ServoOn)XIO(UpAxis_AlarmActive)XIO(UpAxis_EStop)
+[XIC(UpAxis_HomeComplete) MOV(20,UpAxis_Step)
+,XIO(UpAxis_HomeComplete) XIC(UpAxis_Home_Req) MOV(70,UpAxis_Step) ];
+
+# 0 -> 10  first scan
+EQU(UpAxis_Step,0)MOV(10,UpAxis_Step);
+
+# Anything outside the defined steps restarts the sequencer.
+[LES(UpAxis_Step,0) ,GRT(UpAxis_Step,90) ]MOV(0,UpAxis_Step);
+
+# ---------------------------------------------------------------------
+# 9. Abort. Runs after the transitions so it always wins: an alarm, an
+#    E-stop or the servo dropping mid-move sends the sequencer back to
+#    NOT READY. The command bits are already off via UpAxis_Motion_OK.
+# ---------------------------------------------------------------------
+GEQ(UpAxis_Step,30)XIO(UpAxis_Motion_OK)MOV(10,UpAxis_Step);
+
+# ---------------------------------------------------------------------
+# 10. Move and home watchdog. If the drive never confirms, this faults
+#     instead of hanging. The old program had no such check.
+# ---------------------------------------------------------------------
+[GEQ(UpAxis_Step,35) LEQ(UpAxis_Step,50)
+,GEQ(UpAxis_Step,70) LEQ(UpAxis_Step,80) ]TON(UpAxis_Move_TMR,?,?);
+
+XIC(UpAxis_Move_TMR.DN)OTL(UpAxis_Fault_Timeout);
+
+# ---------------------------------------------------------------------
+# 11. Hand the commands to the vendor instructions, then write the drive.
+# ---------------------------------------------------------------------
+SCON_Operations(UpAxis_Ops,UpAxis_Cmd_ServoOn,UpAxis_Cmd_Pause,UpAxis_Cmd_Inch,UpAxis_Cmd_JogFwd,UpAxis_Cmd_JogRev,UpAxis_Cmd_Reset,UpAxis_Cmd_BrakeRelease,UpStack_Outputs);
+
+SCON_Moves(UpAxis_Mov,UpAxis_Cmd_Home,UpAxis_Cmd_StartMove,UpAxis_Target,UpStack_Target_Speed,UpStack_Output_Acceleration,UpStack_Output_Deceleration,Cfg_PosBand,UpAxis_Increment_Select,UpAxis_Push_Select,UpAxis_Push_Direction,UpAxis_Push_Percent,UpAxis_Load_Threshold,UpAxis_PZone_Upper,UpAxis_PZone_Lower,UpStack_Inputs,UpStack_Outputs);
+
 CPS(UpStack_Outputs,IAI_UpStacker:O,1);
 
 # ---------------------------------------------------------------------
-# Keep the existing controller-scoped target tag in step with the axis
-# so the HMI screens that already point at it keep reading correctly.
+# 12. Keep the existing controller-scoped target tag in step, so HMI
+#     screens already pointing at it keep reading correctly.
 # ---------------------------------------------------------------------
-MOV(Axis.Sts_Target,UpStack_Target_Position);
+MOV(UpAxis_Target,UpStack_Target_Position);
 
 # ---------------------------------------------------------------------
-# Drive and camera communications faults.
-# Broken out of the original rung 0, which mixed the I/O copy, the servo
-# permissive, two GSVs and the reset logic into one rung.
+# 13. Drive and camera communications faults. Broken out of the original
+#     rung 0, which mixed the I/O copy, the servo permissive, two GSVs
+#     and the reset logic into a single rung.
 # ---------------------------------------------------------------------
 GSV(Module,IS3800,FaultCode,HARDWARE_FAULTS[0])NEQ(HARDWARE_FAULTS[0],0)
 [XIO(Cognex_Bypass) OTL(Cognex_Com_Fault)
@@ -136,13 +284,13 @@ XIC(Reset_Hold_TMR.DN)
 # =====================================================================
 # Manual commands are allowed when manual mode is selected, the axis is
 # ready, and it is not already busy.
-XIC(Man_Mode)XIC(Axis.Sts_Ready)XIO(Axis.Sts_Busy)XIO(Man_Stop_PB)
+XIC(Man_Mode)XIC(UpAxis_Ready)XIO(UpAxis_Busy)XIO(Man_Stop_PB)
 OTE(Man_Permit);
 
 # Jogging has its own permissive: jogging makes the axis busy, so it
 # cannot be gated on "not busy" -- it is gated on not running a
 # positioning move instead.
-XIC(Man_Mode)XIC(Axis.Sts_Ready)XIO(Man_Move_Active)XIO(Man_Stop_PB)
+XIC(Man_Mode)XIC(UpAxis_Ready)XIO(Man_Move_Active)XIO(Man_Stop_PB)
 OTE(Man_Jog_Permit);
 
 # ---------------------------------------------------------------------
@@ -180,9 +328,9 @@ OTE(Man_Move_Cmd);
 # Track the armed move through to its confirmation.
 # ---------------------------------------------------------------------
 [XIC(Man_Move_Cmd) [OTL(Man_Move_Active) ,OTU(Man_Move_Armed) ]
-,XIC(Man_Move_Active) XIC(Axis.Sts_MoveDone)
+,XIC(Man_Move_Active) XIC(UpAxis_MoveDone)
  [OTU(Man_Move_Active) ,OTL(Man_Move_Confirmed) ]
-,XIC(Axis.Sts_Fault) [OTU(Man_Move_Active) ,OTU(Man_Move_Armed) ] ];
+,XIC(UpAxis_Fault) [OTU(Man_Move_Active) ,OTU(Man_Move_Armed) ] ];
 
 # ---------------------------------------------------------------------
 # JOG, soft-limited.
@@ -193,10 +341,10 @@ OTE(Man_Move_Cmd);
 # is mounted the other way, swap the two output bits below.
 # ---------------------------------------------------------------------
 XIC(Man_Jog_Permit)XIC(Man_JogUp_PB)XIO(Man_JogDn_PB)
-LES(Axis.Sts_Position,Cfg_UpStack_HighMax_POS)OTE(Man_JogUp);
+LES(UpAxis_Position,Cfg_UpStack_HighMax_POS)OTE(Man_JogUp);
 
 XIC(Man_Jog_Permit)XIC(Man_JogDn_PB)XIO(Man_JogUp_PB)
-GRT(Axis.Sts_Position,Cfg_UpStack_LowMax_POS)OTE(Man_JogDn);
+GRT(UpAxis_Position,Cfg_UpStack_LowMax_POS)OTE(Man_JogDn);
 
 
 @ROUTINE R300_AutoSequence | Layer height and the auto move request.
@@ -227,7 +375,7 @@ CPT(Auto_Target_Position,Cfg_UpStack_HighMax_POS-(Upstack_Layer_Current*Cfg_UpSt
 # gone: the axis instruction now edge-detects the request itself and
 # confirms arrival with PEND, so the debounce is no longer load-bearing.
 # ---------------------------------------------------------------------
-XIO(Man_Mode)XIO(Axis.Sts_Busy)XIO(Axis.Sts_Fault)
+XIO(Man_Mode)XIO(UpAxis_Busy)XIO(UpAxis_Fault)
 NEQ(Upstack_Layer_Current,Auto_Layer_Last)ONS(Auto_ONS.1)
 [MOV(Upstack_Layer_Current,Auto_Layer_Last) ,OTE(Auto_Move_Cmd) ];
 
@@ -238,7 +386,7 @@ NEQ(Upstack_Layer_Current,Auto_Layer_Last)ONS(Auto_ONS.1)
 # advance on "not moving and not starting", which is also true in the
 # scan before a move begins. It now requires a confirmed in-position.
 # ---------------------------------------------------------------------
-XIO(Door_Open_Request)XIC(Axis.Sts_InPosition)XIO(Axis.Sts_Busy)
+XIO(Door_Open_Request)XIC(UpAxis_InPosition)XIO(UpAxis_Busy)
 XIO(UStoR_ReqToMoveLayer)XIO(Upstack_Jam)XIO(Upstack_Complete)
 XIC(Data_Delay_TMR.DN)XIO(UStoR_ReqToPick)
 OTE(Upstack_Count_Permission);
@@ -285,7 +433,7 @@ XIC(RtoUS_LayerMovedConfirm)ONS(Auto_ONS.5)OTU(UStoR_ReqToMoveLayer);
 # Stack complete: ask for the doors, then reload the tray counts from
 # the HMI quantities once everything has stopped.
 # ---------------------------------------------------------------------
-XIO(UStoR_ReqToMoveLayer)XIC(Upstack_Complete)XIO(Axis.Sts_Busy)
+XIO(UStoR_ReqToMoveLayer)XIC(Upstack_Complete)XIO(UpAxis_Busy)
 XIO(DwnStack_Outputs.Start_Move)XIO(DwnStack_Inputs.Moving)
 ONS(Auto_ONS.8)OTL(Door_Open_Request);
 
@@ -319,7 +467,7 @@ XIC(Cognex_Hold_TMR.DN)OTU(IS3800:O.Control.TriggerEnable);
 # The original tested "not moving and not starting a move"; this now
 # waits for the drive's own in-position confirmation.
 # ---------------------------------------------------------------------
-XIC(Axis.Sts_InPosition)XIO(Axis.Sts_Busy)XIO(UStoR_ReqToMoveLayer)
+XIC(UpAxis_InPosition)XIO(UpAxis_Busy)XIO(UStoR_ReqToMoveLayer)
 XIC(IS3800:O.Control.TriggerEnable)TON(Cognex_Hold_TMR,?,?)
 GRT(Cognex_Hold_TMR.ACC,500)OTE(IS3800:O.Control.Trigger);
 
@@ -333,7 +481,7 @@ XIO(IS3800:O.Control.Trigger)NEQ(IS3800:I.Status.AcquisitionID,Cognex_Acc_ID)
 # and reset the pick pointer to the first hole.
 # The presence threshold was a literal 50; it is Cfg_TrayScoreMin now.
 # ---------------------------------------------------------------------
-XIC(Axis.Sts_InPosition)XIO(Axis.Sts_Busy)XIO(UStoR_ReqToMoveLayer)
+XIC(UpAxis_InPosition)XIO(UpAxis_Busy)XIO(UStoR_ReqToMoveLayer)
 TON(Data_Delay_TMR,?,?)XIC(Data_Delay_TMR.DN)ONS(ONS.2)
 [[LES(IS3800:I.InspectionResults[96],Cfg_TrayScoreMin) NEQ(Upstack_Layer_Current,0)
   OTL(Upstack_Jam)
@@ -429,13 +577,13 @@ OTU(UStoR_ReqToPick);
 # raised. They are replaced by the real conditions below, using the same
 # Station200Upstacker._Fault / ._Warning words the HMI already reads.
 # =====================================================================
-# Fault 0 -- drive alarm. The alarm code is on Axis.Sts_AlarmCode.
-[XIC(Axis.Sts_Fault_Drive)
+# Fault 0 -- drive alarm. The alarm code is on UpAxis_AlarmCode.
+[XIC(UpAxis_AlarmActive)
 ,XIO(FaultReset) XIC(Station200Upstacker._Fault[0]) ]
 OTE(Station200Upstacker._Fault[0]);
 
 # Fault 1 -- the axis did not confirm arrival inside the move timeout.
-[XIC(Axis.Sts_Fault_Timeout)
+[XIC(UpAxis_Fault_Timeout)
 ,XIO(FaultReset) XIC(Station200Upstacker._Fault[1]) ]
 OTE(Station200Upstacker._Fault[1]);
 
@@ -455,18 +603,18 @@ OTE(Station200Upstacker._Fault[3]);
 OTE(Station200Upstacker._Fault[4]);
 
 # Fault 5 -- drive E-stop.
-[XIC(Axis.Sts_EStop)
+[XIC(UpAxis_EStop)
 ,XIO(FaultReset) XIC(Station200Upstacker._Fault[5]) ]
 OTE(Station200Upstacker._Fault[5]);
 
 # Warning 0 -- a commanded height was outside the travel limits and was
 # refused. Not a stopping fault; the operator just needs to re-enter it.
-[XIC(Axis.Sts_Fault_Range)
+[XIC(UpAxis_Fault_Range)
 ,XIO(FaultReset) XIC(Station200Upstacker._Warning[0]) ]
 OTE(Station200Upstacker._Warning[0]);
 
 # Warning 1 -- the axis is not homed.
-[XIO(Axis.Sts_Homed) XIC(Axis.Sts_ServoOn)
+[XIO(UpAxis_HomeComplete) XIC(UpAxis_ServoOn)
 ,XIO(FaultReset) XIC(Station200Upstacker._Warning[1]) ]
 OTE(Station200Upstacker._Warning[1]);
 
