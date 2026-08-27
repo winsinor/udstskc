@@ -461,14 +461,6 @@
 </Module>
 </Modules>
 <Tags Use="Context">
-<Tag Name="Cfg_Layer_Max" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Data Format="L5K">
-<![CDATA[12]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="12"/>
-</Data>
-</Tag>
 <Tag Name="Cfg_Column_Max" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[4]]>
@@ -16857,7 +16849,7 @@
 </Tag>
 <Tag Name="DnAxis_Position" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Actual position in 0.01mm]]>
+<![CDATA[Actual position, 0.01mm]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -16868,7 +16860,7 @@
 </Tag>
 <Tag Name="DnAxis_Speed" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Actual speed in 0.01mm/s]]>
+<![CDATA[Actual speed, 0.01mm/s]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17000,7 +16992,7 @@
 </Tag>
 <Tag Name="DnAxis_LoadReached" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Load output reached (LOAD)]]>
+<![CDATA[Load output reached]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17011,7 +17003,7 @@
 </Tag>
 <Tag Name="DnAxis_DriveManualMode" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Drive is in manual mode (RMDS). Not the HMI Man_Mode]]>
+<![CDATA[Drive in manual mode (RMDS)]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17033,7 +17025,7 @@
 </Tag>
 <Tag Name="DnAxis_PositionComplete" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Position complete (PEND). The arrival flag]]>
+<![CDATA[Position complete (PEND). This is the arrival confirmation]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17110,7 +17102,7 @@
 </Tag>
 <Tag Name="DnAxis_Cmd_ServoOn" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Servo enable, into SCON_Operations]]>
+<![CDATA[Servo enable]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17121,7 +17113,7 @@
 </Tag>
 <Tag Name="DnAxis_Cmd_Pause" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Pause (STP), into SCON_Operations]]>
+<![CDATA[Pause the drive (STP)]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17132,7 +17124,7 @@
 </Tag>
 <Tag Name="DnAxis_Cmd_Inch" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Inch select (JISL). Left off: continuous jog]]>
+<![CDATA[Inch select (JISL). Leave off for continuous jog]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17143,7 +17135,7 @@
 </Tag>
 <Tag Name="DnAxis_Cmd_JogFwd" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Jog forward (JOG+), into SCON_Operations]]>
+<![CDATA[Jog forward (JOG+), runs while held]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17154,7 +17146,7 @@
 </Tag>
 <Tag Name="DnAxis_Cmd_JogRev" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Jog reverse (JOG-), into SCON_Operations]]>
+<![CDATA[Jog reverse (JOG-), runs while held]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17165,7 +17157,7 @@
 </Tag>
 <Tag Name="DnAxis_Cmd_Reset" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Alarm reset pulse, into SCON_Operations]]>
+<![CDATA[Alarm reset (RES)]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17176,7 +17168,7 @@
 </Tag>
 <Tag Name="DnAxis_Cmd_BrakeRelease" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Brake release (BKRL). Left off]]>
+<![CDATA[Brake release (BKRL)]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17187,7 +17179,7 @@
 </Tag>
 <Tag Name="DnAxis_Cmd_Home" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Home request, into SCON_Moves]]>
+<![CDATA[Rising edge homes the axis]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17198,7 +17190,7 @@
 </Tag>
 <Tag Name="DnAxis_Cmd_StartMove" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Move start pulse, into SCON_Moves]]>
+<![CDATA[Rising edge runs a move to Target. This is the go command]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17209,7 +17201,7 @@
 </Tag>
 <Tag Name="DnAxis_Target" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Target position handed to SCON_Moves, 0.01mm]]>
+<![CDATA[Where to go, 0.01mm. Set this before pulsing Cmd_StartMove]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17218,9 +17210,20 @@
 <DataValue DataType="DINT" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
+<Tag Name="DnAxis_Band" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[In-position band, 0.01mm]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[50]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="50"/>
+</Data>
+</Tag>
 <Tag Name="DnAxis_Increment_Select" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Relative move select (INC). Off: absolute moves]]>
+<![CDATA[Relative move (INC). Off = absolute moves]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17231,7 +17234,7 @@
 </Tag>
 <Tag Name="DnAxis_Push_Select" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Push mode select. Off: positioning only]]>
+<![CDATA[Push mode. Off = positioning only]]>
 </Description>
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -17295,583 +17298,29 @@
 <DataValue DataType="DINT" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="DnAxis_Step" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Sequencer step. See the header of R100_AxisControl]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Set_Position" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Height requested by whichever mode owns the axis]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Move_Req" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[One-scan move request]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Home_Req" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[One-scan home request]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Reset_Req" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Reset requested from the HMI or the machine reset]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Motion_OK" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Servo on, no alarm, no E-stop, no timeout]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Ready" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Ready to accept a command]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Busy" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[A move, home or jog is in progress]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_InPosition" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Arrival confirmed by POSITION COMPLETE]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_MoveDone" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[One-scan pulse when a commanded move completes]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Jogging" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Jogging]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Fault" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Drive alarm or move timeout]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Fault_Timeout" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Move or home did not confirm inside Cfg_MoveTimeout]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Fault_Range" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Last target was outside the travel limits and was refused]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="DnAxis_Move_TMR" Class="Standard" TagType="Base" DataType="TIMER" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Move and home watchdog]]>
-</Description>
-</Tag>
-<Tag Name="DnAxis_Reset_TMR" Class="Standard" TagType="Base" DataType="TIMER" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Alarm reset pulse]]>
-</Description>
-</Tag>
-<Tag Name="DnAxis_ONS" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[One-shot storage for R100_AxisControl]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Cfg_PosBand" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[In-position band in 0.01mm (50 = 0.50mm)]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[50]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="50"/>
-</Data>
-</Tag>
-<Tag Name="Cfg_MoveTimeout" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Move and home watchdog in ms]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[15000]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="15000"/>
-</Data>
-</Tag>
-<Tag Name="Cfg_JogFast" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[0 = SCON jog speed 1, 1 = SCON jog speed 2]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Mode" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Manual mode selected. Auto sequence releases the axis]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Position_Entry" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Height the operator types in, 0.01mm]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Layer_Entry" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Layer number for the go-to-layer helper]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Target_Position" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Height that has been armed and is about to be run]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Set_PB" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Momentary. Range-checks the entry and arms the move]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Go_PB" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Momentary. Confirms and runs the armed move]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_GoToLayer_PB" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Momentary. Fills Man_Position_Entry from Man_Layer_Entry]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_JogUp_PB" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Maintained while held. Jog up]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_JogDn_PB" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Maintained while held. Jog down]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Home_PB" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Momentary. Home the axis]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Stop_PB" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Maintained. Pauses the drive and blocks new commands]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Reset_PB" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Momentary. Resets the drive alarm and the soft faults]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Permit" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Manual commands are allowed right now]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Jog_Permit" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Jogging is allowed right now]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Move_Armed" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[A valid height is armed and waiting for the Go confirmation]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Move_Active" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[The armed move has been started and has not confirmed yet]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Move_Confirmed" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[The last manual move reached its target. Cleared by the next Set]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Rejected" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[The entered height was outside the travel limits and was not armed]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_Move_Cmd" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[One-scan move request handed to the axis]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_JogUp" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Jog-up request handed to the axis, soft-limited]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_JogDn" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Jog-down request handed to the axis, soft-limited]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Man_ONS" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[One-shot storage for the manual routine]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Auto_Target_Position" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Height the auto sequence wants, 0.01mm]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Auto_Move_Cmd" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[One-scan move request from the auto sequence]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Auto_Layer_Last" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[Layer the axis was last sent to. A change requests a move]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="Auto_ONS" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[One-shot storage for the auto routine]]>
-</Description>
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
 </Tags>
 <Routines>
 <Routine Name="R000_Main" Type="RLL">
 <Description>
-<![CDATA[Main. Calls everything in scan order.]]>
+<![CDATA[Main.]]>
 </Description>
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[JSR(R100_AxisControl,0);]]>
-</Text>
-</Rung>
-<Rung Number="1" Type="N">
-<Text>
-<![CDATA[JSR(R200_Manual,0);]]>
-</Text>
-</Rung>
-<Rung Number="2" Type="N">
-<Text>
-<![CDATA[JSR(R300_AutoSequence,0);]]>
-</Text>
-</Rung>
-<Rung Number="3" Type="N">
-<Text>
-<![CDATA[JSR(R400_TrayData,0);]]>
-</Text>
-</Rung>
-<Rung Number="4" Type="N">
-<Text>
-<![CDATA[JSR(R900_Alarms,0);]]>
+<![CDATA[JSR(R100_Axis,0);]]>
 </Text>
 </Rung>
 </RLLContent>
 </Routine>
-<Routine Name="R100_AxisControl" Type="RLL">
+<Routine Name="R100_Axis" Type="RLL">
 <Description>
-<![CDATA[The only routine that talks to the actuator. Read it top to bottom.]]>
+<![CDATA[The whole axis. Six rungs.]]>
 </Description>
 <RLLContent>
 <Rung Number="0" Type="N">
 <Comment>
-<![CDATA[=====================================================================
- DOWN STACKER AXIS
-
- The three SCON_* instructions are IAI's own Add-On Instructions,
- imported unmodified from the vendor files. They do exactly three
- things and nothing else:
-
-   SCON_Status      unpacks the drive input image into readable tags
-   SCON_Operations  writes servo on, pause, jog, reset, brake release
-   SCON_Moves       writes home and the positioning move, and owns the
-                    START (DSTR) handshake -- it latches START, loads
-                    the move data, and drops START once the drive
-                    acknowledges by clearing POSITION COMPLETE
-
- Everything else below is plain ladder in this program. No custom AOI.
-
- THE STEP SEQUENCER  --  DnAxis_Step is the tag to watch
-
-    0  initialising
-   10  not ready: no servo, not homed, drive alarm, or E-stop
-   20  idle, ready and holding position
-   30  move: range-check the target and load it
-   35  move: hand the move to SCON_Moves (one scan)
-   40  move: waiting for the drive to accept it
-   50  move: running, waiting for POSITION COMPLETE
-   60  move: arrival confirmed (one scan)
-   70  home: hand the home request to SCON_Moves
-   80  home: waiting for HOME COMPLETE
-   90  jogging
-
- Two rules make this safe, and both matter if you edit it:
-
-   1. Every command tag is written by exactly ONE rung, and that rung
-      names the step that owns it. No duplicate destructive bits.
-   2. The transition rungs are in DESCENDING step order. That is what
-      limits the sequencer to one step per scan -- in ascending order a
-      move would run 30-35-40 in a single scan and the start pulse
-      would never reach the instruction.
- =====================================================================
- ---------------------------------------------------------------------
- 1. Read the drive, then unpack it with the vendor status instruction.
-    Everything below reads the DnAxis_ status tags, never the module tag.
+<![CDATA[---------------------------------------------------------------------
+ 1. Read the drive, and unpack it into the DnAxis_ status tags.
  ---------------------------------------------------------------------]]>
 </Comment>
 <Text>
@@ -17887,8 +17336,8 @@
 <Comment>
 <![CDATA[---------------------------------------------------------------------
  2. Servo permissive and the motor power contactor (CR615).
-    Unlocking the doors drops the servo, so with the doors unlocked
-    nothing moves no matter what is pressed on the faceplate.
+    Unlocking the doors drops the servo, so nothing can move with the
+    doors open. This is the existing machine interlock, kept as it was.
  ---------------------------------------------------------------------]]>
 </Comment>
 <Text>
@@ -17898,622 +17347,30 @@
 <Rung Number="3" Type="N">
 <Comment>
 <![CDATA[---------------------------------------------------------------------
- 3. Motion parameters and timer presets, refreshed every scan so an HMI
-    edit takes effect on the next move without a download.
-    SCON_Moves latches these into the drive on the start pulse.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[[MOV(Cfg_MoveTimeout,DnAxis_Move_TMR.PRE) ,MOV(200,DnAxis_Reset_TMR.PRE) ];]]>
-</Text>
-</Rung>
-<Rung Number="4" Type="N">
-<Comment>
-<![CDATA[Jog speed select (JVEL). SCON_Operations does not expose this bit, so
- it is written straight to the output image -- the vendor instruction
- does not touch it, so there is no conflict. Jog speeds themselves come
- from the drive's own parameters.]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Cfg_JogFast)OTE(DwnStack_Outputs.Jog_Parameter_Select);]]>
-</Text>
-</Rung>
-<Rung Number="5" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 4. Pause, and the alarm reset pulse. RES is pulsed for 200ms and only
-    while the drive is actually alarmed, so holding the HMI reset
-    button cannot sit on the bit.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Man_Stop_PB)OTE(DnAxis_Cmd_Pause);]]>
-</Text>
-</Rung>
-<Rung Number="6" Type="N">
-<Text>
-<![CDATA[[XIC(FaultReset) ,XIC(Man_Reset_PB) ]OTE(DnAxis_Reset_Req);]]>
-</Text>
-</Rung>
-<Rung Number="7" Type="N">
-<Text>
-<![CDATA[XIC(DnAxis_Reset_Req)XIC(DnAxis_AlarmActive) TON(DnAxis_Reset_TMR,?,?)XIO(DnAxis_Reset_TMR.DN)OTE(DnAxis_Cmd_Reset);]]>
-</Text>
-</Rung>
-<Rung Number="8" Type="N">
-<Text>
-<![CDATA[XIC(DnAxis_Reset_Req)[OTU(DnAxis_Fault_Timeout) ,OTU(DnAxis_Fault_Range) ];]]>
-</Text>
-</Rung>
-<Rung Number="9" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 5. Who owns the axis: manual or the auto sequence. One or the other,
-    never both. This is the single arbitration point in the program.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Man_Mode)MOV(Man_Target_Position,DnAxis_Set_Position);]]>
-</Text>
-</Rung>
-<Rung Number="10" Type="N">
-<Text>
-<![CDATA[XIO(Man_Mode)MOV(Auto_Target_Position,DnAxis_Set_Position);]]>
-</Text>
-</Rung>
-<Rung Number="11" Type="N">
-<Comment>
-<![CDATA[Both sources are one-scan pulses produced by R200/R300 on the previous
- scan, so no edge detection is needed here.]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(Man_Mode) XIC(Man_Move_Cmd) ,XIO(Man_Mode) XIC(Auto_Move_Cmd) ]OTE(DnAxis_Move_Req);]]>
-</Text>
-</Rung>
-<Rung Number="12" Type="N">
-<Text>
-<![CDATA[XIC(Man_Mode)XIC(Man_Home_PB)ONS(DnAxis_ONS.0)OTE(DnAxis_Home_Req);]]>
-</Text>
-</Rung>
-<Rung Number="13" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 6. Derived status. The rest of the program reads these.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(DnAxis_AlarmActive) ,XIC(DnAxis_Fault_Timeout) ]OTE(DnAxis_Fault);]]>
-</Text>
-</Rung>
-<Rung Number="14" Type="N">
-<Text>
-<![CDATA[XIC(DnAxis_DriveReady)XIC(DnAxis_ServoOn)XIC(DnAxis_HomeComplete) XIO(DnAxis_EStop)XIO(DnAxis_Fault)OTE(DnAxis_Ready);]]>
-</Text>
-</Rung>
-<Rung Number="15" Type="N">
-<Comment>
-<![CDATA[Motion is allowed. Every command rung is gated on this, so a fault
- drops the command bits in the same scan it appears.]]>
-</Comment>
-<Text>
-<![CDATA[XIC(DnAxis_ServoOn)XIO(DnAxis_AlarmActive)XIO(DnAxis_EStop) XIO(DnAxis_Fault_Timeout)OTE(DnAxis_Motion_OK);]]>
-</Text>
-</Rung>
-<Rung Number="16" Type="N">
-<Text>
-<![CDATA[GEQ(DnAxis_Step,30)LEQ(DnAxis_Step,90)OTE(DnAxis_Busy);]]>
-</Text>
-</Rung>
-<Rung Number="17" Type="N">
-<Comment>
-<![CDATA[In position: the drive's own POSITION COMPLETE while idle, or the
- confirmed arrival at step 60. This is the move confirmation.]]>
-</Comment>
-<Text>
-<![CDATA[[EQU(DnAxis_Step,20) XIC(DnAxis_PositionComplete) XIO(DnAxis_Moving) ,EQU(DnAxis_Step,60) ]OTE(DnAxis_InPosition);]]>
-</Text>
-</Rung>
-<Rung Number="18" Type="N">
-<Comment>
-<![CDATA[Step 60 lasts exactly one scan, so this is a one-scan done pulse.]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,60)OTE(DnAxis_MoveDone);]]>
-</Text>
-</Rung>
-<Rung Number="19" Type="N">
-<Text>
-<![CDATA[EQU(DnAxis_Step,90)OTE(DnAxis_Jogging);]]>
-</Text>
-</Rung>
-<Rung Number="20" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 7. Commands into the vendor instructions. ONE rung each -- do not add
-    a second writer.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIC(DnAxis_Motion_OK)EQU(DnAxis_Step,35)OTE(DnAxis_Cmd_StartMove);]]>
-</Text>
-</Rung>
-<Rung Number="21" Type="N">
-<Text>
-<![CDATA[XIC(DnAxis_Motion_OK)EQU(DnAxis_Step,70)OTE(DnAxis_Cmd_Home);]]>
-</Text>
-</Rung>
-<Rung Number="22" Type="N">
-<Comment>
-<![CDATA[JOG DIRECTION -- CHECK ON COMMISSIONING. This assumes extend (JOG+)
- raises the stacker, i.e. increasing position is up, which matches the
- layer arithmetic. If it is reversed, swap these two rungs.]]>
-</Comment>
-<Text>
-<![CDATA[XIC(DnAxis_Motion_OK)EQU(DnAxis_Step,90)XIC(Man_JogUp)XIO(Man_JogDn) OTE(DnAxis_Cmd_JogFwd);]]>
-</Text>
-</Rung>
-<Rung Number="23" Type="N">
-<Text>
-<![CDATA[XIC(DnAxis_Motion_OK)EQU(DnAxis_Step,90)XIC(Man_JogDn)XIO(Man_JogUp) OTE(DnAxis_Cmd_JogRev);]]>
-</Text>
-</Rung>
-<Rung Number="24" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 8. Step transitions, in DESCENDING order -- see the note at the top.
- ---------------------------------------------------------------------
- 90 -> 20  both buttons released, both pressed, or stop]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,90) [XIO(Man_JogUp) XIO(Man_JogDn) ,XIC(Man_JogUp) XIC(Man_JogDn) ,XIC(Man_Stop_PB) ]MOV(20,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="25" Type="N">
-<Comment>
-<![CDATA[80 -> 20  homing finished]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,80)XIC(DnAxis_HomeComplete)XIO(DnAxis_Homing)MOV(20,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="26" Type="N">
-<Comment>
-<![CDATA[70 -> 80  drive has started homing]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,70)XIC(DnAxis_Homing)MOV(80,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="27" Type="N">
-<Comment>
-<![CDATA[60 -> 20  arrival already reported, go back to idle]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,60)MOV(20,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="28" Type="N">
-<Comment>
-<![CDATA[50 -> 60  POSITION COMPLETE: the move is confirmed]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,50)XIC(DnAxis_PositionComplete)XIO(DnAxis_Moving)MOV(60,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="29" Type="N">
-<Comment>
-<![CDATA[40 -> 50  the drive has accepted the move]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,40) [XIC(DnAxis_Moving) ,XIO(DnAxis_PositionComplete) ]MOV(50,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="30" Type="N">
-<Comment>
-<![CDATA[35 -> 40  the start pulse has been handed to SCON_Moves]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,35)MOV(40,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="31" Type="N">
-<Comment>
-<![CDATA[30 -> 35  target in range: load it and go
- 30 -> 20  target refused: flag it and stay put. The old program simply
-           dropped an out-of-range target with no indication.]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,30) [GEQ(DnAxis_Set_Position,Cfg_DwnStack_LowMax_POS) LEQ(DnAxis_Set_Position,Cfg_DwnStack_HighMax_POS) [MOV(DnAxis_Set_Position,DnAxis_Target) ,OTU(DnAxis_Fault_Range) ,MOV(35,DnAxis_Step) ] ,[LES(DnAxis_Set_Position,Cfg_DwnStack_LowMax_POS) ,GRT(DnAxis_Set_Position,Cfg_DwnStack_HighMax_POS) ] [OTL(DnAxis_Fault_Range) ,MOV(20,DnAxis_Step) ] ];]]>
-</Text>
-</Rung>
-<Rung Number="32" Type="N">
-<Comment>
-<![CDATA[20 -> 30 move, 20 -> 70 home, 20 -> 90 jog]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,20)XIO(Man_Stop_PB) [XIC(DnAxis_Move_Req) MOV(30,DnAxis_Step) ,XIC(DnAxis_Home_Req) MOV(70,DnAxis_Step) ,[XIC(Man_JogUp) XIO(Man_JogDn) ,XIC(Man_JogDn) XIO(Man_JogUp) ] MOV(90,DnAxis_Step) ];]]>
-</Text>
-</Rung>
-<Rung Number="33" Type="N">
-<Comment>
-<![CDATA[10 -> 20 ready, or 10 -> 70 if homing was asked for]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,10)XIC(DnAxis_ServoOn)XIO(DnAxis_AlarmActive)XIO(DnAxis_EStop) [XIC(DnAxis_HomeComplete) MOV(20,DnAxis_Step) ,XIO(DnAxis_HomeComplete) XIC(DnAxis_Home_Req) MOV(70,DnAxis_Step) ];]]>
-</Text>
-</Rung>
-<Rung Number="34" Type="N">
-<Comment>
-<![CDATA[0 -> 10  first scan]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DnAxis_Step,0)MOV(10,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="35" Type="N">
-<Comment>
-<![CDATA[Anything outside the defined steps restarts the sequencer.]]>
-</Comment>
-<Text>
-<![CDATA[[LES(DnAxis_Step,0) ,GRT(DnAxis_Step,90) ]MOV(0,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="36" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 9. Abort. Runs after the transitions so it always wins: an alarm, an
-    E-stop or the servo dropping mid-move sends the sequencer back to
-    NOT READY. The command bits are already off via DnAxis_Motion_OK.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[GEQ(DnAxis_Step,30)XIO(DnAxis_Motion_OK)MOV(10,DnAxis_Step);]]>
-</Text>
-</Rung>
-<Rung Number="37" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 10. Move and home watchdog. If the drive never confirms, this faults
-     instead of hanging. The old program had no such check.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[[GEQ(DnAxis_Step,35) LEQ(DnAxis_Step,50) ,GEQ(DnAxis_Step,70) LEQ(DnAxis_Step,80) ]TON(DnAxis_Move_TMR,?,?);]]>
-</Text>
-</Rung>
-<Rung Number="38" Type="N">
-<Text>
-<![CDATA[XIC(DnAxis_Move_TMR.DN)OTL(DnAxis_Fault_Timeout);]]>
-</Text>
-</Rung>
-<Rung Number="39" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 11. Hand the commands to the vendor instructions, then write the drive.
+ 3. Hand the commands to IAI's instructions.
+
+    Pulse DnAxis_Cmd_StartMove to run a move to DnAxis_Target.
+    DnAxis_Cmd_JogFwd / DnAxis_Cmd_JogRev jog while held.
+    DnAxis_Cmd_Home homes on a rising edge.
  ---------------------------------------------------------------------]]>
 </Comment>
 <Text>
 <![CDATA[SCON_Operations(DnAxis_Ops,DnAxis_Cmd_ServoOn,DnAxis_Cmd_Pause,DnAxis_Cmd_Inch,DnAxis_Cmd_JogFwd,DnAxis_Cmd_JogRev,DnAxis_Cmd_Reset,DnAxis_Cmd_BrakeRelease,DwnStack_Outputs);]]>
 </Text>
 </Rung>
-<Rung Number="40" Type="N">
+<Rung Number="4" Type="N">
 <Text>
-<![CDATA[SCON_Moves(DnAxis_Mov,DnAxis_Cmd_Home,DnAxis_Cmd_StartMove,DnAxis_Target,DwnStack_Target_Speed,DwnStack_Output_Acceleration,DwnStack_Output_Deceleration,Cfg_PosBand,DnAxis_Increment_Select,DnAxis_Push_Select,DnAxis_Push_Direction,DnAxis_Push_Percent,DnAxis_Load_Threshold,DnAxis_PZone_Upper,DnAxis_PZone_Lower,DwnStack_Inputs,DwnStack_Outputs);]]>
+<![CDATA[SCON_Moves(DnAxis_Mov,DnAxis_Cmd_Home,DnAxis_Cmd_StartMove,DnAxis_Target,DwnStack_Target_Speed,DwnStack_Output_Acceleration,DwnStack_Output_Deceleration,DnAxis_Band,DnAxis_Increment_Select,DnAxis_Push_Select,DnAxis_Push_Direction,DnAxis_Push_Percent,DnAxis_Load_Threshold,DnAxis_PZone_Upper,DnAxis_PZone_Lower,DwnStack_Inputs,DwnStack_Outputs);]]>
 </Text>
 </Rung>
-<Rung Number="41" Type="N">
+<Rung Number="5" Type="N">
+<Comment>
+<![CDATA[---------------------------------------------------------------------
+ 4. Write the drive.
+ ---------------------------------------------------------------------]]>
+</Comment>
 <Text>
 <![CDATA[CPS(DwnStack_Outputs,IAI_DwnStacker:O,1);]]>
-</Text>
-</Rung>
-<Rung Number="42" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 12. Keep the existing controller-scoped target tag in step, so HMI
-     screens already pointing at it keep reading correctly.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[MOV(DnAxis_Target,DwnStack_Target_Position);]]>
-</Text>
-</Rung>
-<Rung Number="43" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- 13. Drive communications fault.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[GSV(Module,IAI_DwnStacker,FaultCode,HARDWARE_FAULTS[2])NEQ(HARDWARE_FAULTS[2],0) OTL(DwnStack_Com_Fault);]]>
-</Text>
-</Rung>
-<Rung Number="44" Type="N">
-<Text>
-<![CDATA[XIC(Reset_Hold_TMR.DN)[OTU(DwnStack_Com_Fault) ,OTU(DwnStack_Jam) ];]]>
-</Text>
-</Rung>
-</RLLContent>
-</Routine>
-<Routine Name="R200_Manual" Type="RLL">
-<Description>
-<![CDATA[Manual height control: set, confirm, go. Plus jog.]]>
-</Description>
-<RLLContent>
-<Rung Number="0" Type="N">
-<Comment>
-<![CDATA[=====================================================================
- Identical to the up stacker faceplate:
-   type a height (or a layer, then GO TO LAYER) -> SET -> GO
-   Man_Move_Confirmed comes on when the drive confirms arrival.
- =====================================================================]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Man_Mode)XIC(DnAxis_Ready)XIO(DnAxis_Busy)XIO(Man_Stop_PB) OTE(Man_Permit);]]>
-</Text>
-</Rung>
-<Rung Number="1" Type="N">
-<Text>
-<![CDATA[XIC(Man_Mode)XIC(DnAxis_Ready)XIO(Man_Move_Active)XIO(Man_Stop_PB) OTE(Man_Jog_Permit);]]>
-</Text>
-</Rung>
-<Rung Number="2" Type="N">
-<Comment>
-<![CDATA[GO TO LAYER helper -- same arithmetic as the auto sequence.]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Man_Permit)XIC(Man_GoToLayer_PB)ONS(Man_ONS.2) GEQ(Man_Layer_Entry,0)LEQ(Man_Layer_Entry,Cfg_Layer_Max) CPT(Man_Position_Entry,Cfg_DwnStack_HighMax_POS-(Man_Layer_Entry*Cfg_DwnStack_TrayHeight));]]>
-</Text>
-</Rung>
-<Rung Number="3" Type="N">
-<Comment>
-<![CDATA[SET -- range-check and arm.]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Man_Permit)XIC(Man_Set_PB)ONS(Man_ONS.0) [GEQ(Man_Position_Entry,Cfg_DwnStack_LowMax_POS) LEQ(Man_Position_Entry,Cfg_DwnStack_HighMax_POS) MOV(Man_Position_Entry,Man_Target_Position) [OTL(Man_Move_Armed) ,OTU(Man_Rejected) ,OTU(Man_Move_Confirmed) ] ,[LES(Man_Position_Entry,Cfg_DwnStack_LowMax_POS) ,GRT(Man_Position_Entry,Cfg_DwnStack_HighMax_POS) ] [OTL(Man_Rejected) ,OTU(Man_Move_Armed) ] ];]]>
-</Text>
-</Rung>
-<Rung Number="4" Type="N">
-<Comment>
-<![CDATA[GO -- confirm and run.]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Man_Permit)XIC(Man_Move_Armed)XIC(Man_Go_PB)ONS(Man_ONS.1) OTE(Man_Move_Cmd);]]>
-</Text>
-</Rung>
-<Rung Number="5" Type="N">
-<Comment>
-<![CDATA[Track the move through to its confirmation.]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(Man_Move_Cmd) [OTL(Man_Move_Active) ,OTU(Man_Move_Armed) ] ,XIC(Man_Move_Active) XIC(DnAxis_MoveDone) [OTU(Man_Move_Active) ,OTL(Man_Move_Confirmed) ] ,XIC(DnAxis_Fault) [OTU(Man_Move_Active) ,OTU(Man_Move_Armed) ] ];]]>
-</Text>
-</Rung>
-<Rung Number="6" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- JOG, soft-limited.
- DIRECTION CHECK ON COMMISSIONING -- see the up stacker note.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Man_Jog_Permit)XIC(Man_JogUp_PB)XIO(Man_JogDn_PB) LES(DnAxis_Position,Cfg_DwnStack_HighMax_POS)OTE(Man_JogUp);]]>
-</Text>
-</Rung>
-<Rung Number="7" Type="N">
-<Text>
-<![CDATA[XIC(Man_Jog_Permit)XIC(Man_JogDn_PB)XIO(Man_JogUp_PB) GRT(DnAxis_Position,Cfg_DwnStack_LowMax_POS)OTE(Man_JogDn);]]>
-</Text>
-</Rung>
-</RLLContent>
-</Routine>
-<Routine Name="R300_AutoSequence" Type="RLL">
-<Description>
-<![CDATA[Layer height and the auto move request.]]>
-</Description>
-<RLLContent>
-<Rung Number="0" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- Door open: park at the load position and reset the layer pointer.
- The original moved a literal 13; that is Cfg_Layer_Max + 1.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Door_Open_Request)XIO(Man_Mode)ONS(Auto_ONS.0) [MOV(Cfg_DwnStack_LowMax_POS,Auto_Target_Position) ,ADD(Cfg_Layer_Max,1,DwnStack_Layer_Current) ];]]>
-</Text>
-</Rung>
-<Rung Number="1" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- Height for the current layer.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIO(Door_Open_Request)XIO(Man_Mode) CPT(Auto_Target_Position,Cfg_DwnStack_HighMax_POS-(DwnStack_Layer_Current*Cfg_DwnStack_TrayHeight));]]>
-</Text>
-</Rung>
-<Rung Number="2" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- Request a move whenever the layer pointer changes.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIO(Man_Mode)XIO(DnAxis_Busy)XIO(DnAxis_Fault) NEQ(DwnStack_Layer_Current,Auto_Layer_Last)ONS(Auto_ONS.1) [MOV(DwnStack_Layer_Current,Auto_Layer_Last) ,OTE(Auto_Move_Cmd) ];]]>
-</Text>
-</Rung>
-<Rung Number="3" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- Ask the up stacker station to trigger the camera once both axes are
- confirmed stopped. The camera looks at both trays in one shot, which
- is why the trigger request lives here but the camera lives there.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIO(Upstack_Complete)XIO(UStoR_ReqToMoveLayer)XIO(Door_Open_Request) XIC(DnAxis_InPosition)XIO(DnAxis_Busy)XIO(UpStack_Inputs.Moving) ONS(Auto_ONS.6)OTL(Trigger_Cognex);]]>
-</Text>
-</Rung>
-<Rung Number="4" Type="N">
-<Comment>
-<![CDATA[An empty down stack has no open location to offer.]]>
-</Comment>
-<Text>
-<![CDATA[EQU(DwnStack_Layer_Current,0)OTU(DStoR_OpenLocation);]]>
-</Text>
-</Rung>
-<Rung Number="5" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- Counting permission.
-
- CHANGED BEHAVIOUR, deliberately: the original allowed the count to
- advance on "not moving and not starting", which is also true in the
- scan before a move begins. It now requires a confirmed in-position.
-
- The original also carried an empty branch, [XIO(DwnStack_Jam) ,],
- which shorted the jam interlock out entirely -- the empty leg was
- always true. The jam interlock is in series now, as intended.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIC(DnAxis_InPosition)XIO(DnAxis_Busy)XIO(DwnStack_Jam) XIO(DwnStack_Complete)XIO(DwnStack_Full_Layer)XIO(DStoR_OpenLocation) NEQ(DwnStack_Layer_Current,0) OTE(DwnStack_Count_Permission);]]>
-</Text>
-</Rung>
-<Rung Number="6" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- Walk the tray: next hole, next row, then flag the layer full.
-
- The original had a second branch here, gated by AFI, that would have
- set DwnStack_Complete and requested the doors. AFI makes a branch
- permanently false, so it never ran -- down-stack completion is driven
- by the up stacker's Upstack_Complete instead. The dead branch is gone.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIC(DwnStack_Count_Permission) [ADD(DwnStack_Column_Current,1,DwnStack_Column_Current) LEQ(DwnStack_Column_Current,Cfg_Column_Max) OTL(DStoR_OpenLocation) ,GRT(DwnStack_Column_Current,Cfg_Column_Max) [ADD(DwnStack_Row_Current,1,DwnStack_Row_Current) LEQ(DwnStack_Row_Current,Cfg_Row_Max) MOV(0,DwnStack_Column_Current) ,GRT(DwnStack_Row_Current,Cfg_Row_Max) LEQ(DwnStack_Layer_Current,Cfg_Layer_Max) OTL(DwnStack_Full_Layer) ] ];]]>
-</Text>
-</Rung>
-<Rung Number="7" Type="N">
-<Comment>
-<![CDATA[---------------------------------------------------------------------
- Robot has slid a tray over: next layer up, and reset the pointers.
- ---------------------------------------------------------------------]]>
-</Comment>
-<Text>
-<![CDATA[XIC(RtoUS_LayerMovedConfirm)ONS(Auto_ONS.2) [ADD(DwnStack_Layer_Current,1,DwnStack_Layer_Current) ,MOV(1,DwnStack_Row_Current) ,MOV(0,DwnStack_Column_Current) ,OTU(DStoR_OpenLocation) ,OTU(DwnStack_Full_Layer) ];]]>
-</Text>
-</Rung>
-</RLLContent>
-</Routine>
-<Routine Name="R400_TrayData" Type="RLL">
-<Description>
-<![CDATA[Robot place handshake.]]>
-</Description>
-<RLLContent>
-<Rung Number="0" Type="N">
-<Comment>
-<![CDATA[Hand the robot the open location.]]>
-</Comment>
-<Text>
-<![CDATA[XIC(DStoR_OpenLocation) [MOV(DwnStack_Row_Current,DStoR_PickRowNumber) ,MOV(DwnStack_Column_Current,DStoR_PickColumnNumber) ,MOV(RtoDS_PlaceSeqNumber,Downstack_Layer[DwnStack_Layer_Current].Row[DwnStack_Row_Current].Column[DwnStack_Column_Current].Seq_Num) ];]]>
-</Text>
-</Rung>
-<Rung Number="1" Type="N">
-<Comment>
-<![CDATA[Robot has placed: record it in the tray, or mark it dropped in the
- chute if that is where it went.]]>
-</Comment>
-<Text>
-<![CDATA[XIC(RtoDS_PlacedConfirm)ONS(Auto_ONS.4) [XIO(DStoR_DropInShoot) [MOV(5,Data_Item[UStoR_PickSeqNumber].Status) ,COP(Data_Item[RtoDS_PlaceSeqNumber],Downstack_Layer[DwnStack_Layer_Current].Row[DwnStack_Row_Current].Column[DwnStack_Column_Current],1) ] OTU(DStoR_OpenLocation) ,XIC(DStoR_DropInShoot) MOV(6,Data_Item[UStoR_PickSeqNumber].Status) OTU(DStoR_DropInShoot) ];]]>
-</Text>
-</Rung>
-</RLLContent>
-</Routine>
-<Routine Name="R900_Alarms" Type="RLL">
-<Description>
-<![CDATA[Station alarms.]]>
-</Description>
-<RLLContent>
-<Rung Number="0" Type="N">
-<Comment>
-<![CDATA[=====================================================================
- Replaces 64 rungs of PlaceHolderBit boilerplate that could never fire.
- =====================================================================
- Fault 0 -- drive alarm. Code is on DnAxis_AlarmCode.]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(DnAxis_AlarmActive) ,XIO(FaultReset) XIC(Station600DownStacker._Fault[0]) ] OTE(Station600DownStacker._Fault[0]);]]>
-</Text>
-</Rung>
-<Rung Number="1" Type="N">
-<Comment>
-<![CDATA[Fault 1 -- the axis did not confirm arrival inside the move timeout.]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(DnAxis_Fault_Timeout) ,XIO(FaultReset) XIC(Station600DownStacker._Fault[1]) ] OTE(Station600DownStacker._Fault[1]);]]>
-</Text>
-</Rung>
-<Rung Number="2" Type="N">
-<Comment>
-<![CDATA[Fault 2 -- drive communications.]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(DwnStack_Com_Fault) ,XIO(FaultReset) XIC(Station600DownStacker._Fault[2]) ] OTE(Station600DownStacker._Fault[2]);]]>
-</Text>
-</Rung>
-<Rung Number="3" Type="N">
-<Comment>
-<![CDATA[Fault 4 -- tray not seen where one was expected.]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(DwnStack_Jam) ,XIO(FaultReset) XIC(Station600DownStacker._Fault[4]) ] OTE(Station600DownStacker._Fault[4]);]]>
-</Text>
-</Rung>
-<Rung Number="4" Type="N">
-<Comment>
-<![CDATA[Fault 5 -- drive E-stop.]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(DnAxis_EStop) ,XIO(FaultReset) XIC(Station600DownStacker._Fault[5]) ] OTE(Station600DownStacker._Fault[5]);]]>
-</Text>
-</Rung>
-<Rung Number="5" Type="N">
-<Comment>
-<![CDATA[Warning 0 -- a commanded height was refused as out of range.]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(DnAxis_Fault_Range) ,XIO(FaultReset) XIC(Station600DownStacker._Warning[0]) ] OTE(Station600DownStacker._Warning[0]);]]>
-</Text>
-</Rung>
-<Rung Number="6" Type="N">
-<Comment>
-<![CDATA[Warning 1 -- the axis is not homed.]]>
-</Comment>
-<Text>
-<![CDATA[[XIO(DnAxis_HomeComplete) XIC(DnAxis_ServoOn) ,XIO(FaultReset) XIC(Station600DownStacker._Warning[1]) ] OTE(Station600DownStacker._Warning[1]);]]>
-</Text>
-</Rung>
-<Rung Number="7" Type="N">
-<Comment>
-<![CDATA[Warning 2 -- manual mode is selected, so the auto sequence is parked.]]>
-</Comment>
-<Text>
-<![CDATA[XIC(Man_Mode)OTE(Station600DownStacker._Warning[2]);]]>
-</Text>
-</Rung>
-<Rung Number="8" Type="N">
-<Comment>
-<![CDATA[Roll-up bits.]]>
-</Comment>
-<Text>
-<![CDATA[[XIC(Station600DownStacker._Fault[0]) ,XIC(Station600DownStacker._Fault[1]) ,XIC(Station600DownStacker._Fault[2]) ,XIC(Station600DownStacker._Fault[4]) ,XIC(Station600DownStacker._Fault[5]) ] OTE(Station600DownStacker._Active_Fault);]]>
-</Text>
-</Rung>
-<Rung Number="9" Type="N">
-<Text>
-<![CDATA[[XIC(Station600DownStacker._Warning[0]) ,XIC(Station600DownStacker._Warning[1]) ,XIC(Station600DownStacker._Warning[2]) ] OTE(Station600DownStacker._Active_Warning);]]>
 </Text>
 </Rung>
 </RLLContent>

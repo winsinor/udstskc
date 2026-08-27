@@ -2,133 +2,58 @@
 #
 # name , datatype , dimensions , default , description
 #
-# Everything the refactor adds lives at program scope so importing the
-# program creates it.  Tags that already exist at controller scope
-# (Cfg_UpStack_*, UpStack_Inputs/Outputs, Upstack_Layer_Current, the robot
-# handshake, Door_Open_Request, ...) are referenced, not redefined, so the
-# existing HMI and the robot interface keep working unchanged.
-#
-# HMI path for these:  Program:Program050000_Station200_UpStacker.<name>
+# Nearly all of these exist because IAI's instructions require an
+# argument for every parameter. The only ones you touch to move the
+# axis are UpAxis_Target and UpAxis_Cmd_StartMove.
 
-# ---- IAI vendor instruction backing tags -----------------------------
+# ---- IAI instruction backing tags ---------------------------------
 UpAxis_Sts , SCON_Status     , , , SCON_Status backing tag
 UpAxis_Ops , SCON_Operations , , , SCON_Operations backing tag
 UpAxis_Mov , SCON_Moves      , , , SCON_Moves backing tag
 
-# ---- status, unpacked by SCON_Status ---------------------------------
-UpAxis_Position          , DINT , , 0 , Actual position in 0.01mm
-UpAxis_Speed             , DINT , , 0 , Actual speed in 0.01mm/s
-UpAxis_AlarmActive       , BOOL , , 0 , Drive alarm active (ALM)
-UpAxis_AlarmCode         , INT  , , 0 , Drive alarm code
-UpAxis_BatteryAlarm      , BOOL , , 0 , Battery alarm (BALM)
-UpAxis_CommandCurrent    , DINT , , 0 , Command current
-UpAxis_HomeComplete      , BOOL , , 0 , Home complete (HEND)
-UpAxis_Homing            , BOOL , , 0 , Homing in progress (GHMS)
-UpAxis_EStop             , BOOL , , 0 , Drive E-stop (EMGS)
-UpAxis_InPushZone        , BOOL , , 0 , In push zone (PUSHS)
-UpAxis_InPZone           , BOOL , , 0 , In PZONE
-UpAxis_InZone1           , BOOL , , 0 , In zone 1 (ZONE1)
-UpAxis_InZone2           , BOOL , , 0 , In zone 2 (ZONE2)
-UpAxis_LoadReached       , BOOL , , 0 , Load output reached (LOAD)
-UpAxis_DriveManualMode   , BOOL , , 0 , Drive is in manual mode (RMDS). Not the HMI Man_Mode
-UpAxis_Moving            , BOOL , , 0 , Moving (MOVE)
-UpAxis_PositionComplete  , BOOL , , 0 , Position complete (PEND). The arrival flag
-UpAxis_PushFailed        , BOOL , , 0 , Push failed (PSFL)
-UpAxis_DriveReady        , BOOL , , 0 , Drive ready (RDY)
-UpAxis_ServoOn           , BOOL , , 0 , Servo is on (SV)
-UpAxis_TorqueReached     , BOOL , , 0 , Torque level reached (TRQS)
-UpAxis_TotalMoveCount    , DINT , , 0 , Total moving count
-UpAxis_TotalMoveDistance , DINT , , 0 , Total moving distance
+# ---- status, filled in by SCON_Status -----------------------------
+UpAxis_Position            , DINT , , 0 , Actual position, 0.01mm
+UpAxis_Speed               , DINT , , 0 , Actual speed, 0.01mm/s
+UpAxis_AlarmActive         , BOOL , , 0 , Drive alarm active (ALM)
+UpAxis_AlarmCode           , INT  , , 0 , Drive alarm code
+UpAxis_BatteryAlarm        , BOOL , , 0 , Battery alarm (BALM)
+UpAxis_CommandCurrent      , DINT , , 0 , Command current
+UpAxis_HomeComplete        , BOOL , , 0 , Home complete (HEND)
+UpAxis_Homing              , BOOL , , 0 , Homing in progress (GHMS)
+UpAxis_EStop               , BOOL , , 0 , Drive E-stop (EMGS)
+UpAxis_InPushZone          , BOOL , , 0 , In push zone (PUSHS)
+UpAxis_InPZone             , BOOL , , 0 , In PZONE
+UpAxis_InZone1             , BOOL , , 0 , In zone 1 (ZONE1)
+UpAxis_InZone2             , BOOL , , 0 , In zone 2 (ZONE2)
+UpAxis_LoadReached         , BOOL , , 0 , Load output reached
+UpAxis_DriveManualMode     , BOOL , , 0 , Drive in manual mode (RMDS)
+UpAxis_Moving              , BOOL , , 0 , Moving (MOVE)
+UpAxis_PositionComplete    , BOOL , , 0 , Position complete (PEND). This is the arrival confirmation
+UpAxis_PushFailed          , BOOL , , 0 , Push failed (PSFL)
+UpAxis_DriveReady          , BOOL , , 0 , Drive ready (RDY)
+UpAxis_ServoOn             , BOOL , , 0 , Servo is on (SV)
+UpAxis_TorqueReached       , BOOL , , 0 , Torque level reached (TRQS)
+UpAxis_TotalMoveCount      , DINT , , 0 , Total moving count
+UpAxis_TotalMoveDistance   , DINT , , 0 , Total moving distance
 
-# ---- commands into SCON_Operations and SCON_Moves --------------------
-UpAxis_Cmd_ServoOn       , BOOL , , 0 , Servo enable, into SCON_Operations
-UpAxis_Cmd_Pause         , BOOL , , 0 , Pause (STP), into SCON_Operations
-UpAxis_Cmd_Inch          , BOOL , , 0 , Inch select (JISL). Left off: continuous jog
-UpAxis_Cmd_JogFwd        , BOOL , , 0 , Jog forward (JOG+), into SCON_Operations
-UpAxis_Cmd_JogRev        , BOOL , , 0 , Jog reverse (JOG-), into SCON_Operations
-UpAxis_Cmd_Reset         , BOOL , , 0 , Alarm reset pulse, into SCON_Operations
-UpAxis_Cmd_BrakeRelease  , BOOL , , 0 , Brake release (BKRL). Left off
-UpAxis_Cmd_Home          , BOOL , , 0 , Home request, into SCON_Moves
-UpAxis_Cmd_StartMove     , BOOL , , 0 , Move start pulse, into SCON_Moves
-UpAxis_Target            , DINT , , 0 , Target position handed to SCON_Moves, 0.01mm
+# ---- commands into SCON_Operations --------------------------------
+UpAxis_Cmd_ServoOn         , BOOL , , 0 , Servo enable
+UpAxis_Cmd_Pause           , BOOL , , 0 , Pause the drive (STP)
+UpAxis_Cmd_Inch            , BOOL , , 0 , Inch select (JISL). Leave off for continuous jog
+UpAxis_Cmd_JogFwd          , BOOL , , 0 , Jog forward (JOG+), runs while held
+UpAxis_Cmd_JogRev          , BOOL , , 0 , Jog reverse (JOG-), runs while held
+UpAxis_Cmd_Reset           , BOOL , , 0 , Alarm reset (RES)
+UpAxis_Cmd_BrakeRelease    , BOOL , , 0 , Brake release (BKRL)
 
-# ---- SCON_Moves options this machine does not use --------------------
-UpAxis_Increment_Select  , BOOL , , 0 , Relative move select (INC). Off: absolute moves
-UpAxis_Push_Select       , BOOL , , 0 , Push mode select. Off: positioning only
-UpAxis_Push_Direction    , BOOL , , 0 , Push direction. Unused
-UpAxis_Push_Percent      , INT  , , 0 , Push force percent. Unused
-UpAxis_Load_Threshold    , INT  , , 0 , Load threshold percent. Unused
-UpAxis_PZone_Upper       , DINT , , 0 , PZONE upper limit. Unused
-UpAxis_PZone_Lower       , DINT , , 0 , PZONE lower limit. Unused
-
-# ---- the step sequencer ----------------------------------------------
-UpAxis_Step         , DINT  , , 0 , Sequencer step. See the header of R100_AxisControl
-UpAxis_Set_Position , DINT  , , 0 , Height requested by whichever mode owns the axis
-UpAxis_Move_Req     , BOOL  , , 0 , One-scan move request
-UpAxis_Home_Req     , BOOL  , , 0 , One-scan home request
-UpAxis_Reset_Req    , BOOL  , , 0 , Reset requested from the HMI or the machine reset
-UpAxis_Motion_OK    , BOOL  , , 0 , Servo on, no alarm, no E-stop, no timeout
-UpAxis_Ready        , BOOL  , , 0 , Ready to accept a command
-UpAxis_Busy         , BOOL  , , 0 , A move, home or jog is in progress
-UpAxis_InPosition   , BOOL  , , 0 , Arrival confirmed by POSITION COMPLETE
-UpAxis_MoveDone     , BOOL  , , 0 , One-scan pulse when a commanded move completes
-UpAxis_Jogging      , BOOL  , , 0 , Jogging
-UpAxis_Fault        , BOOL  , , 0 , Drive alarm or move timeout
-UpAxis_Fault_Timeout, BOOL  , , 0 , Move or home did not confirm inside Cfg_MoveTimeout
-UpAxis_Fault_Range  , BOOL  , , 0 , Last target was outside the travel limits and was refused
-UpAxis_Move_TMR     , TIMER , , , Move and home watchdog
-UpAxis_Reset_TMR    , TIMER , , , Alarm reset pulse
-UpAxis_ONS          , DINT  , , 0 , One-shot storage for R100_AxisControl
-
-
-# ---- axis configuration ----------------------------------------------
-Cfg_PosBand     , DINT , , 50    , In-position band in 0.01mm (50 = 0.50mm)
-Cfg_MoveTimeout , DINT , , 15000 , Move and home watchdog in ms
-Cfg_JogFast     , BOOL , , 0     , 0 = SCON jog speed 1, 1 = SCON jog speed 2
-Cfg_TrayScoreMin, DINT , , 50    , Cognex tray-present score below which a jam is declared
-
-# ---- manual control (the operator faceplate) -------------------------
-Man_Mode           , BOOL , , 0 , Manual mode selected. Auto sequence releases the axis
-Man_Position_Entry , DINT , , 0 , Height the operator types in, 0.01mm
-Man_Layer_Entry    , DINT , , 0 , Layer number for the go-to-layer helper
-Man_Target_Position, DINT , , 0 , Height that has been armed and is about to be run
-Man_Set_PB         , BOOL , , 0 , Momentary. Range-checks the entry and arms the move
-Man_Go_PB          , BOOL , , 0 , Momentary. Confirms and runs the armed move
-Man_GoToLayer_PB   , BOOL , , 0 , Momentary. Fills Man_Position_Entry from Man_Layer_Entry
-Man_JogUp_PB       , BOOL , , 0 , Maintained while held. Jog up
-Man_JogDn_PB       , BOOL , , 0 , Maintained while held. Jog down
-Man_Home_PB        , BOOL , , 0 , Momentary. Home the axis
-Man_Stop_PB        , BOOL , , 0 , Maintained. Pauses the drive and blocks new commands
-Man_Reset_PB       , BOOL , , 0 , Momentary. Resets the drive alarm and the soft faults
-
-Man_Permit         , BOOL , , 0 , Manual commands are allowed right now
-Man_Jog_Permit     , BOOL , , 0 , Jogging is allowed right now
-Man_Move_Armed     , BOOL , , 0 , A valid height is armed and waiting for the Go confirmation
-Man_Move_Active    , BOOL , , 0 , The armed move has been started and has not confirmed yet
-Man_Move_Confirmed , BOOL , , 0 , The last manual move reached its target. Cleared by the next Set
-Man_Rejected       , BOOL , , 0 , The entered height was outside the travel limits and was not armed
-Man_Move_Cmd       , BOOL , , 0 , One-scan move request handed to the axis
-Man_JogUp          , BOOL , , 0 , Jog-up request handed to the axis, soft-limited
-Man_JogDn          , BOOL , , 0 , Jog-down request handed to the axis, soft-limited
-Man_ONS            , DINT , , 0 , One-shot storage for the manual routine
-
-# ---- auto sequence ----------------------------------------------------
-Auto_Target_Position , DINT , , 0 , Height the auto sequence wants, 0.01mm
-Auto_Move_Cmd        , BOOL , , 0 , One-scan move request from the auto sequence
-Auto_Layer_Last      , DINT , , 0 , Layer the axis was last sent to. A change requests a move
-Auto_ONS             , DINT , , 0 , One-shot storage for the auto routine
-
-# ---- Cognex result map ------------------------------------------------
-# Index (row * Cfg_Cognex_RowStride) + column -> the IS3800
-# InspectionResults index holding the X of that hole.  Y is X+1, angle is
-# X+2, and the second inspection is +12.
-#
-# A flat array rather than a 2-D one: this is the exact array encoding
-# Studio 5000 emits for HARDWARE_FAULTS in the original export, so there is
-# no question about how it imports.
-# This array replaces the eight hard-coded MOVs in the original rung 6.
-# To go from an 8-hole tray to a 12-hole tray, set Cfg_Row_Max/Cfg_Column_Max
-# and fill in the extra offsets here -- no logic changes.
-Cfg_Cognex_Offset    , DINT , 35 , 0 , Cognex InspectionResults index per tray hole, indexed (row * Cfg_Cognex_RowStride) + column
-Cfg_Cognex_RowStride , DINT , , 7 , Row stride into Cfg_Cognex_Offset. Must be > Cfg_Column_Max
-Cognex_Offset_Index  , DINT , , 0 , Computed index into Cfg_Cognex_Offset for the hole being filled
+# ---- commands into SCON_Moves -------------------------------------
+UpAxis_Cmd_Home            , BOOL , , 0  , Rising edge homes the axis
+UpAxis_Cmd_StartMove       , BOOL , , 0  , Rising edge runs a move to Target. This is the go command
+UpAxis_Target              , DINT , , 0  , Where to go, 0.01mm. Set this before pulsing Cmd_StartMove
+UpAxis_Band                , DINT , , 50 , In-position band, 0.01mm
+UpAxis_Increment_Select    , BOOL , , 0  , Relative move (INC). Off = absolute moves
+UpAxis_Push_Select         , BOOL , , 0  , Push mode. Off = positioning only
+UpAxis_Push_Direction      , BOOL , , 0  , Push direction. Unused
+UpAxis_Push_Percent        , INT  , , 0  , Push force percent. Unused
+UpAxis_Load_Threshold      , INT  , , 0  , Load threshold percent. Unused
+UpAxis_PZone_Upper         , DINT , , 0  , PZONE upper limit. Unused
+UpAxis_PZone_Lower         , DINT , , 0  , PZONE lower limit. Unused

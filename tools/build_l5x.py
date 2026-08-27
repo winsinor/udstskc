@@ -110,7 +110,7 @@ def vendor_aoi_context():
 # program tags
 # ---------------------------------------------------------------------------
 
-def build_tags(tags_csv, cognex_defaults=None):
+def build_tags(tags_csv):
     out = ["<Tags>"]
     for row in read_csv_rows(tags_csv, 5):
         name, dtype, dims, default, desc = row
@@ -129,24 +129,7 @@ def build_tags(tags_csv, cognex_defaults=None):
         out.append("<Tag %s>" % " ".join(attrs))
         out.append(description(desc).rstrip("\n"))
 
-        if dims and name == "Cfg_Cognex_Offset":
-            # Flat array, indexed (row * COGNEX_ROW_STRIDE) + column. Encoded
-            # exactly the way Studio 5000 encodes HARDWARE_FAULTS in the
-            # original export.
-            length = int(dims)
-            values = {r * COGNEX_ROW_STRIDE + c: v
-                      for (r, c), v in (cognex_defaults or {}).items()}
-            flat = [str(values.get(i, 0)) for i in range(length)]
-            out.append('<Data Format="L5K">\n%s\n</Data>'
-                       % cdata("[" + ",".join(flat) + "]"))
-            out.append('<Data Format="Decorated">')
-            out.append('<Array DataType="DINT" Dimensions="%d" Radix="Decimal">'
-                       % length)
-            for i, v in enumerate(flat):
-                out.append('<Element Index="[%d]" Value="%s"/>' % (i, v))
-            out.append("</Array>")
-            out.append("</Data>")
-        elif not dims and dtype in ("BOOL", "SINT", "INT", "DINT") and default != "":
+        if not dims and dtype in ("BOOL", "SINT", "INT", "DINT") and default != "":
             out.append('<Data Format="L5K">\n%s\n</Data>' % cdata(default))
             out.append('<Data Format="Decorated">')
             out.append('<DataValue DataType="%s" Radix="Decimal" Value="%s"/>'
@@ -224,26 +207,15 @@ def build_routines(rungs_path):
 # whole program files
 # ---------------------------------------------------------------------------
 
-# The Cognex InspectionResults index of the X value for each tray hole,
-# as [row, column].  These are the eight offsets the original program had
-# hard-coded in its rung 6; a 2 row x 4 column tray.
-COGNEX_ROW_STRIDE = 7
-
-COGNEX_OFFSETS = {
-    (1, 1): 0,  (1, 2): 6,  (1, 3): 24, (1, 4): 30,
-    (2, 1): 48, (2, 2): 54, (2, 3): 72, (2, 4): 78,
-}
-
-
 def build_program_file(original_name, program_name, tags_csv, rungs_file,
-                       extra_context_tags=(), cognex_defaults=None):
+                       extra_context_tags=()):
     original = open(os.path.join(SOURCE, original_name), encoding="utf-8-sig").read()
 
     program = "\n".join([
         '<Program Use="Target" Name="%s" TestEdits="false" '
         'MainRoutineName="R000_Main" Disabled="false" Class="Standard" '
         'UseAsFolder="false">' % program_name,
-        build_tags(tags_csv, cognex_defaults),
+        build_tags(tags_csv),
         build_routines(rungs_file),
         '</Program>',
     ])
@@ -291,21 +263,6 @@ def build_program_file(original_name, program_name, tags_csv, rungs_file,
 
 # ---------------------------------------------------------------------------
 
-def strip_routines(text):
-    """Replace the target program's routines with a single empty main.
-
-    Used to build the diagnostic file: same program, same tags, no ladder.
-    """
-    empty = ('<Routines>\n<Routine Name="R000_Main" Type="RLL">\n<RLLContent>\n'
-             '<Rung Number="0" Type="N">\n<Text>\n' + cdata("NOP();") +
-             '\n</Text>\n</Rung>\n</RLLContent>\n</Routine>\n</Routines>')
-    out, n = re.subn(r"<Routines>.*?</Routines>", lambda _: empty, text,
-                     count=1, flags=re.S)
-    if n != 1:
-        sys.exit("could not strip routines for the diagnostic file")
-    return out
-
-
 def main():
     os.makedirs(EXPORT, exist_ok=True)
     written = []
@@ -335,24 +292,13 @@ def main():
         "Program050000_Station200_UpStacker_Program.L5X",
         "Program050000_Station200_UpStacker",
         os.path.join(SRC, "Station200_UpStacker.tags.csv"),
-        os.path.join(SRC, "Station200_UpStacker.rungs"),
-        cognex_defaults=COGNEX_OFFSETS))
+        os.path.join(SRC, "Station200_UpStacker.rungs")))
 
     write("Program090000_Station600_DownStacker.L5X", build_program_file(
         "Program090000_Station600_DownStacker_Program.L5X",
         "Program090000_Station600_DownStacker",
         os.path.join(SRC, "Station600_DownStacker.tags.csv"),
-        os.path.join(SRC, "Station600_DownStacker.rungs"),
-        extra_context_tags=("Cfg_Layer_Max",)))
-
-    # Diagnostic: tags and program structure only, no ladder.
-    diag = strip_routines(build_program_file(
-        "Program050000_Station200_UpStacker_Program.L5X",
-        "Program050000_Station200_UpStacker",
-        os.path.join(SRC, "Station200_UpStacker.tags.csv"),
-        os.path.join(SRC, "Station200_UpStacker.rungs"),
-        cognex_defaults=COGNEX_OFFSETS))
-    write("_diagnostic_UpStacker_TagsOnly.L5X", diag)
+        os.path.join(SRC, "Station600_DownStacker.rungs")))
 
     for filename, size in written:
         print("  %-46s %8d bytes" % (filename, size))
