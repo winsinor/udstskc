@@ -119,9 +119,16 @@ Auto_Layer_Last      , DINT , , 0 , Layer the axis was last sent to. A change re
 Auto_ONS             , DINT , , 0 , One-shot storage for the auto routine
 
 # ---- Cognex result map ------------------------------------------------
-# Index [row,column] -> the IS3800 InspectionResults index holding the X of
-# that hole.  Y is X+1, angle is X+2, and the second inspection is +12.
+# Index (row * Cfg_Cognex_RowStride) + column -> the IS3800
+# InspectionResults index holding the X of that hole.  Y is X+1, angle is
+# X+2, and the second inspection is +12.
+#
+# A flat array rather than a 2-D one: this is the exact array encoding
+# Studio 5000 emits for HARDWARE_FAULTS in the original export, so there is
+# no question about how it imports.
 # This array replaces the eight hard-coded MOVs in the original rung 6.
 # To go from an 8-hole tray to a 12-hole tray, set Cfg_Row_Max/Cfg_Column_Max
 # and fill in the extra offsets here -- no logic changes.
-Cfg_Cognex_Offset , DINT , 5 7 , 0 , Cognex InspectionResults index per tray hole, [row,column]
+Cfg_Cognex_Offset    , DINT , 35 , 0 , Cognex InspectionResults index per tray hole, indexed (row * Cfg_Cognex_RowStride) + column
+Cfg_Cognex_RowStride , DINT , , 7 , Row stride into Cfg_Cognex_Offset. Must be > Cfg_Column_Max
+Cognex_Offset_Index  , DINT , , 0 , Computed index into Cfg_Cognex_Offset for the hole being filled

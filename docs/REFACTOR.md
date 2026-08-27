@@ -294,6 +294,37 @@ instruction in from the toolbar. Nothing else in either program is affected.
 Import into a copy of the project, or an offline one, and verify before you
 download.
 
+## If the import throws a fatal error
+
+`Error 0x80042001 RxE_NOT_FOUND - Requested item could not be found` during a
+program import means Studio 5000 could not resolve something the file refers
+to. Work through this in order:
+
+1. **Restart Studio 5000.** The crash report showed it had been open for
+   1 day 19 hours. A long-running session is worth ruling out first, and
+   costs nothing.
+
+2. **Confirm the AOIs actually imported.** Look for `SCON_Status`,
+   `SCON_Operations` and `SCON_Moves` under Add-On Instructions in the
+   controller organiser. The programs call them and no longer carry their
+   definitions, so if they are not there the program import cannot resolve
+   the calls. Import `export/SCON_Moves_AOI.L5X` first if they are missing.
+
+3. **Import as a program, not as a project.** Right-click the task or program
+   folder and choose *Import Program*, then pick the file. Using *File → Open*
+   on a partial export makes Studio 5000 try to build a whole project from a
+   context that was never meant to be one.
+
+4. **Import `export/_diagnostic_UpStacker_TagsOnly.L5X`.** It is the same
+   program with the same tags and no ladder at all. It narrows the problem in
+   one step:
+   - it imports cleanly → the structure and the tags are fine, and the
+     problem is in a rung
+   - it fails the same way → the problem is structural, in the tags or the
+     program element, and nothing to do with the ladder
+
+   Delete the imported program afterwards either way; it does nothing.
+
 ## Import order
 
 1. `export/SCON_Moves_AOI.L5X` — one file, installs all three IAI

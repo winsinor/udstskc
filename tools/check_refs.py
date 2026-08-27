@@ -24,6 +24,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EXPORT = os.path.join(ROOT, "export")
+VENDOR_AOI_FILE = os.path.join(ROOT, "source", "iai", "SCON_Moves_AOI.L5X")
 
 # Instruction mnemonics that appear where an operand would otherwise be.
 INSTRUCTIONS = {
@@ -122,9 +123,14 @@ def check(path):
     scon = scon_members(root)
     udts = udt_members(root)
 
+    # The programs no longer embed the AOI definitions, so read the vendor
+    # file directly to validate the calls against them.
     aoi_params = {}
     aoi_required = {}
-    for aoi in root.iter("AddOnInstructionDefinition"):
+    aoi_roots = [root]
+    if os.path.exists(VENDOR_AOI_FILE):
+        aoi_roots.append(load(VENDOR_AOI_FILE))
+    for aoi in (a for rt in aoi_roots for a in rt.iter("AddOnInstructionDefinition")):
         aoi_params[aoi.get("Name")] = {
             p.get("Name") for p in aoi.iter("Parameter")}
         aoi_params[aoi.get("Name")] |= {

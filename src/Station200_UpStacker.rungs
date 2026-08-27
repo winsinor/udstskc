@@ -518,11 +518,15 @@ XIC(UpStack_Status_Fill)
 #
 # The original spelled this out as eight hard-coded MOVs (0, 6, 24, 30,
 # 48, 54, 72, 78) nested two levels deep, which is why the tray layout
-# was effectively frozen at 2 rows x 4 columns. It is a lookup now:
-# fill Cfg_Cognex_Offset[row,column] and the layout is data, not logic.
+# was effectively frozen at 2 rows x 4 columns. It is a lookup now: fill
+# Cfg_Cognex_Offset at (row * Cfg_Cognex_RowStride) + column and the tray
+# layout is data, not logic.
 # ---------------------------------------------------------------------
 XIC(New_Fill_Item)XIC(UpStack_Fill_Trays)
-MOV(Cfg_Cognex_Offset[UpStack_Row_Fill,UpStack_Column_Fill],Cognex_Control_X1);
+CPT(Cognex_Offset_Index,(UpStack_Row_Fill*Cfg_Cognex_RowStride)+UpStack_Column_Fill);
+
+XIC(New_Fill_Item)XIC(UpStack_Fill_Trays)
+MOV(Cfg_Cognex_Offset[Cognex_Offset_Index],Cognex_Control_X1);
 
 # ---------------------------------------------------------------------
 # Pull X, Y and angle for both inspections into the tray cell, and mark

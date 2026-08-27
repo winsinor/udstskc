@@ -38,6 +38,11 @@ docs/      ANALYSIS.md -- what the original did, and what was wrong with it
 2. `export/Program050000_Station200_UpStacker.L5X`
 3. `export/Program090000_Station600_DownStacker.L5X`
 
+If the import throws a fatal error, work through
+[this list](docs/REFACTOR.md#if-the-import-throws-a-fatal-error) —
+`export/_diagnostic_UpStacker_TagsOnly.L5X` isolates ladder problems from
+structural ones in a single import.
+
 ## Manual operation
 
 Type a height into `Man_Position_Entry` (0.01 mm), or a layer into
