@@ -252,11 +252,18 @@ def build_program_file(original_name, program_name, tags_csv, rungs_file,
     if n != 1:
         sys.exit("could not find the target <Program> in %s" % original_name)
 
-    # Declare the AOI so the program's dependency on it is explicit.
+    # Declare the AOIs so the program's dependency on them is explicit.
+    #
+    # Placement is not free choice: the L5X schema fixes the order of the
+    # children of <Controller> as
+    #     DataTypes, Modules, AddOnInstructionDefinitions, Tags, Programs
+    # so this block goes after </Modules>, not after </DataTypes>. Putting it
+    # in the wrong slot makes Studio 5000 reject the file with
+    # "Element <Modules> is in the wrong order."
     if "<AddOnInstructionDefinitions" not in new:
         aoi_block = ('<AddOnInstructionDefinitions Use="Context">\n%s\n'
                      '</AddOnInstructionDefinitions>\n' % vendor_aoi_context())
-        new, n = re.subn(r'(</DataTypes>\n)', lambda m: m.group(1) + aoi_block,
+        new, n = re.subn(r'(</Modules>\n)', lambda m: m.group(1) + aoi_block,
                          new, count=1)
         if n != 1:
             sys.exit("could not place the AOI context block in %s" % original_name)

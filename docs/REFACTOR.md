@@ -273,6 +273,15 @@ Checked by construction:
   Studio 5000 initialises them from the type definition rather than from a
   hand-built structure that could have a member wrong
 
+**Known-benign import messages.** Studio 5000 reports 12 warnings of the form
+"Attribute 'Required'/'Visible' may not be updated and will be ignored" against
+`EnableIn`/`EnableOut` on the three `SCON_*` instructions. Those attributes are
+declared in IAI's own AOI files; `EnableIn`/`EnableOut` are system-defined, so
+Studio 5000 ignores what the file says about them. It also reports
+"Collision: DataType Data_Item was overwritten" during preprocessing — the
+context copy of that data type comes from your own export, so it is identical
+to what is already in the project. Neither blocks the import.
+
 **The one thing that could not be verified offline:** the argument list of an
 AOI call. Logix passes the backing tag plus every `Required` parameter in
 declaration order, which is what is generated here. IAI's AOIs also declare an

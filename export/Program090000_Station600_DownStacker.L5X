@@ -450,6 +450,16 @@
 </Members>
 </DataType>
 </DataTypes>
+<Modules Use="Context">
+<Module Use="Reference" Name="IAI_DwnStacker">
+</Module>
+<Module Use="Reference" Name="Local">
+</Module>
+<Module Use="Reference" Name="PLC1602">
+</Module>
+<Module Use="Reference" Name="Station100_Robot">
+</Module>
+</Modules>
 <AddOnInstructionDefinitions Use="Context">
 <AddOnInstructionDefinition Use="Context" Name="SCON_Status" Class="Standard" Revision="2.0" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="true" CreatedDate="2014-10-23T20:31:36.954Z" CreatedBy="Not Available" EditedDate="2017-05-24T16:36:08.213Z" EditedBy="ATLANTA-E-PC\Atlanta Engineer"
  SoftwareRevision="v20.01">
@@ -1171,16 +1181,6 @@
 </Dependencies>
 </AddOnInstructionDefinition>
 </AddOnInstructionDefinitions>
-<Modules Use="Context">
-<Module Use="Reference" Name="IAI_DwnStacker">
-</Module>
-<Module Use="Reference" Name="Local">
-</Module>
-<Module Use="Reference" Name="PLC1602">
-</Module>
-<Module Use="Reference" Name="Station100_Robot">
-</Module>
-</Modules>
 <Tags Use="Context">
 <Tag Name="Cfg_Layer_Max" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">

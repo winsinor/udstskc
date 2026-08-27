@@ -43,8 +43,38 @@ ATOMIC_MEMBERS = {
 }
 
 
+# The L5X schema fixes the order of the children of <Controller>. Studio 5000
+# rejects a file whose children are out of order, naming only the element it
+# tripped over, so check it here instead.
+CONTROLLER_ORDER = [
+    "RedundancyInfo", "Security", "SafetyInfo", "DataTypes", "Modules",
+    "AddOnInstructionDefinitions", "Tags", "Programs", "Tasks",
+    "ParameterConnections", "CommPorts", "CST", "WallClockTime", "Trends",
+    "DataLogs", "TimeSynchronize", "EthernetPorts", "EthernetNetwork",
+]
+
+
 def load(path):
     return ET.parse(path).getroot()
+
+
+def check_element_order(path):
+    """Every <Controller> child must appear in schema order."""
+    problems = []
+    root = load(path)
+    for controller in root.iter("Controller"):
+        seen = []
+        for child in controller:
+            name = child.tag
+            if name not in CONTROLLER_ORDER:
+                continue
+            rank = CONTROLLER_ORDER.index(name)
+            if seen and rank < seen[-1][1]:
+                problems.append(
+                    "%s: <%s> comes after <%s> but the schema orders it before"
+                    % (os.path.basename(path), name, seen[-1][0]))
+            seen.append((name, rank))
+    return problems
 
 
 def scon_members(root):
@@ -221,7 +251,10 @@ def check(path):
 def main():
     problems = []
     for name in sorted(os.listdir(EXPORT)):
-        if name.endswith(".L5X") and name.startswith("Program"):
+        if not name.endswith(".L5X"):
+            continue
+        problems += check_element_order(os.path.join(EXPORT, name))
+        if name.startswith("Program"):
             problems += check(os.path.join(EXPORT, name))
 
     if problems:
