@@ -1,0 +1,2320 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.04" TargetName="Program040000_Station100_Robot" TargetType="Program" TargetClass="Standard" ContainsContext="true" Owner="KraussMaffei Group, KraussMaffei Group" ExportDate="Fri Sep 04 13:00:39 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Context" Name="RS_Rev35011_691904_NPE">
+<DataTypes Use="Context">
+<DataType Name="System_Tags" Family="NoFamily" Class="User">
+<Members>
+<Member Name="_Fault_Delay_Timer" DataType="TIMER" Dimension="32" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Activation delay timer for fault bit HMI alarm triggers]]>
+</Description>
+</Member>
+<Member Name="_Warning_Delay_Timer" DataType="TIMER" Dimension="32" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Activation delay timer for warning bit HMI alarm triggers]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZSystem_Tag2" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="_Active_Warning" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_Tag2" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[One or more warnings are active]]>
+</Description>
+</Member>
+<Member Name="_Active_Fault" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_Tag2" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[One or more faults are active]]>
+</Description>
+</Member>
+<Member Name="_ShutdownSystem_Fault" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_Tag2" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[One or more faults are active that require system to Stop/shutdown]]>
+</Description>
+</Member>
+<Member Name="_Fault" DataType="BOOL" Dimension="32" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="_Warning" DataType="BOOL" Dimension="32" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+</DataTypes>
+<Modules Use="Context">
+<Module Use="Reference" Name="Local">
+</Module>
+<Module Use="Reference" Name="PLC1102">
+</Module>
+<Module Use="Reference" Name="PLC1202">
+</Module>
+<Module Use="Reference" Name="PLC1302">
+</Module>
+<Module Use="Reference" Name="PLC1402">
+</Module>
+<Module Use="Reference" Name="PLC1602">
+</Module>
+<Module Use="Reference" Name="PLC1702">
+</Module>
+<Module Use="Reference" Name="Station100_Robot">
+</Module>
+</Modules>
+<Tags Use="Context">
+<Tag Name="CR408" TagType="Alias" Radix="Decimal" AliasFor="Local:4:O.Data.8" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR408, CUTTER SOLENOID #1, PLC1402 (Slot-4), O0408]]>
+</Description>
+</Tag>
+<Tag Name="CR409" TagType="Alias" Radix="Decimal" AliasFor="Local:4:O.Data.9" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR409, CUTTER SOLENOID #2, PLC1402 (Slot-4), O0409]]>
+</Description>
+</Tag>
+<Tag Name="CR700" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR700, VG524 Vacuum Gen 1 Supply Valve, ROBOT TOOL BOTTLE BLANK SUCTION CUP A SUCTION, PLC1702 (Slot-7), O0700]]>
+</Description>
+</Tag>
+<Tag Name="CR701" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR701, VG524 Vacuum Gen 1 Return Valve, ROBOT TOOL BOTTLE BLANK SUCTION CUP A BLOW OFF , PLC1702 (Slot-7), O0701]]>
+</Description>
+</Tag>
+<Tag Name="CR702" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR702, VG526 Vacuum Generator 2 Supply Valve, ROBOT TOOL BOTTLE BLANK SUCTION CUP B SUCTION, PLC1702 (Slot-7), O0702]]>
+</Description>
+</Tag>
+<Tag Name="CR703" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR703, VG526 Vacuum Generator 2 Return Valve, ROBOT TOOL BOTTLE BLANK SUCTION CUP B BLOW OFF , PLC1702 (Slot-7), O0703]]>
+</Description>
+</Tag>
+<Tag Name="CR704" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR704, VG528 Vacuum Gen 1 Supply Valve, ROBOT TOOL BOTTLE FINISHED SUCTION CUP A SUCTION, PLC1702 (Slot-7), O0704]]>
+</Description>
+</Tag>
+<Tag Name="CR705" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR705, VG528 Vacuum Gen 1 Return Valve, ROBOT TOOL BOTTLE FINISHED SUCTION CUP A BLOW OFF , PLC1702 (Slot-7), O0705]]>
+</Description>
+</Tag>
+<Tag Name="CR706" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR706, VG530 Vacuum Generator 2 Supply Valve, ROBOT TOOL BOTTLE FINISHED SUCTION CUP B SUCTION, PLC1702 (Slot-7), O0706]]>
+</Description>
+</Tag>
+<Tag Name="CR707" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR707, VG530 Vacuum Generator 2 Return Valve, ROBOT TOOL BOTTLE FINISHED SUCTION CUP B BLOW OFF , PLC1702 (Slot-7), O0707]]>
+</Description>
+</Tag>
+<Tag Name="CR708" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.8" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR708, SOL542A EOAT Close Gripper Valve, ROBOT TOOL BOTTLE FINISHED, PLC1702 (Slot-7), O0708]]>
+</Description>
+</Tag>
+<Tag Name="CR709" TagType="Alias" Radix="Decimal" AliasFor="Local:7:O.Data.9" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CR709, SOL542B EOAT Open Gripper Valve, ROBOT TOOL BOTTLE FINISHED, PLC1702 (Slot-7), O0709]]>
+</Description>
+</Tag>
+<Tag Name="CRM" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[CRM, IMM AND CELL SAFTEY HEALTHY, PLC1102 (Slot-1), I0102]]>
+</Description>
+</Tag>
+<Tag Name="DStoR_PickColumnNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[DStoR_PickColumnNumber, Down stacker To Robot, Column number on tray to place finished parts, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[1]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="1"/>
+</Data>
+</Tag>
+<Tag Name="DStoR_PickRowNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[DStoR_PickRowNumber, Down stacker To Robot, Row number on tray to place finished parts, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[1]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="1"/>
+</Data>
+</Tag>
+<Tag Name="EM67_ZA5" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZA5, IMM - ROBOT REJECT, PLC1202 (Slot-2), I0200]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZA6" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZA6, IMM - ROBOT MOLD POSITION CLOSED, PLC1202 (Slot-2), I0201]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZA7" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZA7, IMM - ROBOT MOLD POSITION OPEN, PLC1202 (Slot-2), I0202]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZA8" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZA8, IMM - ROBOT INTERMEDIATE MOLD POSITION OPEN, PLC1202 (Slot-2), I0203]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZB2" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZB2, IMM - ROBOT ROBOT OPERATION ENABLE, PLC1202 (Slot-2), I0204]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZB3" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZB3, IMM - ROBOT EJECTOR POSITION BACK, PLC1202 (Slot-2), I0205]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZB4" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZB4, IMM - ROBOT EJECTOR POSITION FORWARD, PLC1202 (Slot-2), I0206]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZB5" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZB5, IMM - ROBOT CORE PULLER 1 POSITION 1, PLC1202 (Slot-2), I0207]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZB6" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.8" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZB6, IMM - ROBOT CORE PULLER 1 POSITION 2, PLC1202 (Slot-2), I0208]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZB7" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.9" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZB7, IMM - ROBOT CORE PULLER 2 POSITION 1, PLC1202 (Slot-2), I0209]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZB8" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.10" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZB8, IMM - ROBOT CORE PULLER 2 POSITION 2, PLC1202 (Slot-2), I0210]]>
+</Description>
+</Tag>
+<Tag Name="EM67_ZC8" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.11" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM67_ZC8,  IMM - ROBOT PART INJECTED, PLC1202 (Slot-2), I0211]]>
+</Description>
+</Tag>
+<Tag Name="EM78_C7_C1" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.13" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM78_C7_C1, IMM - ROBOT DOOR OPEN ENABLE, PLC1202 (Slot-2), I0213]]>
+</Description>
+</Tag>
+<Tag Name="EM78_C9_C3" TagType="Alias" Radix="Decimal" AliasFor="Local:2:I.Data.12" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[EM78_C9_C3,  IMM - ROBOT INDICATION OF DOOR OPEN REQUEST, PLC1202 (Slot-2), I0212]]>
+</Description>
+</Tag>
+<Tag Name="FaultReset" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Fault reset from push button or HMI]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="IEM67_A3_C3" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_A3_C3, ROBOT - IMM I/F MOLD AREA FREE, PLC1602 (Slot-6), O0600]]>
+</Description>
+</Tag>
+<Tag Name="IEM67_A6" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_A6, ROBOT - IMM I/F MOLD CLOSURE ENABLE, PLC1602 (Slot-6), O0601]]>
+</Description>
+</Tag>
+<Tag Name="IEM67_A7" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_A7, ROBOT - IMM I/F FULL MODE OPENING ENABLE, PLC1602 (Slot-6), O0602]]>
+</Description>
+</Tag>
+<Tag Name="IEM67_B2" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_B2, ROBOT - IMM I/F ROBOT OPERATE, PLC1602 (Slot-6), O0603]]>
+</Description>
+</Tag>
+<Tag Name="IEM67_B3" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_B3, ROBOT - IMM I/F INJECTOR BACK ENABLE, PLC1602 (Slot-6), O0604]]>
+</Description>
+</Tag>
+<Tag Name="IEM67_B4" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_B4, ROBOT - IMM I/F INJECTOR FORWARD ENABLE, PLC1602 (Slot-6), O0605]]>
+</Description>
+</Tag>
+<Tag Name="IEM67_B5" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_B5, ROBOT - IMM I/F CORE PULLER 1 POS 1 ENABLE, PLC1602 (Slot-6), O0606]]>
+</Description>
+</Tag>
+<Tag Name="IEM67_B6" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_B6, ROBOT - IMM I/F CORE PULLER 1 POS 2 ENABLE, PLC1602 (Slot-6), O0607]]>
+</Description>
+</Tag>
+<Tag Name="IEM67_B7" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.8" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_B7, ROBOT - IMM I/F CORE PULLER 2 POS 1 ENABLE, PLC1602 (Slot-6), O0608]]>
+</Description>
+</Tag>
+<Tag Name="IEM67_B8" TagType="Alias" Radix="Decimal" AliasFor="Local:6:O.Data.9" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IEM67_B8, ROBOT - IMM I/F CORE PULLER 2 POS 2 ENABLE, PLC1602 (Slot-6), O0609]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_CorePL1Pos1" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[2].1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_CorePL1Pos1, Injection Molding Machine to Robot, IMM CORE PULLER 1 POSITION 1, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_CorePL1Pos2" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[2].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_CorePL1Pos2, Injection Molding Machine to Robot, IMM CORE PULLER 1 POSITION 2, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_CorePL2Pos1" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[2].3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_CorePL2Pos1, Injection Molding Machine to Robot, IMM CORE PULLER 2 POSITION 1, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_CorePL2Pos2" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[2].4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_CorePL2Pos2, Injection Molding Machine to Robot, IMM CORE PULLER 2 POSITION 2, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_DrOpenEnable" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[2].7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_DrOpenEnable, Injection Molding Machine to Robot, IMM DOOR OPEN ENABLE, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_EjectPosBck" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[1].7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_EjectPosBck, Injection Molding Machine to Robot, IMM EJECTOR POSITION BACK, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_EjectPosFrw" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[2].0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_EjectPosFrw, Injection Molding Machine to Robot, IMM EJECTOR POSITION FORWARD, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_InidicateDrReq" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[2].6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_InidicateDrReq, Injection Molding Machine to Robot,  IMM INDICATION OF DOOR OPEN REQUEST, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_MoldClosed" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[1].3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_MoldClosed, Injection Molding Machine to Robot, IMM MOLD POSITION CLOSED, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_MoldInterOpen" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[1].5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_MoldInterOpen, Injection Molding Machine to Robot, IMM INTERMEDIATE MOLD POSITION OPEN, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_MoldOpen" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[1].4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_MoldOpen, Injection Molding Machine to Robot, IMM MOLD POSITION OPEN, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_OpEnable" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[1].6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_OpEnable, Injection Molding Machine to Robot, IMM ROBOT OPERATION ENABLE, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_PartInjected" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[1].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_Rejected, Injection Molding Machine to Robot, IMM REJECT, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_PartRejected" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[2].5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_PartRejected, Injection Molding Machine to Robot,  IMM PART INJECTED, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_PlaceErrorEjBck" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[5].1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_PlaceErrorEjBck, Robot to Injection Molding Machine, Place failed Mold ejector not Backward, (Robot To PLC Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_PlaceErrorEjFrw" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[5].0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_PlaceErrorEjFrw, Robot to Injection Molding Machine, Place failed Mold ejector not forward, (Robot To PLC Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_PlaceErrorMoldOpn" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[5].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_PlaceErrorMoldOpn, Molding Machine to Robot Injection ,  Mold not open, (Robot To PLC Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="IMMtoR_PreEntrErrorEjBck" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[5].6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IMMtoR_PreEntrErrorEjBck, Injection Molding Machine to Robot Injection , Place failed Mold ejector not forward, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="Optix_RobotMoveEnable" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="PE307" TagType="Alias" Radix="Decimal" AliasFor="Local:3:I.Data.7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PE307, SPRUE BIN FULL, PLC1302 (Slot-3), I0307]]>
+</Description>
+</Tag>
+<Tag Name="PE307_Delay" Class="Standard" TagType="Base" DataType="TIMER" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[2205001,3000,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="3000"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="PlaceHolderBit" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="PLCtoR_BlankCupAVacOn" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[0].0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_BlankCupAVacOn, ROBOT TOOL BOTTLE BLANK TION CUP A VACUUM SENSOR , (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_BlankCupBVacOn" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[0].1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_BlankCupBVacOn, ROBOT TOOL BOTTLE BLANK TION CUP B VACUUM SENSOR , (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_ConfMess" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[4].7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_ConfMess, PLC to Robot , (PLC To Robot Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_DrawerFull" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[4].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_DrawerFull, PLC to Robot, drawer is full please unload, (PLC To Robot Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_DrawerInPos" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[4].3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_DrawerInPos, PLC to Robot, Drawer is in position, (PLC To Robot Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_DrivesOff" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[4].5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_DrivesOff, PLC to Robot , (PLC To Robot Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_DrivesOn" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[4].6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_DrivesOn, PLC to Robot , (PLC To Robot Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_ExtStart" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[5].0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_ExtStart, PLC to Robot , (PLC To Robot Ethernet IP Comms)
+
+]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_FinishCupAVacOn" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[0].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_FinishCupAVacOn, ROBOT TOOL BOTTLE FINISHED TION CUP A VACUUM SENSOR , (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_FinishCupBVacOn" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[0].3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_FinishCupBVacOn, ROBOT TOOL BOTTLE FINISHED TION CUP B VACUUM SENSOR , (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_MoveAccel" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_MoveAccel, PLC to Robot, accelaration value (10-100), (PLC To Robot Ethernet IP Comms)
+]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[100]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="100"/>
+</Data>
+</Tag>
+<Tag Name="PLCtoR_MoveEnable" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[4].4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_MoveEnable, Safe to move robot, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="PLCtoR_Start" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[3].4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PLCtoR_Start, PLC to Robot, start run, (PLC To Robot Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="PRX315" TagType="Alias" Radix="Decimal" AliasFor="Local:3:I.Data.15" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PRX315, BIN PRESENT PROX, PLC1302 (Slot-3), I0315]]>
+</Description>
+</Tag>
+<Tag Name="RobotCell_Error" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[4].5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RobotCell_Error, An error was trigger in the robot, may required reset button, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RobotEXTstartONS" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="RtoDS_PickErrorVG528" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[4].3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoDS_PickErrorVG528, Robot to Down Stacker, Pick failed Vacuum Sensor VG528, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoDS_PickErrorVG530" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[4].4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoDS_PickErrorVG530, Robot to Down Stacker, Pick failed Vacuum Sensor VG530, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoDS_PlaceSeqNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoDS_PlaceSeqNumber, Robot To Down Stacker, Sequence number to identify set of parts, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="RtoIMM_MoldAreaFree" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[2].1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_MoldAreaFree, Robot to Injection molding machine, mold area is free of the robot , (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_MoldCloseEnable" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[2].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_MoldCloseEnable, Robot to Injection molding machine, IMM can close the mold , (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_MoldCorePL1Pos1" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[2].7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_MoldCorePL1Pos1, Robot to Injection molding machine, IMM needs to move core puller 1 to position 1, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_MoldCorePL1Pos2" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[3].0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_MoldCorePL1Pos2, Robot to Injection molding machine, IMM needs to move core puller 1 to position 2, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_MoldCorePL2Pos1" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[3].1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_MoldCorePL2Pos1, Robot to Injection molding machine, IMM needs to move core puller 2 to position 1, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_MoldCorePL2Pos2" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[3].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_MoldCorePL2Pos2, Robot to Injection molding machine, IMM needs to move core puller 2 to position 2, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_MoldEjectBack" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[2].5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_MoldEjectBack, Robot to Injection molding machine, IMM needs to move ejector backward, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_MoldEjectFrw" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[2].6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_MoldEjectFrw, Robot to Injection molding machine, IMM needs to move ejector Forward, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_MoldOpenEnable" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[2].3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_MoldOpenEnable, Robot to Injection molding machine, IMM can Open the mold all the way , (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_PickErrorVG528" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[3].7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_PickErrorVG528, Robot toInjection Molding Machine, Pick failed Vacuum Sensor VG528, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_PickErrorVG530" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[4].0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_PickErrorVG530, Robot toInjection Molding Machine, Pick failed Vacuum Sensor VG530, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_PlaceErrorVG524" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[4].6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_PlaceErrorVG524, Robot to Injection Molding Machine, Place failed Vacuum Sensor VG524, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_PlaceErrorVG526" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[4].7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_PlaceErrorVG526, Robot to Injection Molding Machine, Place failed Vacuum Sensor VG526, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_RobotWithIMM" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[2].4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_RobotWithIMM, Robot to Injection molding machine, Robot is not in operation with the injection molding machine, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoIMM_SeqNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoIMM_SeqNumber, Robot To Injection Molding Machine, Sequence number to identify set of parts, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="RtoPLC_BlankCupABlow" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[0].3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_BlankCupABlow, VG524 Vacuum Gen 1 Return Valve, ROBOT TOOL BOTTLE BLANK TION CUP A BLOW OFF , (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_BlankCupAVac" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[0].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_BlankCupAVac, VG524 Vacuum Gen 1 Supply Valve, ROBOT TOOL BOTTLE BLANK TION CUP A TION, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_BlankCupBBlow" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[0].5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_BlankCupBBlow, VG526 Vacuum Generator 2 Return Valve, ROBOT TOOL BOTTLE BLANK TION CUP B BLOW OFF , (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_BlankCupBVac" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[0].4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_BlankCupBVac, VG526 Vacuum Generator 2 Supply Valve, ROBOT TOOL BOTTLE BLANK TION CUP B TION, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_DrawerIsFullWarn" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[7].0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_DrawerIsFullWarn, Robot to PLC, Reject drawer is full, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_DrawerIsOutFault" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[7].1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_DrawerIsOutFault, Robot to PLC, Reject drawer is not inserted, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_FinishCupABlow" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[0].7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_FinishCupABlow, VG528 Vacuum Gen 1 Return Valve, ROBOT TOOL BOTTLE FINISHED TION CUP A BLOW OFF , (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_FinishCupAVac" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[0].6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_FinishCupAVac, VG528 Vacuum Gen 1 Supply Valve, ROBOT TOOL BOTTLE FINISHED TION CUP A TION, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_FinishCupBBlow" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[1].1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_FinishCupBBlow, VG530 Vacuum Generator 2 Return Valve, ROBOT TOOL BOTTLE FINISHED TION CUP B BLOW OFF , (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_FinishCupBVac" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[1].0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_FinishCupBVac, VG530 Vacuum Generator 2 Supply Valve, ROBOT TOOL BOTTLE FINISHED TION CUP B TION, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_FinishGripClose" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[1].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_FinishGripClose, SOL542A EOAT Close Gripper Valve, ROBOT TOOL BOTTLE FINISHED, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_FinishGripOpen" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[1].3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_FinishGripOpen, SOL542B EOAT Open Gripper Valve, ROBOT TOOL BOTTLE FINISHED, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_InAuto" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[6].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_InAuto, Robot to PLC Auto mode, (Robot To PLC Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_PeriRdy" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[7].3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_PeriRdy, Robot to PLC, (Robot To PLC Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_SprueCut1" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[0].0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_SprueCut1, CUTTER SOLENOID #1, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_SprueCut2" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[0].1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_SprueCut2, CUTTER SOLENOID #2, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_Started" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[5].7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_Started, Robot to PLC, start run, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_StopMess" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[7].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_StopMess, Robot to PLC, (Robot To PLC Ethernet IP Comms)
+]]>
+</Description>
+</Tag>
+<Tag Name="RtoPLC_ToolBlnkSeqNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_ToolBlnkSeqNumber, Robot To PLC, End of arm tool (blank side) Sequence number to identify set of parts being held, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="RtoPLC_ToolFinSeqNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoPLC_ToolFinSeqNumber, Robot To PLC, End of arm tool (finished side) Last sequence number to identify set of parts being held , (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="RtoTT_PickErrorVG524" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[4].1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoTT_PickErrorVG524, Robot to Turn Table, Pick failed Vacuum Sensor VG524, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoTT_PickErrorVG526" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[4].2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoTT_PickErrorVG526, Robot to Turn Table, Pick failed Vacuum Sensor VG526, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoTT_PlaceSeqNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RtoTT_PlaceSeqNumber, Robot To Turn Table, Sequence number to identify set of parts, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="RtoUS_PickErrorVG524" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[3].5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RotoUS_PickErrorVG524, Robot to Up Stacker, Pick failed Vacuum Sensor VG524, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="RtoUS_PickErrorVG526" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:I.Data[3].6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[RotoUS_PickErrorVG526, Robot to Up Stacker, Pick failed Vacuum Sensor VG526, (Robot To PLC Ethernet IP Comms)]]>
+</Description>
+</Tag>
+<Tag Name="StartRobotCycle" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Starts the robot moving trays to destacker]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="StartRobotCycleRepeatCounter" Class="Standard" TagType="Base" DataType="COUNTER" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[0,6,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="COUNTER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="6"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="CU" DataType="BOOL" Value="0"/>
+<DataValueMember Name="CD" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="OV" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UN" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="StartRobotCycleRepeatTimer1" Class="Standard" TagType="Base" DataType="TIMER" Dimensions="2" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[3113736,2000,0],[3113736,500,0]]]]>
+</Data>
+<Data Format="Decorated">
+<Array DataType="TIMER" Dimensions="2">
+<Element Index="[0]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="2000"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[1]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="500"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+</Array>
+</Data>
+</Tag>
+<Tag Name="Station100Robot" Class="Standard" TagType="Base" DataType="System_Tags" Constant="false" ExternalAccess="Read/Write">
+<Comments>
+<Comment Operand="._FAULT[0]">
+<![CDATA[Robot to Up Stacker, Pick failed Vacuum Sensor VG524]]>
+</Comment>
+<Comment Operand="._FAULT[1]">
+<![CDATA[Robot to Up Stacker, Pick failed Vacuum Sensor VG526]]>
+</Comment>
+<Comment Operand="._FAULT[2]">
+<![CDATA[Robot to Injection Molding Machine, Pick failed Vacuum Sensor VG528]]>
+</Comment>
+<Comment Operand="._FAULT[3]">
+<![CDATA[Robot to Injection Molding Machine, Pick failed Vacuum Sensor VG530]]>
+</Comment>
+<Comment Operand="._FAULT[4]">
+<![CDATA[Robot to Turn Table, Pick failed Vacuum Sensor VG524]]>
+</Comment>
+<Comment Operand="._FAULT[5]">
+<![CDATA[Robot to Turn Table, Pick failed Vacuum Sensor VG526]]>
+</Comment>
+<Comment Operand="._FAULT[6]">
+<![CDATA[Robot to Down Stacker, Pick failed Vacuum Sensor VG528]]>
+</Comment>
+<Comment Operand="._FAULT[7]">
+<![CDATA[Robot to Down Stacker, Pick failed Vacuum Sensor VG530]]>
+</Comment>
+<Comment Operand="._FAULT[8]">
+<![CDATA[Robot to Injection Molding Machine, Place failed Vacuum Sensor VG524]]>
+</Comment>
+<Comment Operand="._FAULT[9]">
+<![CDATA[Robot to Injection Molding Machine, Place failed Vacuum Sensor VG526]]>
+</Comment>
+<Comment Operand="._FAULT[10]">
+<![CDATA[Robot to Injection Molding Machine, Place failed Mold ejector not forward]]>
+</Comment>
+<Comment Operand="._FAULT[11]">
+<![CDATA[Robot to Injection Molding Machine, Place failed Mold ejector not Backward]]>
+</Comment>
+<Comment Operand="._FAULT[12]">
+<![CDATA[Molding Machine to Robot Injection ,  Mold not open]]>
+</Comment>
+<Comment Operand="._FAULT[13]">
+<![CDATA[Injection Molding Machine to Robot Injection]]>
+</Comment>
+<Comment Operand="._FAULT[14]">
+<![CDATA[RtoPLC_DrawerIsOutFault, Robot to PLC, Reject drawer is not inserted,]]>
+</Comment>
+<Comment Operand="._WARNING[0]">
+<![CDATA[An error was trigger in the robot, may required reset button]]>
+</Comment>
+<Comment Operand="._WARNING[1]">
+<![CDATA[RtoPLC_DrawerIsFullWarn, Robot to PLC, Reject drawer is full,]]>
+</Comment>
+</Comments>
+<Data Format="L5K">
+<![CDATA[[[[1544272,0,0],[1544272,0,0],[2676298,0,0],[2676298,0,0],[1587169,0,0],[1587169,0,0],[0,0,0],[0,0,0],[1412961,0,0],[1412961,0,0],[2787568
+		,0,0],[0,0,0],[2016873,0,0],[2162960,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],[[530575
+		,0,0],[59941,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0
+		],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],0,[2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0
+		,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0],[2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0
+		,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0]]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="System_Tags">
+<ArrayMember Name="_Fault_Delay_Timer" DataType="TIMER" Dimensions="32">
+<Element Index="[0]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[1]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[2]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[3]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[4]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[5]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[6]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[7]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[8]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[9]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[10]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[11]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[12]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[13]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[14]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[15]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[16]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[17]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[18]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[19]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[20]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[21]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[22]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[23]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[24]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[25]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[26]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[27]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[28]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[29]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[30]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[31]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+</ArrayMember>
+<ArrayMember Name="_Warning_Delay_Timer" DataType="TIMER" Dimensions="32">
+<Element Index="[0]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[1]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[2]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[3]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[4]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[5]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[6]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[7]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[8]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[9]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[10]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[11]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[12]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[13]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[14]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[15]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[16]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[17]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[18]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[19]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[20]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[21]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[22]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[23]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[24]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[25]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[26]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[27]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[28]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[29]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[30]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+<Element Index="[31]">
+<Structure DataType="TIMER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+</Structure>
+</Element>
+</ArrayMember>
+<DataValueMember Name="_Active_Warning" DataType="BOOL" Value="0"/>
+<DataValueMember Name="_Active_Fault" DataType="BOOL" Value="0"/>
+<DataValueMember Name="_ShutdownSystem_Fault" DataType="BOOL" Value="0"/>
+<ArrayMember Name="_Fault" DataType="BOOL" Dimensions="32" Radix="Decimal">
+<Element Index="[0]" Value="0"/>
+<Element Index="[1]" Value="0"/>
+<Element Index="[2]" Value="0"/>
+<Element Index="[3]" Value="0"/>
+<Element Index="[4]" Value="0"/>
+<Element Index="[5]" Value="0"/>
+<Element Index="[6]" Value="0"/>
+<Element Index="[7]" Value="0"/>
+<Element Index="[8]" Value="0"/>
+<Element Index="[9]" Value="0"/>
+<Element Index="[10]" Value="0"/>
+<Element Index="[11]" Value="0"/>
+<Element Index="[12]" Value="0"/>
+<Element Index="[13]" Value="0"/>
+<Element Index="[14]" Value="0"/>
+<Element Index="[15]" Value="0"/>
+<Element Index="[16]" Value="0"/>
+<Element Index="[17]" Value="0"/>
+<Element Index="[18]" Value="0"/>
+<Element Index="[19]" Value="0"/>
+<Element Index="[20]" Value="0"/>
+<Element Index="[21]" Value="0"/>
+<Element Index="[22]" Value="0"/>
+<Element Index="[23]" Value="0"/>
+<Element Index="[24]" Value="0"/>
+<Element Index="[25]" Value="0"/>
+<Element Index="[26]" Value="0"/>
+<Element Index="[27]" Value="0"/>
+<Element Index="[28]" Value="0"/>
+<Element Index="[29]" Value="0"/>
+<Element Index="[30]" Value="0"/>
+<Element Index="[31]" Value="0"/>
+</ArrayMember>
+<ArrayMember Name="_Warning" DataType="BOOL" Dimensions="32" Radix="Decimal">
+<Element Index="[0]" Value="0"/>
+<Element Index="[1]" Value="0"/>
+<Element Index="[2]" Value="0"/>
+<Element Index="[3]" Value="0"/>
+<Element Index="[4]" Value="0"/>
+<Element Index="[5]" Value="0"/>
+<Element Index="[6]" Value="0"/>
+<Element Index="[7]" Value="0"/>
+<Element Index="[8]" Value="0"/>
+<Element Index="[9]" Value="0"/>
+<Element Index="[10]" Value="0"/>
+<Element Index="[11]" Value="0"/>
+<Element Index="[12]" Value="0"/>
+<Element Index="[13]" Value="0"/>
+<Element Index="[14]" Value="0"/>
+<Element Index="[15]" Value="0"/>
+<Element Index="[16]" Value="0"/>
+<Element Index="[17]" Value="0"/>
+<Element Index="[18]" Value="0"/>
+<Element Index="[19]" Value="0"/>
+<Element Index="[20]" Value="0"/>
+<Element Index="[21]" Value="0"/>
+<Element Index="[22]" Value="0"/>
+<Element Index="[23]" Value="0"/>
+<Element Index="[24]" Value="0"/>
+<Element Index="[25]" Value="0"/>
+<Element Index="[26]" Value="0"/>
+<Element Index="[27]" Value="0"/>
+<Element Index="[28]" Value="0"/>
+<Element Index="[29]" Value="0"/>
+<Element Index="[30]" Value="0"/>
+<Element Index="[31]" Value="0"/>
+</ArrayMember>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="TTtoR_PickSeqNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[TTtoR_PickSeqNumber, Turn Table To Robot, Sequence number to identify set of parts, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[62]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="62"/>
+</Data>
+</Tag>
+<Tag Name="Unlock_Doors" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="UStoR_PickColumnNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[UStoR_PickColumnNumber, Upstacker To Robot, Column number on tray to pick from, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[2]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="2"/>
+</Data>
+</Tag>
+<Tag Name="UStoR_PickRowNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[UStoR_PickRowNumber, Upstacker To Robot, Row number on tray to pick from, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[1]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="1"/>
+</Data>
+</Tag>
+<Tag Name="UStoR_PickSeqNumber" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[UStoR_PickSeqNumber, Upstacker To Robot, Sequence number to identify set of parts, (PLC To Robot Ethernet IP Comms)]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[79]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="79"/>
+</Data>
+</Tag>
+<Tag Name="VG524" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.12" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VG524, ROBOT TOOL BOTTLE BLANK SUCTION CUP A VACUUM SENSOR , PLC1102 (Slot-1), I0112]]>
+</Description>
+</Tag>
+<Tag Name="VG526" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.13" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VG526, ROBOT TOOL BOTTLE BLANK SUCTION CUP B VACUUM SENSOR , PLC1102 (Slot-1), I0113]]>
+</Description>
+</Tag>
+<Tag Name="VG528" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.14" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VG528, ROBOT TOOL BOTTLE FINISHED SUCTION CUP A VACUUM SENSOR , PLC1102 (Slot-1), I0114]]>
+</Description>
+</Tag>
+<Tag Name="VG530" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.15" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VG530, ROBOT TOOL BOTTLE FINISHED SUCTION CUP B VACUUM SENSOR , PLC1102 (Slot-1), I0115]]>
+</Description>
+</Tag>
+</Tags>
+<Programs Use="Context">
+<Program Use="Target" Name="Program040000_Station100_Robot" TestEdits="false" MainRoutineName="Routine040100_Main" Disabled="false" Class="Standard" UseAsFolder="false">
+<Tags/>
+<Routines>
+<Routine Name="Routine040100_Main" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[JSR(Routine040300_InputStatus,0);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[JSR(Routine040400_Operation_Empty,0);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[JSR(Routine040600_Robot_Startup,0);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[JSR(Routine040700_OutputActions,0);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[JSR(Routine049999_Alarms,0);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Routine040300_InputStatus" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[COP(Station100_Robot:I.Data[32],RtoTT_PlaceSeqNumber,4);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[COP(Station100_Robot:I.Data[36],RtoDS_PlaceSeqNumber,4);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[COP(Station100_Robot:I.Data[40],RtoIMM_SeqNumber,4);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[COP(Station100_Robot:I.Data[44],RtoPLC_ToolBlnkSeqNumber,4);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[COP(Station100_Robot:I.Data[48],RtoPLC_ToolFinSeqNumber,4);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[COP(PLCtoR_MoveAccel,Station100_Robot:O.Data[56],4);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[XIC(VG524)OTE(PLCtoR_BlankCupAVacOn);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIC(VG526)OTE(PLCtoR_BlankCupBVacOn);]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Text>
+<![CDATA[XIC(VG528)OTE(PLCtoR_FinishCupAVacOn);]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Text>
+<![CDATA[XIC(VG530)OTE(PLCtoR_FinishCupBVacOn);]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Comment>
+<![CDATA[
+
+Robot to injectiojn molding machine EuroMap signals 
+
+]]>
+</Comment>
+<Text>
+<![CDATA[XIC(RtoIMM_MoldAreaFree)OTE(IEM67_A3_C3);]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Text>
+<![CDATA[XIC(RtoIMM_MoldCloseEnable)OTE(IEM67_A6);]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Text>
+<![CDATA[XIC(RtoIMM_MoldOpenEnable)OTE(IEM67_A7);]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Text>
+<![CDATA[XIC(RtoIMM_RobotWithIMM)OTE(IEM67_B2);]]>
+</Text>
+</Rung>
+<Rung Number="14" Type="N">
+<Text>
+<![CDATA[XIC(RtoIMM_MoldEjectBack)OTE(IEM67_B3);]]>
+</Text>
+</Rung>
+<Rung Number="15" Type="N">
+<Text>
+<![CDATA[XIC(RtoIMM_MoldEjectFrw)OTE(IEM67_B4);]]>
+</Text>
+</Rung>
+<Rung Number="16" Type="N">
+<Text>
+<![CDATA[XIC(RtoIMM_MoldCorePL1Pos1)OTE(IEM67_B5);]]>
+</Text>
+</Rung>
+<Rung Number="17" Type="N">
+<Text>
+<![CDATA[XIC(RtoIMM_MoldCorePL1Pos2)OTE(IEM67_B6);]]>
+</Text>
+</Rung>
+<Rung Number="18" Type="N">
+<Text>
+<![CDATA[XIC(RtoIMM_MoldCorePL2Pos1)OTE(IEM67_B7);]]>
+</Text>
+</Rung>
+<Rung Number="19" Type="N">
+<Text>
+<![CDATA[XIC(RtoIMM_MoldCorePL2Pos2)OTE(IEM67_B8);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Routine040400_Operation_Empty" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[NOP();]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Routine040600_Robot_Startup" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[[LES(PLCtoR_MoveAccel,10) MOV(10,PLCtoR_MoveAccel) ,GRT(PLCtoR_MoveAccel,100) MOV(100,PLCtoR_MoveAccel) ];]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(StartRobotCycle)[XIO(StartRobotCycleRepeatTimer1[1].DN) [TON(StartRobotCycleRepeatTimer1[0],?,?) ,XIC(StartRobotCycleRepeatTimer1[0].DN) [TON(StartRobotCycleRepeatTimer1[1],?,?) ,CTU(StartRobotCycleRepeatCounter,?,?) ,OTE(PLCtoR_Start) ] ] ,XIC(StartRobotCycleRepeatCounter.DN) RES(StartRobotCycleRepeatCounter) OTU(StartRobotCycle) ];]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_Started)OTU(PLCtoR_ExtStart);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(PLCtoR_MoveEnable)OTE(PLCtoR_DrivesOff);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_InAuto)XIO(RtoPLC_Started)XIC(PLCtoR_DrivesOff)XIC(PLCtoR_Start)ONS(RobotEXTstartONS.1)OTL(PLCtoR_DrivesOn)OTU(PLCtoR_ConfMess);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_InAuto)XIC(PLCtoR_DrivesOn)XIC(RtoPLC_PeriRdy)OTU(PLCtoR_DrivesOn);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[XIO(PLCtoR_Start)XIC(RtoPLC_InAuto)XIO(PLCtoR_DrivesOn)XIC(RtoPLC_PeriRdy)XIC(RtoPLC_StopMess)ONS(RobotEXTstartONS.2)OTL(PLCtoR_ConfMess);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_InAuto)XIC(RtoPLC_PeriRdy)XIO(RtoPLC_StopMess)[ONS(RobotEXTstartONS.3) OTU(PLCtoR_ConfMess) ,XIC(PLCtoR_Start) [ONS(RobotEXTstartONS.4) ,] OTL(PLCtoR_ExtStart) ];]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Routine040700_OutputActions" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[COP(UStoR_PickRowNumber,Station100_Robot:O.Data[32],4);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[COP(UStoR_PickColumnNumber,Station100_Robot:O.Data[36],4);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[COP(UStoR_PickSeqNumber,Station100_Robot:O.Data[40],4);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[COP(TTtoR_PickSeqNumber,Station100_Robot:O.Data[44],4);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[COP(DStoR_PickRowNumber,Station100_Robot:O.Data[48],4);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[COP(DStoR_PickColumnNumber,Station100_Robot:O.Data[52],4);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_SprueCut1)OTE(CR408);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_SprueCut2)OTE(CR409);]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_BlankCupAVac)OTE(CR700);]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_BlankCupABlow)OTE(CR701);]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_BlankCupBVac)OTE(CR702);]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_BlankCupBBlow)OTE(CR703);]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_FinishCupAVac)OTE(CR704);]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_FinishCupABlow)OTE(CR705);]]>
+</Text>
+</Rung>
+<Rung Number="14" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_FinishCupBVac)OTE(CR706);]]>
+</Text>
+</Rung>
+<Rung Number="15" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_FinishCupBBlow)OTE(CR707);]]>
+</Text>
+</Rung>
+<Rung Number="16" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_FinishGripClose)OTE(CR708);]]>
+</Text>
+</Rung>
+<Rung Number="17" Type="N">
+<Text>
+<![CDATA[XIC(RtoPLC_FinishGripOpen)OTE(CR709);]]>
+</Text>
+</Rung>
+<Rung Number="18" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZA5)OTE(IMMtoR_PartInjected);]]>
+</Text>
+</Rung>
+<Rung Number="19" Type="N">
+<Comment>
+<![CDATA[
+
+Injectiojn molding machine to robot EuroMap signals 
+
+]]>
+</Comment>
+<Text>
+<![CDATA[XIC(EM67_ZA6)OTE(IMMtoR_MoldClosed);]]>
+</Text>
+</Rung>
+<Rung Number="20" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZA7)OTE(IMMtoR_MoldOpen);]]>
+</Text>
+</Rung>
+<Rung Number="21" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZA8)OTE(IMMtoR_MoldInterOpen);]]>
+</Text>
+</Rung>
+<Rung Number="22" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZB2)OTE(IMMtoR_OpEnable);]]>
+</Text>
+</Rung>
+<Rung Number="23" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZB3)OTE(IMMtoR_EjectPosBck);]]>
+</Text>
+</Rung>
+<Rung Number="24" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZB4)OTE(IMMtoR_EjectPosFrw);]]>
+</Text>
+</Rung>
+<Rung Number="25" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZB5)OTE(IMMtoR_CorePL1Pos1);]]>
+</Text>
+</Rung>
+<Rung Number="26" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZB6)OTE(IMMtoR_CorePL1Pos2);]]>
+</Text>
+</Rung>
+<Rung Number="27" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZB7)OTE(IMMtoR_CorePL2Pos1);]]>
+</Text>
+</Rung>
+<Rung Number="28" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZB8)OTE(IMMtoR_CorePL2Pos2);]]>
+</Text>
+</Rung>
+<Rung Number="29" Type="N">
+<Text>
+<![CDATA[XIC(EM67_ZC8)OTE(IMMtoR_PartRejected);]]>
+</Text>
+</Rung>
+<Rung Number="30" Type="N">
+<Text>
+<![CDATA[XIC(EM78_C9_C3)OTE(IMMtoR_InidicateDrReq);]]>
+</Text>
+</Rung>
+<Rung Number="31" Type="N">
+<Text>
+<![CDATA[XIC(EM78_C7_C1)OTE(IMMtoR_DrOpenEnable);]]>
+</Text>
+</Rung>
+<Rung Number="32" Type="N">
+<Text>
+<![CDATA[[XIC(CRM) XIO(Unlock_Doors) ,XIC(Optix_RobotMoveEnable) ]OTE(PLCtoR_MoveEnable);]]>
+</Text>
+</Rung>
+<Rung Number="33" Type="N">
+<Text>
+<![CDATA[XIO(PE307)[TON(PE307_Delay,?,?) ,XIC(PE307_Delay.DN) OTE(PLCtoR_DrawerFull) ];]]>
+</Text>
+</Rung>
+<Rung Number="34" Type="N">
+<Text>
+<![CDATA[XIC(PRX315)OTE(PLCtoR_DrawerInPos);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Routine049999_Alarms" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[XIC(RobotCell_Error)[TON(Station100Robot._Warning_Delay_Timer[0],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[0].DN) OTE(Station100Robot._Warning[0]) ];]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[[XIC(RtoPLC_DrawerIsFullWarn) ,XIO(FaultReset) XIC(Station100Robot._Warning[1]) ][TON(Station100Robot._Warning_Delay_Timer[1],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[1].DN) OTE(Station100Robot._Warning[1]) ];]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[2]) ][TON(Station100Robot._Warning_Delay_Timer[2],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[2].DN) OTE(Station100Robot._Warning[2]) ];]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[3]) ][TON(Station100Robot._Warning_Delay_Timer[3],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[3].DN) OTE(Station100Robot._Warning[3]) ];]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[4]) ][TON(Station100Robot._Warning_Delay_Timer[4],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[4].DN) OTE(Station100Robot._Warning[4]) ];]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[5]) ][TON(Station100Robot._Warning_Delay_Timer[5],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[5].DN) OTE(Station100Robot._Warning[5]) ];]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[6]) ][TON(Station100Robot._Warning_Delay_Timer[6],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[6].DN) OTE(Station100Robot._Warning[6]) ];]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[7]) ][TON(Station100Robot._Warning_Delay_Timer[7],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[7].DN) OTE(Station100Robot._Warning[7]) ];]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[8]) ][TON(Station100Robot._Warning_Delay_Timer[8],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[8].DN) OTE(Station100Robot._Warning[8]) ];]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[9]) ][TON(Station100Robot._Warning_Delay_Timer[9],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[9].DN) OTE(Station100Robot._Warning[9]) ];]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[10]) ][TON(Station100Robot._Warning_Delay_Timer[10],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[10].DN) OTE(Station100Robot._Warning[10]) ];]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[11]) ][TON(Station100Robot._Warning_Delay_Timer[11],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[11].DN) OTE(Station100Robot._Warning[11]) ];]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[12]) ][TON(Station100Robot._Warning_Delay_Timer[12],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[12].DN) OTE(Station100Robot._Warning[12]) ];]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[13]) ][TON(Station100Robot._Warning_Delay_Timer[13],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[13].DN) OTE(Station100Robot._Warning[13]) ];]]>
+</Text>
+</Rung>
+<Rung Number="14" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[14]) ][TON(Station100Robot._Warning_Delay_Timer[14],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[14].DN) OTE(Station100Robot._Warning[14]) ];]]>
+</Text>
+</Rung>
+<Rung Number="15" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[15]) ][TON(Station100Robot._Warning_Delay_Timer[15],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[15].DN) OTE(Station100Robot._Warning[15]) ];]]>
+</Text>
+</Rung>
+<Rung Number="16" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[16]) ][TON(Station100Robot._Warning_Delay_Timer[16],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[16].DN) OTE(Station100Robot._Warning[16]) ];]]>
+</Text>
+</Rung>
+<Rung Number="17" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[17]) ][TON(Station100Robot._Warning_Delay_Timer[17],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[17].DN) OTE(Station100Robot._Warning[17]) ];]]>
+</Text>
+</Rung>
+<Rung Number="18" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[18]) ][TON(Station100Robot._Warning_Delay_Timer[18],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[18].DN) OTE(Station100Robot._Warning[18]) ];]]>
+</Text>
+</Rung>
+<Rung Number="19" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[19]) ][TON(Station100Robot._Warning_Delay_Timer[19],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[19].DN) OTE(Station100Robot._Warning[19]) ];]]>
+</Text>
+</Rung>
+<Rung Number="20" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[20]) ][TON(Station100Robot._Warning_Delay_Timer[20],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[20].DN) OTE(Station100Robot._Warning[20]) ];]]>
+</Text>
+</Rung>
+<Rung Number="21" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[21]) ][TON(Station100Robot._Warning_Delay_Timer[21],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[21].DN) OTE(Station100Robot._Warning[21]) ];]]>
+</Text>
+</Rung>
+<Rung Number="22" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[22]) ][TON(Station100Robot._Warning_Delay_Timer[22],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[22].DN) OTE(Station100Robot._Warning[22]) ];]]>
+</Text>
+</Rung>
+<Rung Number="23" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[23]) ][TON(Station100Robot._Warning_Delay_Timer[23],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[23].DN) OTE(Station100Robot._Warning[23]) ];]]>
+</Text>
+</Rung>
+<Rung Number="24" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[24]) ][TON(Station100Robot._Warning_Delay_Timer[24],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[24].DN) OTE(Station100Robot._Warning[24]) ];]]>
+</Text>
+</Rung>
+<Rung Number="25" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[25]) ][TON(Station100Robot._Warning_Delay_Timer[25],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[25].DN) OTE(Station100Robot._Warning[25]) ];]]>
+</Text>
+</Rung>
+<Rung Number="26" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[26]) ][TON(Station100Robot._Warning_Delay_Timer[26],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[26].DN) OTE(Station100Robot._Warning[26]) ];]]>
+</Text>
+</Rung>
+<Rung Number="27" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[27]) ][TON(Station100Robot._Warning_Delay_Timer[27],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[27].DN) OTE(Station100Robot._Warning[27]) ];]]>
+</Text>
+</Rung>
+<Rung Number="28" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[28]) ][TON(Station100Robot._Warning_Delay_Timer[28],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[28].DN) OTE(Station100Robot._Warning[28]) ];]]>
+</Text>
+</Rung>
+<Rung Number="29" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[29]) ][TON(Station100Robot._Warning_Delay_Timer[29],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[29].DN) OTE(Station100Robot._Warning[29]) ];]]>
+</Text>
+</Rung>
+<Rung Number="30" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[30]) ][TON(Station100Robot._Warning_Delay_Timer[30],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[30].DN) OTE(Station100Robot._Warning[30]) ];]]>
+</Text>
+</Rung>
+<Rung Number="31" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Warning[31]) ][TON(Station100Robot._Warning_Delay_Timer[31],?,?) ,XIC(Station100Robot._Warning_Delay_Timer[31].DN) OTE(Station100Robot._Warning[31]) ];]]>
+</Text>
+</Rung>
+<Rung Number="32" Type="N">
+<Text>
+<![CDATA[[XIC(RtoUS_PickErrorVG524) ,XIO(FaultReset) XIC(Station100Robot._Fault[0]) ][TON(Station100Robot._Fault_Delay_Timer[0],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[0].DN) OTE(Station100Robot._Fault[0]) ];]]>
+</Text>
+</Rung>
+<Rung Number="33" Type="N">
+<Text>
+<![CDATA[[XIC(RtoUS_PickErrorVG526) ,XIO(FaultReset) XIC(Station100Robot._Fault[1]) ][TON(Station100Robot._Fault_Delay_Timer[1],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[1].DN) OTE(Station100Robot._Fault[1]) ];]]>
+</Text>
+</Rung>
+<Rung Number="34" Type="N">
+<Text>
+<![CDATA[[XIC(RtoIMM_PickErrorVG528) ,XIO(FaultReset) XIC(Station100Robot._Fault[2]) ][TON(Station100Robot._Fault_Delay_Timer[2],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[2].DN) OTE(Station100Robot._Fault[2]) ];]]>
+</Text>
+</Rung>
+<Rung Number="35" Type="N">
+<Text>
+<![CDATA[[XIC(RtoIMM_PickErrorVG530) ,XIO(FaultReset) XIC(Station100Robot._Fault[3]) ][TON(Station100Robot._Fault_Delay_Timer[3],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[3].DN) OTE(Station100Robot._Fault[3]) ];]]>
+</Text>
+</Rung>
+<Rung Number="36" Type="N">
+<Text>
+<![CDATA[[XIC(RtoTT_PickErrorVG524) ,XIO(FaultReset) XIC(Station100Robot._Fault[4]) ][TON(Station100Robot._Fault_Delay_Timer[4],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[4].DN) OTE(Station100Robot._Fault[4]) ];]]>
+</Text>
+</Rung>
+<Rung Number="37" Type="N">
+<Text>
+<![CDATA[[XIC(RtoTT_PickErrorVG526) ,XIO(FaultReset) XIC(Station100Robot._Fault[5]) ][TON(Station100Robot._Fault_Delay_Timer[5],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[5].DN) OTE(Station100Robot._Fault[5]) ];]]>
+</Text>
+</Rung>
+<Rung Number="38" Type="N">
+<Text>
+<![CDATA[[XIC(RtoDS_PickErrorVG528) ,XIO(FaultReset) XIC(Station100Robot._Fault[6]) ][TON(Station100Robot._Fault_Delay_Timer[6],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[6].DN) OTE(Station100Robot._Fault[6]) ];]]>
+</Text>
+</Rung>
+<Rung Number="39" Type="N">
+<Text>
+<![CDATA[[XIC(RtoDS_PickErrorVG530) ,XIO(FaultReset) XIC(Station100Robot._Fault[7]) ][TON(Station100Robot._Fault_Delay_Timer[7],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[7].DN) OTE(Station100Robot._Fault[7]) ];]]>
+</Text>
+</Rung>
+<Rung Number="40" Type="N">
+<Text>
+<![CDATA[[XIC(RtoIMM_PlaceErrorVG524) ,XIO(FaultReset) XIC(Station100Robot._Fault[8]) ][TON(Station100Robot._Fault_Delay_Timer[8],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[8].DN) OTE(Station100Robot._Fault[8]) ];]]>
+</Text>
+</Rung>
+<Rung Number="41" Type="N">
+<Text>
+<![CDATA[[XIC(RtoIMM_PlaceErrorVG526) ,XIO(FaultReset) XIC(Station100Robot._Fault[9]) ][TON(Station100Robot._Fault_Delay_Timer[9],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[9].DN) OTE(Station100Robot._Fault[9]) ];]]>
+</Text>
+</Rung>
+<Rung Number="42" Type="N">
+<Text>
+<![CDATA[[XIC(IMMtoR_PlaceErrorEjFrw) ,XIO(FaultReset) XIC(Station100Robot._Fault[10]) ][TON(Station100Robot._Fault_Delay_Timer[10],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[10].DN) OTE(Station100Robot._Fault[10]) ];]]>
+</Text>
+</Rung>
+<Rung Number="43" Type="N">
+<Text>
+<![CDATA[[XIC(IMMtoR_PlaceErrorEjBck) ,XIO(FaultReset) XIC(Station100Robot._Fault[11]) ][TON(Station100Robot._Fault_Delay_Timer[11],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[11].DN) OTE(Station100Robot._Fault[11]) ];]]>
+</Text>
+</Rung>
+<Rung Number="44" Type="N">
+<Text>
+<![CDATA[[XIC(IMMtoR_PlaceErrorMoldOpn) ,XIO(FaultReset) XIC(Station100Robot._Fault[12]) ][TON(Station100Robot._Fault_Delay_Timer[12],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[12].DN) OTE(Station100Robot._Fault[12]) ];]]>
+</Text>
+</Rung>
+<Rung Number="45" Type="N">
+<Text>
+<![CDATA[[XIC(IMMtoR_PreEntrErrorEjBck) ,XIO(FaultReset) XIC(Station100Robot._Fault[13]) ][TON(Station100Robot._Fault_Delay_Timer[13],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[13].DN) OTE(Station100Robot._Fault[13]) ];]]>
+</Text>
+</Rung>
+<Rung Number="46" Type="N">
+<Text>
+<![CDATA[[XIC(RtoPLC_DrawerIsOutFault) ,XIO(FaultReset) XIC(Station100Robot._Fault[14]) ][TON(Station100Robot._Fault_Delay_Timer[14],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[14].DN) OTE(Station100Robot._Fault[14]) ];]]>
+</Text>
+</Rung>
+<Rung Number="47" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[15]) ][TON(Station100Robot._Fault_Delay_Timer[15],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[15].DN) OTE(Station100Robot._Fault[15]) ];]]>
+</Text>
+</Rung>
+<Rung Number="48" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[16]) ][TON(Station100Robot._Fault_Delay_Timer[16],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[16].DN) OTE(Station100Robot._Fault[16]) ];]]>
+</Text>
+</Rung>
+<Rung Number="49" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[17]) ][TON(Station100Robot._Fault_Delay_Timer[17],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[17].DN) OTE(Station100Robot._Fault[17]) ];]]>
+</Text>
+</Rung>
+<Rung Number="50" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[18]) ][TON(Station100Robot._Fault_Delay_Timer[18],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[18].DN) OTE(Station100Robot._Fault[18]) ];]]>
+</Text>
+</Rung>
+<Rung Number="51" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[19]) ][TON(Station100Robot._Fault_Delay_Timer[19],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[19].DN) OTE(Station100Robot._Fault[19]) ];]]>
+</Text>
+</Rung>
+<Rung Number="52" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[20]) ][TON(Station100Robot._Fault_Delay_Timer[20],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[20].DN) OTE(Station100Robot._Fault[20]) ];]]>
+</Text>
+</Rung>
+<Rung Number="53" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[21]) ][TON(Station100Robot._Fault_Delay_Timer[21],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[21].DN) OTE(Station100Robot._Fault[21]) ];]]>
+</Text>
+</Rung>
+<Rung Number="54" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[22]) ][TON(Station100Robot._Fault_Delay_Timer[22],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[22].DN) OTE(Station100Robot._Fault[22]) ];]]>
+</Text>
+</Rung>
+<Rung Number="55" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[23]) ][TON(Station100Robot._Fault_Delay_Timer[23],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[23].DN) OTE(Station100Robot._Fault[23]) ];]]>
+</Text>
+</Rung>
+<Rung Number="56" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[24]) ][TON(Station100Robot._Fault_Delay_Timer[24],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[24].DN) OTE(Station100Robot._Fault[24]) ];]]>
+</Text>
+</Rung>
+<Rung Number="57" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[25]) ][TON(Station100Robot._Fault_Delay_Timer[25],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[25].DN) OTE(Station100Robot._Fault[25]) ];]]>
+</Text>
+</Rung>
+<Rung Number="58" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[26]) ][TON(Station100Robot._Fault_Delay_Timer[26],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[26].DN) OTE(Station100Robot._Fault[26]) ];]]>
+</Text>
+</Rung>
+<Rung Number="59" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[27]) ][TON(Station100Robot._Fault_Delay_Timer[27],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[27].DN) OTE(Station100Robot._Fault[27]) ];]]>
+</Text>
+</Rung>
+<Rung Number="60" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[28]) ][TON(Station100Robot._Fault_Delay_Timer[28],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[28].DN) OTE(Station100Robot._Fault[28]) ];]]>
+</Text>
+</Rung>
+<Rung Number="61" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[29]) ][TON(Station100Robot._Fault_Delay_Timer[29],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[29].DN) OTE(Station100Robot._Fault[29]) ];]]>
+</Text>
+</Rung>
+<Rung Number="62" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[30]) ][TON(Station100Robot._Fault_Delay_Timer[30],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[30].DN) OTE(Station100Robot._Fault[30]) ];]]>
+</Text>
+</Rung>
+<Rung Number="63" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) ,XIO(FaultReset) XIC(Station100Robot._Fault[31]) ][TON(Station100Robot._Fault_Delay_Timer[31],?,?) ,XIC(Station100Robot._Fault_Delay_Timer[31].DN) OTE(Station100Robot._Fault[31]) ];]]>
+</Text>
+</Rung>
+<Rung Number="64" Type="N">
+<Text>
+<![CDATA[[XIC(Station100Robot._Warning[0]) ,XIC(Station100Robot._Warning[1]) ,XIC(Station100Robot._Warning[2]) ,XIC(Station100Robot._Warning[3]) ,XIC(Station100Robot._Warning[4]) ,XIC(Station100Robot._Warning[5]) ,XIC(Station100Robot._Warning[6]) ,XIC(Station100Robot._Warning[7]) ,XIC(Station100Robot._Warning[8]) ,XIC(Station100Robot._Warning[9]) ,XIC(Station100Robot._Warning[10]) ,XIC(Station100Robot._Warning[11]) ,XIC(Station100Robot._Warning[12]) ,XIC(Station100Robot._Warning[13]) ,XIC(Station100Robot._Warning[14]) ,XIC(Station100Robot._Warning[15]) ,XIC(Station100Robot._Warning[16]) ,XIC(Station100Robot._Warning[17]) ,XIC(Station100Robot._Warning[18]) ,XIC(Station100Robot._Warning[19]) ,XIC(Station100Robot._Warning[20]) ,XIC(Station100Robot._Warning[21]) ,XIC(Station100Robot._Warning[22]) ,XIC(Station100Robot._Warning[23]) ,XIC(Station100Robot._Warning[24]) ,XIC(Station100Robot._Warning[25]) ,XIC(Station100Robot._Warning[26]) ,XIC(Station100Robot._Warning[27]) ,XIC(Station100Robot._Warning[28]) ,XIC(Station100Robot._Warning[29]) ,XIC(Station100Robot._Warning[30]) ,XIC(Station100Robot._Warning[31]) ]OTE(Station100Robot._Active_Warning);]]>
+</Text>
+</Rung>
+<Rung Number="65" Type="N">
+<Text>
+<![CDATA[[XIC(Station100Robot._Fault[0]) ,XIC(Station100Robot._Fault[1]) ,XIC(Station100Robot._Fault[2]) ,XIC(Station100Robot._Fault[3]) ,XIC(Station100Robot._Fault[4]) ,XIC(Station100Robot._Fault[5]) ,XIC(Station100Robot._Fault[6]) ,XIC(Station100Robot._Fault[7]) ,XIC(Station100Robot._Fault[8]) ,XIC(Station100Robot._Fault[9]) ,XIC(Station100Robot._Fault[10]) ,XIC(Station100Robot._Fault[11]) ,XIC(Station100Robot._Fault[12]) ,XIC(Station100Robot._Fault[13]) ,XIC(Station100Robot._Fault[14]) ,XIC(Station100Robot._Fault[15]) ,XIC(Station100Robot._Fault[16]) ,XIC(Station100Robot._Fault[17]) ,XIC(Station100Robot._Fault[18]) ,XIC(Station100Robot._Fault[19]) ,XIC(Station100Robot._Fault[20]) ,XIC(Station100Robot._Fault[21]) ,XIC(Station100Robot._Fault[22]) ,XIC(Station100Robot._Fault[23]) ,XIC(Station100Robot._Fault[24]) ,XIC(Station100Robot._Fault[25]) ,XIC(Station100Robot._Fault[26]) ,XIC(Station100Robot._Fault[27]) ,XIC(Station100Robot._Fault[28]) ,XIC(Station100Robot._Fault[29]) ,XIC(Station100Robot._Fault[30]) ,XIC(Station100Robot._Fault[31]) ]OTE(Station100Robot._Active_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="66" Type="N">
+<Text>
+<![CDATA[[XIC(PlaceHolderBit) XIC(Station100Robot._Fault[0]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[1]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[2]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[3]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[4]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[5]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[6]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[7]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[8]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[9]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[10]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[11]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[12]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[13]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[14]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[15]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[16]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[17]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[18]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[19]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[20]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[21]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[22]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[23]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[24]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[25]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[26]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[27]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[28]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[29]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[30]) ,XIC(PlaceHolderBit) XIC(Station100Robot._Fault[31]) ]OTE(Station100Robot._ShutdownSystem_Fault);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+</Routines>
+</Program>
+</Programs>
+</Controller>
+</RSLogix5000Content>
