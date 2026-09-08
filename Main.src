@@ -1,0 +1,281 @@
+&ACCESS RVP
+&REL 6
+DEF Main()
+
+
+   ;FOLD INI;%{PE}
+      ;FOLD BASISTECH INI
+         GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS == TRUE DO IR_STOPM()
+         INTERRUPT ON 3
+         BAS(#INITMOV, 0)
+      ;ENDFOLD (BASISTECH INI)
+      ;FOLD USER INI
+         ;Make your modifications here
+      ;ENDFOLD (USER INI)
+      ;ENDFOLD (INI)     
+
+;Home the robot on first program run, or if there is a cell error
+BeginningOfModule:
+RobotInitialHoming=False
+RobotCell_Error=False
+RtoPLC_RobotReachedStop=False
+
+
+
+If RobotInitialHoming==False Then
+        $OV_PRO=30   
+        ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP; SimId=
+      ;ENDFOLD
+      SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      ;ENDFOLD  
+
+
+        RtoIMM_RobotWithIMM=True
+        RtoIMM_MoldAreaFree=True
+        RtoIMM_MoldCloseEnable=True
+        RtoIMM_MoldOpenEnable=True
+        RtoPLC_ToolBlnkMrked=False
+        RobotCell_Error=False
+        Rjct_1Blnk_2Fin_3Both=3
+        $OV_PRO=100
+        $TIMER_STOP[2]=True ;stop timer
+       $TIMER[2]=0 ;reset timer
+       $TIMER_STOP[2]=False ;stop timer
+       Loop
+       If PLCtoR_Start==True Then
+              $TIMER_STOP[2]=True ;stop timer
+              $TIMER[2]=0 ;reset time
+              Exit 
+       EndIf       
+       If $TIMER[2]>=10000 Then
+              $TIMER_STOP[2]=True ;stop timer
+              $TIMER[2]=0 ;reset time
+              Rjct_1Blnk_2Fin_3Both=3
+              Station500_Reject()
+              $OV_PRO=100
+              Exit 
+       EndIf
+       EndLoop      
+EndIf
+
+
+
+Loop
+
+If ((PLCtoR_Stop==True) Or (PLCtoR_DrawerInPos==False)) Then    
+        ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP; SimId=
+      ;ENDFOLD
+      SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      ;ENDFOLD  
+        RtoIMM_MoldAreaFree=True
+        RtoIMM_MoldCloseEnable=True
+        RtoIMM_MoldOpenEnable=True 
+        RobotCell_Error=False
+        RtoPLC_RobotReachedStop=True 
+        Wait for $EXT_START
+        RtoPLC_RobotReachedStop=False
+EndIf
+
+If ((UStoR_ReqToPick==True) Or (UStoR_ReqToMoveLayer==True)) Then
+     
+      If UStoR_ReqToMoveLayer==True Then
+              Station200_UpStacker()
+              If RobotCell_Error==True Then
+                     GOTO EndOfModule
+              EndIf
+              GOTO EndOfLoop
+       EndIf
+       
+       If RtoPLC_ToolBlnkHasParts==True Then
+              GOTO EndofIf1
+       EndIf
+       
+       If TTtoR_ReqToPickBad==True Then
+              GOTO EndofIf1
+       EndIf
+       
+       If TTtoR_ReqToPickGood==True Then
+              GOTO EndofIf1
+       EndIf
+       
+       Station200_UpStacker()
+       
+       If RobotCell_Error==True Then
+              GOTO EndOfModule
+       EndIf
+       
+       EndofIf1:
+       
+EndIf
+
+If ((PLCtoR_Stop==True) Or (PLCtoR_DrawerInPos==False)) Then    
+        ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP; SimId=
+      ;ENDFOLD
+      SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      ;ENDFOLD  
+        RtoIMM_MoldAreaFree=True
+        RtoIMM_MoldCloseEnable=True
+        RtoIMM_MoldOpenEnable=True 
+        RobotCell_Error=False
+        RtoPLC_RobotReachedStop=True 
+        Wait for $EXT_START
+        RtoPLC_RobotReachedStop=False
+EndIf
+
+
+
+If TTtoR_ReqToPlace==True Then
+      
+      If UStoR_ReqToMoveLayer==True Then
+              GOTO EndofIf2
+      EndIf
+      
+       If RtoPLC_ToolBlnkMrked==True  Then
+              GOTO EndofIf2
+       EndIf
+       
+       Station300_LaserMarker()
+       
+       If RobotCell_Error==True Then
+              GOTO EndOfModule
+       EndIf
+       
+       EndofIf2:
+       
+EndIf
+
+If ((PLCtoR_Stop==True) Or (PLCtoR_DrawerInPos==False)) Then    
+        ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP; SimId=
+      ;ENDFOLD
+      SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      ;ENDFOLD  
+        RtoIMM_MoldAreaFree=True
+        RtoIMM_MoldCloseEnable=True
+        RtoIMM_MoldOpenEnable=True 
+        RobotCell_Error=False
+        RtoPLC_RobotReachedStop=True 
+        Wait for $EXT_START
+        RtoPLC_RobotReachedStop=False
+EndIf
+
+
+If ((TTtoR_ReqToPickGood==True) Or (TTtoR_ReqToPickBad)==True) Then
+       
+       If UStoR_ReqToMoveLayer==True Then
+              GOTO EndofIf3
+       EndIf
+       
+       If RtoPLC_ToolBlnkHasParts==True Then 
+              GOTO EndofIf3
+       EndIf
+       
+       Station300_LaserMarker()
+       
+       If RobotCell_Error==True Then
+              GOTO EndOfModule
+       EndIf
+      
+       EndofIf3:
+       
+EndIf
+
+If ((PLCtoR_Stop==True) Or (PLCtoR_DrawerInPos==False)) Then    
+        ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP; SimId=
+      ;ENDFOLD
+      SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      ;ENDFOLD  
+        RtoIMM_MoldAreaFree=True
+        RtoIMM_MoldCloseEnable=True
+        RtoIMM_MoldOpenEnable=True 
+        RobotCell_Error=False
+        RtoPLC_RobotReachedStop=True 
+        Wait for $EXT_START
+        RtoPLC_RobotReachedStop=False
+EndIf
+
+
+If   IMMtoR_MoldOpen==True  Then
+       
+       If UStoR_ReqToMoveLayer==True Then
+              GOTO EndofIf4
+       EndIf
+       
+       If RtoPLC_ToolBlnkMrked==False Then
+              GOTO EndofIf4
+       EndIf
+
+       
+       Station400_IMM()
+       
+
+       If RtoPLC_ToolFinHasParts==True Then
+              Station500_SprueCutter()
+              If RobotCell_Error==True Then
+                     GOTO EndOfModule
+              EndIf
+       EndIf
+       If RtoPLC_ToolFinHasParts==True Then
+              Station600_DownStacker()
+       EndIf
+       If RobotCell_Error==True Then
+              GOTO EndOfModule
+       EndIf       
+
+       EndofIf4:
+       
+EndIf              
+
+
+If ((PLCtoR_Stop==True) Or (PLCtoR_DrawerInPos==False)) Then    
+        ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP; SimId=
+      ;ENDFOLD
+      SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      ;ENDFOLD  
+        RtoIMM_MoldAreaFree=True
+        RtoIMM_MoldCloseEnable=True
+        RtoIMM_MoldOpenEnable=True 
+        RobotCell_Error=False
+        RtoPLC_RobotReachedStop=True 
+        Wait for $EXT_START
+        RtoPLC_RobotReachedStop=False
+EndIf
+
+
+
+
+If   ((DStoR_PickFromTray==True) AND (RtoPLC_ToolFinHasParts==True)) Then 
+      
+      If UStoR_ReqToMoveLayer==True Then
+              GOTO EndOfIf5
+       EndIf
+       
+       If RtoPLC_ToolFinHasParts==True Then
+              GOTO EndOfIf5
+       
+       EndIf      
+      
+       Station600_DownStacker()
+       
+       EndOfIf5:
+       
+EndIf
+              
+              
+EndOfLoop:          
+EndLoop
+
+EndOfModule:
+GOTO BeginningOfModule
+END

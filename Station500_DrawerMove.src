@@ -1,0 +1,47 @@
+&ACCESS RVO2
+&REL 13
+&PARAM DISKPATH = KRC:\R1\Program
+DEF Station500_DrawerMove()
+   ;FOLD INI;%{PE}
+      ;FOLD BASISTECH INI
+         GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS == TRUE DO IR_STOPM()
+         INTERRUPT ON 3
+         BAS(#INITMOV, 0)
+      ;ENDFOLD (BASISTECH INI)
+      ;FOLD USER INI
+         ;Make your modifications here
+      ;ENDFOLD (USER INI)
+   ;ENDFOLD (INI)
+
+;FOLD SPTP StartSlideAppr Vel=60 % PDAT3 Tool[3]:TraySlidePin Base[6]:StackerFrame ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=StartSlideAppr; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT3; Kuka.VelocityPtp=60; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XStartSlideAppr WITH $VEL_AXIS[1] = SVEL_JOINT(60.0), $TOOL = STOOL2(FStartSlideAppr), $BASE = SBASE(FStartSlideAppr.BASE_NO), $IPO_MODE = SIPO_MODE(FStartSlideAppr.IPO_FRAME), $LOAD = SLOAD(FStartSlideAppr.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT3), $APO = SAPO_PTP(PPDAT3), $GEAR_JERK[1] = SGEAR_JERK(PPDAT3), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+;FOLD SLIN StartSlide Vel=0.1 m/s CPDAT1 Tool[3]:TraySlidePin Base[6]:StackerFrame ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=StartSlide; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT1; Kuka.VelocityPath=0.1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XStartSlide WITH $VEL = SVEL_CP(0.1, , LCPDAT1), $TOOL = STOOL2(FStartSlide), $BASE = SBASE(FStartSlide.BASE_NO), $IPO_MODE = SIPO_MODE(FStartSlide.IPO_FRAME), $LOAD = SLOAD(FStartSlide.TOOL_NO), $ACC = SACC_CP(LCPDAT1), $ORI_TYPE = SORI_TYP(LCPDAT1), $APO = SAPO(LCPDAT1), $JERK = SJERK(LCPDAT1), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+;FOLD SLIN SlideEnd Vel=0.05 m/s CPDAT3 Tool[3]:TraySlidePin Base[6]:StackerFrame ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=SlideEnd; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT3; Kuka.VelocityPath=0.05; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XSlideEnd WITH $VEL = SVEL_CP(0.05, , LCPDAT3), $TOOL = STOOL2(FSlideEnd), $BASE = SBASE(FSlideEnd.BASE_NO), $IPO_MODE = SIPO_MODE(FSlideEnd.IPO_FRAME), $LOAD = SLOAD(FSlideEnd.TOOL_NO), $ACC = SACC_CP(LCPDAT3), $ORI_TYPE = SORI_TYP(LCPDAT3), $APO = SAPO(LCPDAT3), $JERK = SJERK(LCPDAT3), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+;FOLD SLIN SlideEnd2 Vel=0.05 m/s CPDAT5 Tool[3]:TraySlidePin Base[6]:StackerFrame ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=SlideEnd2; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT5; Kuka.VelocityPath=0.05; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XSlideEnd2 WITH $VEL = SVEL_CP(0.05, , LCPDAT5), $TOOL = STOOL2(FSlideEnd2), $BASE = SBASE(FSlideEnd2.BASE_NO), $IPO_MODE = SIPO_MODE(FSlideEnd2.IPO_FRAME), $LOAD = SLOAD(FSlideEnd2.TOOL_NO), $ACC = SACC_CP(LCPDAT5), $ORI_TYPE = SORI_TYP(LCPDAT5), $APO = SAPO(LCPDAT5), $JERK = SJERK(LCPDAT5), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+;FOLD SPTP SlideEndReturn Vel=60 % PDAT4 Tool[3]:TraySlidePin Base[6]:StackerFrame ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=SlideEndReturn; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT4; Kuka.VelocityPtp=60; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XSlideEndReturn WITH $VEL_AXIS[1] = SVEL_JOINT(60.0), $TOOL = STOOL2(FSlideEndReturn), $BASE = SBASE(FSlideEndReturn.BASE_NO), $IPO_MODE = SIPO_MODE(FSlideEndReturn.IPO_FRAME), $LOAD = SLOAD(FSlideEndReturn.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT4), $APO = SAPO_PTP(PPDAT4), $GEAR_JERK[1] = SGEAR_JERK(PPDAT4), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+
+END

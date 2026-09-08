@@ -1,0 +1,179 @@
+&ACCESS RVO1
+&REL 54
+&PARAM DISKPATH = KRC:\R1\Program
+DEF Station200_UpStacker()
+
+   ;FOLD INI;%{PE}
+      ;FOLD BASISTECH INI
+         GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS == TRUE DO IR_STOPM()
+         INTERRUPT ON 3
+         BAS(#INITMOV, 0)
+      ;ENDFOLD (BASISTECH INI)
+      ;FOLD USER INI
+         ;Make your modifications here
+      ;ENDFOLD (USER INI)
+      ;ENDFOLD (INI)
+      
+      PickPlaceTrayTeach()
+
+;FOLD SPTP US_A1Turn Vel=100 % PDAT8 Tool[0] Base[0] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_A1Turn; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT8; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XUS_A1Turn WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FUS_A1Turn), $BASE = SBASE(FUS_A1Turn.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_A1Turn.IPO_FRAME), $LOAD = SLOAD(FUS_A1Turn.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT8), $APO = SAPO_PTP(PPDAT8), $GEAR_JERK[1] = SGEAR_JERK(PPDAT8), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+
+;If tray layer needs to be moved, move layer before anything else happens. 
+If UStoR_ReqToMoveLayer==True Then
+;FOLD SPTP US_TraySlideAppr Vel=100 % PDAT9 Tool[3]:TraySlidePin Base[6]:StackerFrame ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TraySlideAppr; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT9; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XUS_TraySlideAppr WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FUS_TraySlideAppr), $BASE = SBASE(FUS_TraySlideAppr.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TraySlideAppr.IPO_FRAME), $LOAD = SLOAD(FUS_TraySlideAppr.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT9), $APO = SAPO_PTP(PPDAT9), $GEAR_JERK[1] = SGEAR_JERK(PPDAT9), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+;FOLD SLIN US_TraySlide Vel=0.2 m/s CPDAT07 Tool[3]:TraySlidePin Base[6]:StackerFrame ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TraySlide; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT07; Kuka.VelocityPath=0.2; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TraySlide WITH $VEL = SVEL_CP(0.2, , LCPDAT07), $TOOL = STOOL2(FUS_TraySlide), $BASE = SBASE(FUS_TraySlide.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TraySlide.IPO_FRAME), $LOAD = SLOAD(FUS_TraySlide.TOOL_NO), $ACC = SACC_CP(LCPDAT07), $ORI_TYPE = SORI_TYP(LCPDAT07), $APO = SAPO(LCPDAT07), $JERK = SJERK(LCPDAT07), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+;FOLD SLIN US_TraySlideEnd Vel=0.15 m/s CPDAT08 Tool[3]:TraySlidePin Base[6]:StackerFrame ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TraySlideEnd; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT08; Kuka.VelocityPath=0.15; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TraySlideEnd WITH $VEL = SVEL_CP(0.15, , LCPDAT08), $TOOL = STOOL2(FUS_TraySlideEnd), $BASE = SBASE(FUS_TraySlideEnd.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TraySlideEnd.IPO_FRAME), $LOAD = SLOAD(FUS_TraySlideEnd.TOOL_NO), $ACC = SACC_CP(LCPDAT08), $ORI_TYPE = SORI_TYP(LCPDAT08), $APO = SAPO(LCPDAT08), $JERK = SJERK(LCPDAT08), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+;FOLD SLIN US_TraySlideReturn Vel=0.2 m/s CPDAT09 Tool[3]:TraySlidePin Base[6]:StackerFrame ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TraySlideReturn; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT09; Kuka.VelocityPath=0.2; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TraySlideReturn WITH $VEL = SVEL_CP(0.2, , LCPDAT09), $TOOL = STOOL2(FUS_TraySlideReturn), $BASE = SBASE(FUS_TraySlideReturn.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TraySlideReturn.IPO_FRAME), $LOAD = SLOAD(FUS_TraySlideReturn.TOOL_NO), $ACC = SACC_CP(LCPDAT09), $ORI_TYPE = SORI_TYP(LCPDAT09), $APO = SAPO(LCPDAT09), $JERK = SJERK(LCPDAT09), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+;FOLD SPTP DS_A1Turn Vel=100 % PDAT10 Tool[0] Base[0] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_A1Turn; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT10; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XDS_A1Turn WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FDS_A1Turn), $BASE = SBASE(FDS_A1Turn.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_A1Turn.IPO_FRAME), $LOAD = SLOAD(FDS_A1Turn.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT10), $APO = SAPO_PTP(PPDAT10), $GEAR_JERK[1] = SGEAR_JERK(PPDAT10), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+       RtoUS_LayerMovedConfirm=True
+       wait sec .1
+       RtoUS_LayerMovedConfirm=False
+GOTO EndOfModule
+EndIf
+
+
+;Clear vacuum cups outputs
+RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False
+RtoUS_PickConfirm=False
+RobotCell_Error=False
+
+;Check for layer mover, if needed slide upstacker tray to downstacker
+ 
+
+
+ ;move tooling to row and column approach position for pick, then slowy move into the pick position 
+            US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber] = US_Pick[UStoR_PickRowNumber,UStoR_PickColumnNumber]
+            US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber].Z = US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber].Z + 100
+            US_PickApproachSlow[UStoR_PickRowNumber,UStoR_PickColumnNumber].Z = US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber].Z - 65                                    
+        
+            
+ SPTP US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+
+;Set vacuum cups to on
+RtoPLC_BlankCupAVac=True
+RtoPLC_BlankCupBVac=True
+      
+      $TIMER_STOP[2]=True ;stop timer
+       $TIMER[2]=0 ;reset timer
+       $TIMER_STOP[2]=False ;stop timer
+       Loop
+       If (($TIMER[2]>=5000) Or ((PLCtoR_BlankCupAVacOn==True) And (PLCtoR_BlankCupBVacOn==True)))Then
+              $TIMER_STOP[2]=True ;stop timer
+              $TIMER[2]=0 ;reset time
+             Exit 
+endif
+         EndLoop
+;check vacuum sensors for being false, if false, set suction cup error bits
+If ((PLCtoR_BlankCupAVacOn==False) Or (PLCtoR_BlankCupBVacOn==False)) Then
+     
+       If PLCtoR_BlankCupAVacOn==False Then
+              RtoUS_PickErrorVG524=True
+              
+       EndIf
+       If PLCtoR_BlankCupBVacOn==False Then
+              RtoUS_PickErrorVG526=True
+              
+       EndIf 
+EndIf     
+
+;check if vacuum error bits were set, if set, turn off vacuum cups, blow off, reset error bits
+If ((RtoUS_PickErrorVG524==True) Or (RtoUS_PickErrorVG526==True)) Then
+       Wait Sec .25
+       RtoPLC_BlankCupAVac=False
+       RtoPLC_BlankCupBVac=False
+       RtoPLC_BlankCupABlow=True
+       RtoPLC_BlankCupBBlow=True
+       Wait Sec .25
+       RtoPLC_BlankCupABlow=False
+       RtoPLC_BlankCupBBlow=False
+       RtoUS_PickErrorVG524=False
+       RtoUS_PickErrorVG526=False      
+
+       SLIN US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+EndIf      
+
+;check vacuum sensors for being true, if true, slowly lift parts from tray
+If ((PLCtoR_BlankCupAVacOn==True) And (PLCtoR_BlankCupBVacOn==True)) Then
+       SLIN US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+EndIf     
+
+
+;FOLD SPTP US_A1Return Vel=100 % PDAT4 Tool[0] Base[0] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_A1Return; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT4; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XUS_A1Return WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FUS_A1Return), $BASE = SBASE(FUS_A1Return.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_A1Return.IPO_FRAME), $LOAD = SLOAD(FUS_A1Return.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT4), $APO = SAPO_PTP(PPDAT4), $GEAR_JERK[1] = SGEAR_JERK(PPDAT4), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+      
+;check vacuum sensors again for being false, if false, set suction cup error bits
+If ((PLCtoR_BlankCupAVacOn==False) Or (PLCtoR_BlankCupBVacOn==False)) Then
+       Wait Sec 2
+       If PLCtoR_BlankCupAVacOn==False Then
+              RtoUS_PickErrorVG524=True
+              
+       EndIf
+       If PLCtoR_BlankCupBVacOn==False Then
+              RtoUS_PickErrorVG526=True
+                   
+       EndIf 
+EndIf     
+
+;check vacuum sensors again for being true, if true, set pick confirm bit for .5 seconds, copy sequence number to tool, set tooling has-parts bit,  END this module program
+If ((PLCtoR_BlankCupAVacOn==True) And (PLCtoR_BlankCupBVacOn==True)) Then
+       RtoPLC_ToolBlnkSeqNumber=UStoR_PickSeqNumber
+       RtoUS_PickConfirm=True
+       Wait Sec .25
+       RtoUS_PickConfirm=False
+       RtoPLC_ToolBlnkHasParts=True
+
+EndIf     
+
+;check again if vacuum error bits were set, if set, turn off vacuum cups, blow off, reset error bits, set tooling has-parts bit, call reject blanks module program
+If ((RtoUS_PickErrorVG524==True) Or (RtoUS_PickErrorVG526==True)) Then
+       Wait Sec .25
+       RtoUS_PickErrorVG524=False
+       RtoUS_PickErrorVG526=False
+       RtoPLC_ToolBlnkHasParts=True
+       Rjct_1Blnk_2Fin_3Both=1
+       Station500_Reject()       
+EndIf     
+
+ 
+EndOfModule:      
+END
+

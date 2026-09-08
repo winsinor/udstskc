@@ -1,0 +1,304 @@
+&ACCESS RVO1
+&REL 33
+&PARAM DISKPATH = KRC:\R1\Program
+DEF Station600_DownStacker()
+
+   ;FOLD INI;%{PE}
+      ;FOLD BASISTECH INI
+         GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS == TRUE DO IR_STOPM()
+         INTERRUPT ON 3
+         BAS(#INITMOV, 0)
+      ;ENDFOLD (BASISTECH INI)
+      ;FOLD USER INI
+         ;Make your modifications here
+      ;ENDFOLD (USER INI)
+      ;ENDFOLD (INI)
+
+   PickPlaceTrayTeach()
+
+;FOLD SPTP DS_A1Turn Vel=100 % PDAT2 Tool[0] Base[0] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_A1Turn; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT2; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XDS_A1Turn WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FDS_A1Turn), $BASE = SBASE(FDS_A1Turn.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_A1Turn.IPO_FRAME), $LOAD = SLOAD(FDS_A1Turn.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT2), $APO = SAPO_PTP(PPDAT2), $GEAR_JERK[1] = SGEAR_JERK(PPDAT2), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+      
+      
+
+
+If ((DStoR_OpenLocation==True) And  (RtoPLC_ToolFinHasParts==True) And (DStoR_PlaceInTray==True)) Then
+
+;FOLD Place parts
+
+ 
+           DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber] =DS_Pick[DStoR_PickRowNumber,DStoR_PickColumnNumber]
+           DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber].Z =DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber].Z + 100
+           DS_PickApproachSlow[DStoR_PickRowNumber,DStoR_PickColumnNumber].Z =DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber].Z - 65                                    
+        
+            
+ SPTP DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber] with $TOOL=TOOL_DATA[2],$BASE=BASE_DATA[5],$LOAD=LOAD_DATA[2],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[DStoR_PickRowNumber,DStoR_PickColumnNumber] with $TOOL=TOOL_DATA[2],$BASE=BASE_DATA[5],$LOAD=LOAD_DATA[2],$VEL.CP = 2
+ SLIN DS_Pick[DStoR_PickRowNumber,DStoR_PickColumnNumber] with $TOOL=TOOL_DATA[2],$BASE=BASE_DATA[5],$LOAD=LOAD_DATA[2],$VEL.CP = .1
+ 
+
+;Turn off vacuum and blow off parts
+
+       RtoPLC_FinishCupAVac=False
+       RtoPLC_FinishCupBVac=False
+       RtoPLC_FinishCupABlow=True
+       RtoPLC_FinishCupBBlow=True
+         Wait Sec .15
+       RtoPLC_FinishCupABlow=False
+       RtoPLC_FinishCupBBlow=False 
+
+;lift up and away from Tray and confirm parts placed
+SLIN DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber] with $TOOL=TOOL_DATA[2],$BASE=BASE_DATA[5],$LOAD=LOAD_DATA[2],$VEL.CP = 2
+       RtoDS_PlaceSeqNumber=RtoPLC_ToolFinSeqNumber
+        Wait Sec .15
+       RtoDS_PlacedConfirm=True
+       Wait Sec .15
+       RtoPLC_ToolFinSeqNumber=0
+       RtoDS_PlacedConfirm=False
+       RtoPLC_ToolFinHasParts=False
+       RtoPLC_ToolFinSeqNumber=0
+
+; END this module program
+;FOLD SPTP DS_A1Turn Vel=100 % PDAT2 Tool[0] Base[0] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_A1Turn; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT2; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XDS_A1Turn WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FDS_A1Turn), $BASE = SBASE(FDS_A1Turn.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_A1Turn.IPO_FRAME), $LOAD = SLOAD(FDS_A1Turn.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT2), $APO = SAPO_PTP(PPDAT2), $GEAR_JERK[1] = SGEAR_JERK(PPDAT2), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+
+      ;ENDFOLD
+      
+
+EndIf
+
+
+
+
+If ((DStoR_OpenLocation==True) And  (RtoPLC_ToolFinHasParts==True) And (DStoR_PickFromTray==True)) Then
+
+;FOLD Pick from Tray
+;Clear vacuum cups outputs
+RtoPLC_FinishCupAVac=False
+RtoPLC_FinishCupBVac=False 
+RtoPLC_FinishCupABlow=False
+RtoPLC_FinishCupBBlow=False
+RtoDS_PickConfirm=False
+
+
+
+ ;move tooling to row and column approach position for pick, then slowy move into the pick position 
+           DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber] =DS_Pick[DStoR_PickRowNumber,DStoR_PickColumnNumber]
+           DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber].Z =DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber].Z + 100
+           DS_PickApproachSlow[DStoR_PickRowNumber,DStoR_PickColumnNumber].Z =DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber].Z - 65                                    
+        
+            
+ SPTP DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber] with $TOOL=TOOL_DATA[2],$BASE=BASE_DATA[5],$LOAD=LOAD_DATA[2],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[DStoR_PickRowNumber,DStoR_PickColumnNumber] with $TOOL=TOOL_DATA[2],$BASE=BASE_DATA[5],$LOAD=LOAD_DATA[2],$VEL.CP = 2
+ SLIN DS_Pick[DStoR_PickRowNumber,DStoR_PickColumnNumber] with $TOOL=TOOL_DATA[2],$BASE=BASE_DATA[5],$LOAD=LOAD_DATA[2],$VEL.CP = .1
+
+;Set vacuum cups to on
+RtoPLC_FinishCupAVac=True
+RtoPLC_FinishCupBVac=True
+Wait Sec 1.5
+
+;check vacuum sensors for being false, if false, set suction cup error bits
+If ((PLCtoR_FinishCupAVacOn==False) Or (PLCtoR_FinishCupBVacOn==False)) Then
+       Wait Sec 2
+       If PLCtoR_FinishCupAVacOn==False Then
+              RtoDS_PickErrorVG530=True
+              
+       EndIf
+       If PLCtoR_FinishCupBVacOn==False Then
+              RtoDS_PickErrorVG530=True
+       EndIf     
+EndIf
+;check if vacuum error bits were set, if set, turn off vacuum cups, blow off, reset error bits
+If ((RtoDS_PickErrorVG530==True) Or (RtoDS_PickErrorVG530==True)) Then
+       Wait Sec .15
+       RtoPLC_FinishCupAVac=False
+       RtoPLC_FinishCupBVac=False
+       RtoPLC_FinishCupABlow=True
+       RtoPLC_FinishCupBBlow=True
+       Wait Sec .15
+       RtoPLC_FinishCupABlow=False
+       RtoPLC_FinishCupBBlow=False
+       RtoDS_PickErrorVG530=False
+       RtoDS_PickErrorVG530=False      
+
+       SLIN DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber] with $TOOL=TOOL_DATA[2],$BASE=BASE_DATA[5],$LOAD=LOAD_DATA[2],$VEL.CP = 2
+EndIf      
+
+;check vacuum sensors for being true, if true, slowly lift parts from tray
+If ((PLCtoR_FinishCupAVacOn==True) And (PLCtoR_FinishCupBVacOn==True)) Then
+       SLIN DS_PickApproach[DStoR_PickRowNumber,DStoR_PickColumnNumber] with $TOOL=TOOL_DATA[2],$BASE=BASE_DATA[5],$LOAD=LOAD_DATA[2],$VEL.CP = 2
+EndIf     
+
+
+      
+;check vacuum sensors again for being false, if false, set suction cup error bits
+If ((PLCtoR_FinishCupAVacOn==False) Or (PLCtoR_FinishCupBVacOn==False)) Then
+       Wait Sec 2
+       If PLCtoR_FinishCupAVacOn==False Then
+              RtoDS_PickErrorVG530=True
+       EndIf       
+       If PLCtoR_FinishCupBVacOn==False Then
+              RtoDS_PickErrorVG530=True
+    
+       EndIf 
+ EndIf      
+If ((PLCtoR_FinishCupAVacOn==True) And (PLCtoR_FinishCupBVacOn==True)) Then
+       RtoDS_PickConfirm=True
+       Wait Sec .15
+       RtoDS_PickConfirm=False
+       RtoPLC_ToolFinHasParts=True
+       
+EndIf     
+
+;check again if vacuum error bits were set, if set, turn off vacuum cups, blow off, reset error bits, set tooling has-parts bit, call reject Finishs module program
+If ((RtoDS_PickErrorVG530==True) Or (RtoDS_PickErrorVG530==True)) Then
+       Wait Sec .15
+       RtoDS_PickErrorVG530=False
+       RtoDS_PickErrorVG530=False
+       RtoPLC_ToolFinHasParts=True
+;FOLD SPTP DS_A1Turn Vel=100 % PDAT2 Tool[0] Base[0] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_A1Turn; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT2; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XDS_A1Turn WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FDS_A1Turn), $BASE = SBASE(FDS_A1Turn.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_A1Turn.IPO_FRAME), $LOAD = SLOAD(FDS_A1Turn.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT2), $APO = SAPO_PTP(PPDAT2), $GEAR_JERK[1] = SGEAR_JERK(PPDAT2), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+       Station500_Reject()
+           
+EndIf     
+;FOLD Drop In Shoot
+    ;FOLD SLIN DS_ShootAppr Vel=2 m/s CPDAT4 Tool[2]:TOOL_DATA[2] Base[5]:BASE_DATA[5] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootAppr; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT4; Kuka.VelocityPath=2; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+      ;ENDFOLD
+      SLIN XDS_ShootAppr WITH $VEL = SVEL_CP(2.0, , LCPDAT4), $TOOL = STOOL2(FDS_ShootAppr), $BASE = SBASE(FDS_ShootAppr.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootAppr.IPO_FRAME), $LOAD = SLOAD(FDS_ShootAppr.TOOL_NO), $ACC = SACC_CP(LCPDAT4), $ORI_TYPE = SORI_TYP(LCPDAT4), $APO = SAPO(LCPDAT4), $JERK = SJERK(LCPDAT4), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      
+     ;ENDFOLD
+      
+   ;FOLD SLIN DS_ShootApprTilt CONT Vel=2 m/s CPDAT6 Tool[2]:TOOL_DATA[2] Base[5]:BASE_DATA[5] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootApprTilt; Kuka.BlendingEnabled=True; Kuka.MoveDataName=CPDAT6; Kuka.VelocityPath=2; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+      ;ENDFOLD
+      SLIN XDS_ShootApprTilt WITH $VEL = SVEL_CP(2.0, , LCPDAT6), $TOOL = STOOL2(FDS_ShootApprTilt), $BASE = SBASE(FDS_ShootApprTilt.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootApprTilt.IPO_FRAME), $LOAD = SLOAD(FDS_ShootApprTilt.TOOL_NO), $ACC = SACC_CP(LCPDAT6), $ORI_TYPE = SORI_TYP(LCPDAT6), $APO = SAPO(LCPDAT6), $JERK = SJERK(LCPDAT6), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0) C_Spl
+      ;ENDFOLD
+      
+;FOLD SLIN DS_ShootDrop CONT Vel=2 m/s CPDAT7 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootDrop; Kuka.BlendingEnabled=True; Kuka.MoveDataName=CPDAT7; Kuka.VelocityPath=2; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_ShootDrop WITH $VEL = SVEL_CP(2.0, , LCPDAT7), $TOOL = STOOL2(FDS_ShootDrop), $BASE = SBASE(FDS_ShootDrop.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootDrop.IPO_FRAME), $LOAD = SLOAD(FDS_ShootDrop.TOOL_NO), $ACC = SACC_CP(LCPDAT7), $ORI_TYPE = SORI_TYP(LCPDAT7), $APO = SAPO(LCPDAT7), $JERK = SJERK(LCPDAT7), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0) C_Spl
+;ENDFOLD
+      
+       RtoPLC_FinishCupAVac=False
+       RtoPLC_FinishCupBVac=False
+       Wait Sec .15
+       RtoPLC_FinishCupABlow=True
+       RtoPLC_FinishCupBBlow=True
+       Wait Sec .15
+       RtoPLC_FinishCupABlow=False
+       RtoPLC_FinishCupBBlow=False  
+       RtoPLC_ToolFinHasParts=False
+       RtoPLC_ToolFinSeqNumber=0        
+      
+;FOLD SLIN DS_ShootTiltReturn CONT Vel=1 m/s CPDAT8 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootTiltReturn; Kuka.BlendingEnabled=True; Kuka.MoveDataName=CPDAT8; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_ShootTiltReturn WITH $VEL = SVEL_CP(1.0, , LCPDAT8), $TOOL = STOOL2(FDS_ShootTiltReturn), $BASE = SBASE(FDS_ShootTiltReturn.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootTiltReturn.IPO_FRAME), $LOAD = SLOAD(FDS_ShootTiltReturn.TOOL_NO), $ACC = SACC_CP(LCPDAT8), $ORI_TYPE = SORI_TYP(LCPDAT8), $APO = SAPO(LCPDAT8), $JERK = SJERK(LCPDAT8), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0) C_Spl
+;ENDFOLD
+      
+;FOLD SLIN DS_ShootReturn CONT Vel=1 m/s CPDAT9 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootReturn; Kuka.BlendingEnabled=True; Kuka.MoveDataName=CPDAT9; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_ShootReturn WITH $VEL = SVEL_CP(1.0, , LCPDAT9), $TOOL = STOOL2(FDS_ShootReturn), $BASE = SBASE(FDS_ShootReturn.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootReturn.IPO_FRAME), $LOAD = SLOAD(FDS_ShootReturn.TOOL_NO), $ACC = SACC_CP(LCPDAT9), $ORI_TYPE = SORI_TYP(LCPDAT9), $APO = SAPO(LCPDAT9), $JERK = SJERK(LCPDAT9), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0) C_Spl
+;ENDFOLD
+      
+   ;FOLD SPTP DS_A1Return Vel=100 % PDAT3 Tool[0] Base[0] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_A1Return; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT3; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+      ;ENDFOLD
+      SPTP XDS_A1Return WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FDS_A1Return), $BASE = SBASE(FDS_A1Return.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_A1Return.IPO_FRAME), $LOAD = SLOAD(FDS_A1Return.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT3), $APO = SAPO_PTP(PPDAT3), $GEAR_JERK[1] = SGEAR_JERK(PPDAT3), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      ;ENDFOLD
+;ENDFOLD
+
+;ENDFOLD
+
+EndIf
+      
+
+
+ DropInShoot:      
+ If ((RtoPLC_ToolFinHasParts==True) And ((DStoR_DropInShoot==True) Or (DStoR_OpenLocation==false))) Then 
+       
+;FOLD Drop In Shoot
+    ;FOLD SLIN DS_ShootAppr Vel=2 m/s CPDAT4 Tool[2]:TOOL_DATA[2] Base[5]:BASE_DATA[5] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootAppr; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT4; Kuka.VelocityPath=2; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+      ;ENDFOLD
+      SLIN XDS_ShootAppr WITH $VEL = SVEL_CP(2.0, , LCPDAT4), $TOOL = STOOL2(FDS_ShootAppr), $BASE = SBASE(FDS_ShootAppr.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootAppr.IPO_FRAME), $LOAD = SLOAD(FDS_ShootAppr.TOOL_NO), $ACC = SACC_CP(LCPDAT4), $ORI_TYPE = SORI_TYP(LCPDAT4), $APO = SAPO(LCPDAT4), $JERK = SJERK(LCPDAT4), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      
+     ;ENDFOLD
+      
+   ;FOLD SLIN DS_ShootApprTilt CONT Vel=2 m/s CPDAT6 Tool[2]:TOOL_DATA[2] Base[5]:BASE_DATA[5] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootApprTilt; Kuka.BlendingEnabled=True; Kuka.MoveDataName=CPDAT6; Kuka.VelocityPath=2; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+      ;ENDFOLD
+      SLIN XDS_ShootApprTilt WITH $VEL = SVEL_CP(2.0, , LCPDAT6), $TOOL = STOOL2(FDS_ShootApprTilt), $BASE = SBASE(FDS_ShootApprTilt.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootApprTilt.IPO_FRAME), $LOAD = SLOAD(FDS_ShootApprTilt.TOOL_NO), $ACC = SACC_CP(LCPDAT6), $ORI_TYPE = SORI_TYP(LCPDAT6), $APO = SAPO(LCPDAT6), $JERK = SJERK(LCPDAT6), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0) C_Spl
+      ;ENDFOLD
+      
+;FOLD SLIN DS_ShootDrop CONT Vel=2 m/s CPDAT7 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootDrop; Kuka.BlendingEnabled=True; Kuka.MoveDataName=CPDAT7; Kuka.VelocityPath=2; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_ShootDrop WITH $VEL = SVEL_CP(2.0, , LCPDAT7), $TOOL = STOOL2(FDS_ShootDrop), $BASE = SBASE(FDS_ShootDrop.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootDrop.IPO_FRAME), $LOAD = SLOAD(FDS_ShootDrop.TOOL_NO), $ACC = SACC_CP(LCPDAT7), $ORI_TYPE = SORI_TYP(LCPDAT7), $APO = SAPO(LCPDAT7), $JERK = SJERK(LCPDAT7), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0) C_Spl
+;ENDFOLD
+      
+       RtoPLC_FinishCupAVac=False
+       RtoPLC_FinishCupBVac=False
+       Wait Sec .15
+       RtoPLC_FinishCupABlow=True
+       RtoPLC_FinishCupBBlow=True
+       Wait Sec .15
+       RtoPLC_FinishCupABlow=False
+       RtoPLC_FinishCupBBlow=False  
+       RtoPLC_ToolFinHasParts=False
+       RtoPLC_ToolFinSeqNumber=0        
+      
+;FOLD SLIN DS_ShootTiltReturn CONT Vel=1 m/s CPDAT8 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootTiltReturn; Kuka.BlendingEnabled=True; Kuka.MoveDataName=CPDAT8; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_ShootTiltReturn WITH $VEL = SVEL_CP(1.0, , LCPDAT8), $TOOL = STOOL2(FDS_ShootTiltReturn), $BASE = SBASE(FDS_ShootTiltReturn.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootTiltReturn.IPO_FRAME), $LOAD = SLOAD(FDS_ShootTiltReturn.TOOL_NO), $ACC = SACC_CP(LCPDAT8), $ORI_TYPE = SORI_TYP(LCPDAT8), $APO = SAPO(LCPDAT8), $JERK = SJERK(LCPDAT8), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0) C_Spl
+;ENDFOLD
+      
+;FOLD SLIN DS_ShootReturn CONT Vel=1 m/s CPDAT9 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_ShootReturn; Kuka.BlendingEnabled=True; Kuka.MoveDataName=CPDAT9; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_ShootReturn WITH $VEL = SVEL_CP(1.0, , LCPDAT9), $TOOL = STOOL2(FDS_ShootReturn), $BASE = SBASE(FDS_ShootReturn.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_ShootReturn.IPO_FRAME), $LOAD = SLOAD(FDS_ShootReturn.TOOL_NO), $ACC = SACC_CP(LCPDAT9), $ORI_TYPE = SORI_TYP(LCPDAT9), $APO = SAPO(LCPDAT9), $JERK = SJERK(LCPDAT9), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0) C_Spl
+;ENDFOLD
+      
+;FOLD SPTP DS_A1Return Vel=100 % PDAT3 Tool[0] Base[0] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_A1Return; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT3; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XDS_A1Return WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FDS_A1Return), $BASE = SBASE(FDS_A1Return.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_A1Return.IPO_FRAME), $LOAD = SLOAD(FDS_A1Return.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT3), $APO = SAPO_PTP(PPDAT3), $GEAR_JERK[1] = SGEAR_JERK(PPDAT3), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+RtoDS_PlacedConfirm=True
+wait sec .5
+
+RtoDS_PlacedConfirm=False
+
+;ENDFOLD
+EndIf
+
+   
+END

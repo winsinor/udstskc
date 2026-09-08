@@ -1,0 +1,691 @@
+&ACCESS RVO1
+&REL 58
+&PARAM DISKPATH = KRC:\R1\Program
+DEF PickPlaceTrayTeach()
+
+   ;FOLD INI;%{PE}
+      ;FOLD BASISTECH INI
+         GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS == TRUE DO IR_STOPM()
+         INTERRUPT ON 3
+         BAS(#INITMOV, 0)
+      ;ENDFOLD (BASISTECH INI)
+      ;FOLD USER INI
+         ;Make your modifications here
+      ;ENDFOLD (USER INI)
+      ;ENDFOLD (INI)
+      
+            US_Pick[1,1]= XUS_TeachPick
+            US_Pick[1,2]= XUS_TeachPick1_2
+            US_Pick[1,3]= XUS_TeachPick1_3
+            US_Pick[1,4]= XUS_TeachPick1_4
+            US_Pick[2,1]= XUS_TeachPick2_1
+            US_Pick[2,2]= XUS_TeachPick2_2
+            US_Pick[2,3]= XUS_TeachPick2_3
+            US_Pick[2,4]= XUS_TeachPick2_4
+
+
+
+            DS_Pick[1,1]= XDS_TeachPick
+            DS_Pick[1,2]= XDS_TeachPick1_2
+            DS_Pick[1,3]= XDS_TeachPick1_3
+            DS_Pick[1,4]= XDS_TeachPick1_4
+            DS_Pick[2,1]= XDS_TeachPick2_1
+            DS_Pick[2,2]= XDS_TeachPick2_2
+            DS_Pick[2,3]= XDS_TeachPick2_3
+            DS_Pick[2,4]= XDS_TeachPick2_4
+
+
+
+
+            GOTO EndOfModule
+            
+ 
+        RtoIMM_SeqNumber=1
+
+
+
+
+
+;move joint 1 to turn robot towards upstacker from home
+   ;FOLD SPTP US_A1Turn Vel=100 % PDAT3 Tool[0] Base[0] ;%{PE}
+      ;FOLD Parameters ;%{h}
+         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_A1Turn; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT3; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+      ;ENDFOLD
+      SPTP XUS_A1Turn WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FUS_A1Turn), $BASE = SBASE(FUS_A1Turn.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_A1Turn.IPO_FRAME), $LOAD = SLOAD(FUS_A1Turn.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT3), $APO = SAPO_PTP(PPDAT3), $GEAR_JERK[1] = SGEAR_JERK(PPDAT3), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+      ;ENDFOLD
+ 
+
+
+;FOLD SPTP US_TeachPickstart Vel=100 % PDAT8 Tool[1]:BlankPick Base[1]:UpStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TeachPickstart; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT8; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XUS_TeachPickstart WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FUS_TeachPickstart), $BASE = SBASE(FUS_TeachPickstart.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TeachPickstart.IPO_FRAME), $LOAD = SLOAD(FUS_TeachPickstart.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT8), $APO = SAPO_PTP(PPDAT8), $GEAR_JERK[1] = SGEAR_JERK(PPDAT8), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+          
+ US_PickApproach[1,1] = US_Pick[1,1]
+ US_PickApproach[1,1].Z = US_PickApproach[1,1].Z + 100
+ US_PickApproachSlow[1,1].Z = US_PickApproach[1,1].Z - 65                                                
+ SLIN US_PickApproach[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN US_TeachPick Vel=1 m/s CPDAT15 Tool[1]:BlankPick Base[1]:UpStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TeachPick; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT15; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TeachPick WITH $VEL = SVEL_CP(1.0, , LCPDAT15), $TOOL = STOOL2(FUS_TeachPick), $BASE = SBASE(FUS_TeachPick.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TeachPick.IPO_FRAME), $LOAD = SLOAD(FUS_TeachPick.TOOL_NO), $ACC = SACC_CP(LCPDAT15), $ORI_TYPE = SORI_TYP(LCPDAT15), $APO = SAPO(LCPDAT15), $JERK = SJERK(LCPDAT15), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+US_Pick[1,1]= XUS_TeachPick
+SLIN US_Pick[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+SLIN US_PickApproach[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ 
+US_PickApproach[1,2] = US_Pick[1,2]
+ US_PickApproach[1,2].Z = US_PickApproach[1,2].Z + 100
+ US_PickApproachSlow[1,2].Z = US_PickApproach[1,2].Z - 65                                                
+ SLIN US_PickApproach[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN US_TeachPick1_2 Vel=1 m/s CPDAT07 Tool[1]:BlankPick Base[1]:UpStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TeachPick1_2; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT07; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TeachPick1_2 WITH $VEL = SVEL_CP(1.0, , LCPDAT07), $TOOL = STOOL2(FUS_TeachPick1_2), $BASE = SBASE(FUS_TeachPick1_2.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TeachPick1_2.IPO_FRAME), $LOAD = SLOAD(FUS_TeachPick1_2.TOOL_NO), $ACC = SACC_CP(LCPDAT07), $ORI_TYPE = SORI_TYP(LCPDAT07), $APO = SAPO(LCPDAT07), $JERK = SJERK(LCPDAT07), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+US_Pick[1,2]= XUS_TeachPick
+SLIN US_Pick[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+ SLIN US_PickApproach[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ 
+US_PickApproach[1,3] = US_Pick[1,3]
+ US_PickApproach[1,3].Z = US_PickApproach[1,3].Z + 100
+ US_PickApproachSlow[1,3].Z = US_PickApproach[1,3].Z - 65                                                
+ SLIN US_PickApproach[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN US_TeachPick1_3 Vel=1 m/s CPDAT08 Tool[1]:BlankPick Base[1]:UpStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TeachPick1_3; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT08; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TeachPick1_3 WITH $VEL = SVEL_CP(1.0, , LCPDAT08), $TOOL = STOOL2(FUS_TeachPick1_3), $BASE = SBASE(FUS_TeachPick1_3.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TeachPick1_3.IPO_FRAME), $LOAD = SLOAD(FUS_TeachPick1_3.TOOL_NO), $ACC = SACC_CP(LCPDAT08), $ORI_TYPE = SORI_TYP(LCPDAT08), $APO = SAPO(LCPDAT08), $JERK = SJERK(LCPDAT08), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+US_Pick[1,3]= XUS_TeachPick
+SLIN US_Pick[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+ SLIN US_PickApproach[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ 
+US_PickApproach[1,4] = US_Pick[1,4]
+ US_PickApproach[1,4].Z = US_PickApproach[1,4].Z + 100
+ US_PickApproachSlow[1,4].Z = US_PickApproach[1,4].Z - 65                                                
+ SLIN US_PickApproach[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN US_TeachPick1_4 Vel=1 m/s CPDAT09 Tool[1]:BlankPick Base[1]:UpStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TeachPick1_4; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT09; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TeachPick1_4 WITH $VEL = SVEL_CP(1.0, , LCPDAT09), $TOOL = STOOL2(FUS_TeachPick1_4), $BASE = SBASE(FUS_TeachPick1_4.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TeachPick1_4.IPO_FRAME), $LOAD = SLOAD(FUS_TeachPick1_4.TOOL_NO), $ACC = SACC_CP(LCPDAT09), $ORI_TYPE = SORI_TYP(LCPDAT09), $APO = SAPO(LCPDAT09), $JERK = SJERK(LCPDAT09), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+US_Pick[1,4]= XUS_TeachPick
+SLIN US_Pick[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+ SLIN US_PickApproach[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+US_PickApproach[2,1] = US_Pick[2,1]
+ US_PickApproach[2,1].Z = US_PickApproach[2,1].Z + 100
+ US_PickApproachSlow[2,1].Z = US_PickApproach[2,1].Z - 65                                                
+ SLIN US_PickApproach[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN US_TeachPick2_1 Vel=1 m/s CPDAT11 Tool[1]:BlankPick Base[1]:UpStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TeachPick2_1; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT11; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TeachPick2_1 WITH $VEL = SVEL_CP(1.0, , LCPDAT11), $TOOL = STOOL2(FUS_TeachPick2_1), $BASE = SBASE(FUS_TeachPick2_1.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TeachPick2_1.IPO_FRAME), $LOAD = SLOAD(FUS_TeachPick2_1.TOOL_NO), $ACC = SACC_CP(LCPDAT11), $ORI_TYPE = SORI_TYP(LCPDAT11), $APO = SAPO(LCPDAT11), $JERK = SJERK(LCPDAT11), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+US_Pick[2,1]= XUS_TeachPick
+SLIN US_Pick[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+ SLIN US_PickApproach[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ 
+US_PickApproach[2,2] = US_Pick[2,2]
+ US_PickApproach[2,2].Z = US_PickApproach[2,2].Z + 100
+ US_PickApproachSlow[2,2].Z = US_PickApproach[2,2].Z - 65                                                
+ SLIN US_PickApproach[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN US_TeachPick2_2 Vel=1 m/s CPDAT12 Tool[1]:BlankPick Base[1]:UpStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TeachPick2_2; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT12; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TeachPick2_2 WITH $VEL = SVEL_CP(1.0, , LCPDAT12), $TOOL = STOOL2(FUS_TeachPick2_2), $BASE = SBASE(FUS_TeachPick2_2.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TeachPick2_2.IPO_FRAME), $LOAD = SLOAD(FUS_TeachPick2_2.TOOL_NO), $ACC = SACC_CP(LCPDAT12), $ORI_TYPE = SORI_TYP(LCPDAT12), $APO = SAPO(LCPDAT12), $JERK = SJERK(LCPDAT12), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+US_Pick[2,2]= XUS_TeachPick
+SLIN US_Pick[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+SLIN US_PickApproach[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+US_PickApproach[2,3] = US_Pick[2,3]
+ US_PickApproach[2,3].Z = US_PickApproach[2,3].Z + 100
+ US_PickApproachSlow[2,3].Z = US_PickApproach[2,3].Z - 65                                                
+ SLIN US_PickApproach[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN US_TeachPick2_3 Vel=1 m/s CPDAT13 Tool[1]:BlankPick Base[1]:UpStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TeachPick2_3; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT13; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TeachPick2_3 WITH $VEL = SVEL_CP(1.0, , LCPDAT13), $TOOL = STOOL2(FUS_TeachPick2_3), $BASE = SBASE(FUS_TeachPick2_3.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TeachPick2_3.IPO_FRAME), $LOAD = SLOAD(FUS_TeachPick2_3.TOOL_NO), $ACC = SACC_CP(LCPDAT13), $ORI_TYPE = SORI_TYP(LCPDAT13), $APO = SAPO(LCPDAT13), $JERK = SJERK(LCPDAT13), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+US_Pick[2,3]= XUS_TeachPick
+SLIN US_Pick[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+SLIN US_PickApproach[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+US_PickApproach[2,4] = US_Pick[2,4]
+ US_PickApproach[2,4].Z = US_PickApproach[2,4].Z + 100
+ US_PickApproachSlow[2,4].Z = US_PickApproach[2,4].Z - 65                                                
+ SLIN US_PickApproach[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN US_TeachPick2_4 Vel=1 m/s CPDAT14 Tool[1]:BlankPick Base[1]:UpStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=US_TeachPick2_4; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT14; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XUS_TeachPick2_4 WITH $VEL = SVEL_CP(1.0, , LCPDAT14), $TOOL = STOOL2(FUS_TeachPick2_4), $BASE = SBASE(FUS_TeachPick2_4.BASE_NO), $IPO_MODE = SIPO_MODE(FUS_TeachPick2_4.IPO_FRAME), $LOAD = SLOAD(FUS_TeachPick2_4.TOOL_NO), $ACC = SACC_CP(LCPDAT14), $ORI_TYPE = SORI_TYP(LCPDAT14), $APO = SAPO(LCPDAT14), $JERK = SJERK(LCPDAT14), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+US_Pick[2,4]= XUS_TeachPick
+SLIN US_Pick[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+SLIN US_PickApproach[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;FOLD SPTP DS_TeachPickStart Vel=100 % PDAT12 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_TeachPickStart; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT12; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XDS_TeachPickStart WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FDS_TeachPickStart), $BASE = SBASE(FDS_TeachPickStart.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_TeachPickStart.IPO_FRAME), $LOAD = SLOAD(FDS_TeachPickStart.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT12), $APO = SAPO_PTP(PPDAT12), $GEAR_JERK[1] = SGEAR_JERK(PPDAT12), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD          
+          
+ DS_PickApproach[1,1] = DS_Pick[1,1]
+ DS_PickApproach[1,1].Z = DS_PickApproach[1,1].Z + 100
+ DS_PickApproachSlow[1,1].Z = DS_PickApproach[1,1].Z - 65                                                
+ SLIN DS_PickApproach[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN DS_TeachPick Vel=1 m/s CPDAT21 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_TeachPick; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT21; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_TeachPick WITH $VEL = SVEL_CP(1.0, , LCPDAT21), $TOOL = STOOL2(FDS_TeachPick), $BASE = SBASE(FDS_TeachPick.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_TeachPick.IPO_FRAME), $LOAD = SLOAD(FDS_TeachPick.TOOL_NO), $ACC = SACC_CP(LCPDAT21), $ORI_TYPE = SORI_TYP(LCPDAT21), $APO = SAPO(LCPDAT21), $JERK = SJERK(LCPDAT21), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+DS_Pick[1,1]= XUS_TeachPick
+SLIN DS_Pick[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+SLIN DS_PickApproach[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ 
+ 
+DS_PickApproach[1,2] = DS_Pick[1,2]
+ DS_PickApproach[1,2].Z = DS_PickApproach[1,2].Z + 100
+ DS_PickApproachSlow[1,2].Z = DS_PickApproach[1,2].Z - 65                                                
+ SLIN DS_PickApproach[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN DS_TeachPick1_2 Vel=1 m/s CPDAT19 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_TeachPick1_2; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT19; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_TeachPick1_2 WITH $VEL = SVEL_CP(1.0, , LCPDAT19), $TOOL = STOOL2(FDS_TeachPick1_2), $BASE = SBASE(FDS_TeachPick1_2.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_TeachPick1_2.IPO_FRAME), $LOAD = SLOAD(FDS_TeachPick1_2.TOOL_NO), $ACC = SACC_CP(LCPDAT19), $ORI_TYPE = SORI_TYP(LCPDAT19), $APO = SAPO(LCPDAT19), $JERK = SJERK(LCPDAT19), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+DS_Pick[1,2]= XUS_TeachPick
+SLIN DS_Pick[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+ SLIN DS_PickApproach[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ 
+ 
+DS_PickApproach[1,3] = DS_Pick[1,3]
+ DS_PickApproach[1,3].Z = DS_PickApproach[1,3].Z + 100
+ DS_PickApproachSlow[1,3].Z = DS_PickApproach[1,3].Z - 65                                                
+ SLIN DS_PickApproach[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN DS_TeachPick1_3 Vel=1 m/s CPDAT18 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_TeachPick1_3; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT18; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_TeachPick1_3 WITH $VEL = SVEL_CP(1.0, , LCPDAT18), $TOOL = STOOL2(FDS_TeachPick1_3), $BASE = SBASE(FDS_TeachPick1_3.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_TeachPick1_3.IPO_FRAME), $LOAD = SLOAD(FDS_TeachPick1_3.TOOL_NO), $ACC = SACC_CP(LCPDAT18), $ORI_TYPE = SORI_TYP(LCPDAT18), $APO = SAPO(LCPDAT18), $JERK = SJERK(LCPDAT18), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+DS_Pick[1,3]= XUS_TeachPick
+SLIN DS_Pick[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+ SLIN DS_PickApproach[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ 
+ 
+DS_PickApproach[1,4] = DS_Pick[1,4]
+ DS_PickApproach[1,4].Z = DS_PickApproach[1,4].Z + 100
+ DS_PickApproachSlow[1,4].Z = DS_PickApproach[1,4].Z - 65                                                
+ SLIN DS_PickApproach[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN DS_TeachPick1_4 Vel=1 m/s CPDAT20 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_TeachPick1_4; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT20; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_TeachPick1_4 WITH $VEL = SVEL_CP(1.0, , LCPDAT20), $TOOL = STOOL2(FDS_TeachPick1_4), $BASE = SBASE(FDS_TeachPick1_4.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_TeachPick1_4.IPO_FRAME), $LOAD = SLOAD(FDS_TeachPick1_4.TOOL_NO), $ACC = SACC_CP(LCPDAT20), $ORI_TYPE = SORI_TYP(LCPDAT20), $APO = SAPO(LCPDAT20), $JERK = SJERK(LCPDAT20), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+DS_Pick[1,4]= XUS_TeachPick
+SLIN DS_Pick[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+ SLIN DS_PickApproach[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+
+DS_PickApproach[2,1] = DS_Pick[2,1]
+ DS_PickApproach[2,1].Z = DS_PickApproach[2,1].Z + 100
+ DS_PickApproachSlow[2,1].Z = DS_PickApproach[2,1].Z - 65                                                
+ SLIN DS_PickApproach[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN DS_TeachPick2_1 Vel=1 m/s CPDAT22 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_TeachPick2_1; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT22; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_TeachPick2_1 WITH $VEL = SVEL_CP(1.0, , LCPDAT22), $TOOL = STOOL2(FDS_TeachPick2_1), $BASE = SBASE(FDS_TeachPick2_1.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_TeachPick2_1.IPO_FRAME), $LOAD = SLOAD(FDS_TeachPick2_1.TOOL_NO), $ACC = SACC_CP(LCPDAT22), $ORI_TYPE = SORI_TYP(LCPDAT22), $APO = SAPO(LCPDAT22), $JERK = SJERK(LCPDAT22), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+DS_Pick[2,1]= XUS_TeachPick
+SLIN DS_Pick[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+ SLIN DS_PickApproach[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ 
+ 
+DS_PickApproach[2,2] = DS_Pick[2,2]
+ DS_PickApproach[2,2].Z = DS_PickApproach[2,2].Z + 100
+ DS_PickApproachSlow[2,2].Z = DS_PickApproach[2,2].Z - 65                                                
+ SLIN DS_PickApproach[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN DS_TeachPick2_2 Vel=1 m/s CPDAT23 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_TeachPick2_2; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT23; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_TeachPick2_2 WITH $VEL = SVEL_CP(1.0, , LCPDAT23), $TOOL = STOOL2(FDS_TeachPick2_2), $BASE = SBASE(FDS_TeachPick2_2.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_TeachPick2_2.IPO_FRAME), $LOAD = SLOAD(FDS_TeachPick2_2.TOOL_NO), $ACC = SACC_CP(LCPDAT23), $ORI_TYPE = SORI_TYP(LCPDAT23), $APO = SAPO(LCPDAT23), $JERK = SJERK(LCPDAT23), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+DS_Pick[2,2]= XUS_TeachPick
+SLIN DS_Pick[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+SLIN DS_PickApproach[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+
+DS_PickApproach[2,3] = DS_Pick[2,3]
+ DS_PickApproach[2,3].Z = DS_PickApproach[2,3].Z + 100
+ DS_PickApproachSlow[2,3].Z = DS_PickApproach[2,3].Z - 65                                                
+ SLIN DS_PickApproach[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN DS_TeachPick2_3 Vel=1 m/s CPDAT24 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_TeachPick2_3; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT24; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_TeachPick2_3 WITH $VEL = SVEL_CP(1.0, , LCPDAT24), $TOOL = STOOL2(FDS_TeachPick2_3), $BASE = SBASE(FDS_TeachPick2_3.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_TeachPick2_3.IPO_FRAME), $LOAD = SLOAD(FDS_TeachPick2_3.TOOL_NO), $ACC = SACC_CP(LCPDAT24), $ORI_TYPE = SORI_TYP(LCPDAT24), $APO = SAPO(LCPDAT24), $JERK = SJERK(LCPDAT24), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+DS_Pick[2,3]= XUS_TeachPick
+SLIN DS_Pick[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+SLIN DS_PickApproach[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+
+DS_PickApproach[2,4] = DS_Pick[2,4]
+ DS_PickApproach[2,4].Z = DS_PickApproach[2,4].Z + 100
+ DS_PickApproachSlow[2,4].Z = DS_PickApproach[2,4].Z - 65                                                
+ SLIN DS_PickApproach[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN DS_PickApproachSlow[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2 
+;FOLD SLIN DS_TeachPick2_4 Vel=1 m/s CPDAT25 Tool[2]:FinishedPlace Base[5]:DownStacker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=DS_TeachPick2_4; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT25; Kuka.VelocityPath=1; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;ENDFOLD
+SLIN XDS_TeachPick2_4 WITH $VEL = SVEL_CP(1.0, , LCPDAT25), $TOOL = STOOL2(FDS_TeachPick2_4), $BASE = SBASE(FDS_TeachPick2_4.BASE_NO), $IPO_MODE = SIPO_MODE(FDS_TeachPick2_4.IPO_FRAME), $LOAD = SLOAD(FDS_TeachPick2_4.TOOL_NO), $ACC = SACC_CP(LCPDAT25), $ORI_TYPE = SORI_TYP(LCPDAT25), $APO = SAPO(LCPDAT25), $JERK = SJERK(LCPDAT25), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+DS_Pick[2,4]= XUS_TeachPick
+SLIN DS_Pick[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+SLIN DS_PickApproach[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+  
+
+            
+
+     
+
+
+;Clear vacuum cups outputs
+RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False 
+
+
+
+
+
+
+
+halt
+
+
+ ;move tooling to row and column approach position for pick, then slowy move into the pick position 
+            US_PickApproach[1,1] = US_Pick[1,1]
+            US_PickApproach[1,1].Z = US_PickApproach[1,1].Z + 100
+            US_PickApproachSlow[1,1].Z = US_PickApproach[1,1].Z - 65                                    
+            US_Pick1[1,1]= US_Pick[1,1]
+            US_Pick2[1,1]= US_Pick[1,1]
+            US_Pick3[1,1]= US_Pick[1,1]
+            US_Pick1[1,1].X = US_Pick[1,1].X + 0.009187222
+            US_Pick1[1,1].Y = US_Pick[1,1].Y  -0.805848
+            US_Pick1[1,1].Z = US_Pick[1,1].Z + 0.81393918
+            US_Pick1[1,1].A = US_Pick[1,1].A + 0.00272370000000421
+            US_Pick1[1,1].B = US_Pick[1,1].B -0.999994156
+            US_Pick1[1,1].C = US_Pick[1,1].C -0.00344900000001758 
+            US_Pick2[1,1].X = US_Pick[1,1].X -1.830273332
+            US_Pick2[1,1].Y = US_Pick[1,1].Y  + 0.118088
+            US_Pick2[1,1].Z = US_Pick[1,1].Z + 0.22346
+            US_Pick2[1,1].A = US_Pick[1,1].A + 0.00272370000000421
+            US_Pick2[1,1].B = US_Pick[1,1].B -0.999994156
+            US_Pick2[1,1].C = US_Pick[1,1].C -0.00344900000001758
+            US_Pick3[1,1].X = US_Pick[1,1].X + 0.764676273
+            US_Pick3[1,1].Y = US_Pick[1,1].Y  -1.519576
+            US_Pick3[1,1].Z = US_Pick[1,1].Z -0.17324344
+            US_Pick3[1,1].A = US_Pick[1,1].A + 0.00272370000000421
+            US_Pick3[1,1].B = US_Pick[1,1].B -0.999990132
+            US_Pick3[1,1].C = US_Pick[1,1].C -0.00344900000001758
+ RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False 
+ SPTP US_PickApproach[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick1[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = .01
+ SLIN US_Pick2[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick3[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ 
+RtoPLC_BlankCupAVac=True
+RtoPLC_BlankCupBVac=True
+SLIN US_PickApproachSlow[1,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+Halt
+             US_PickApproach[1,2] = US_Pick[1,2]
+            US_PickApproach[1,2].Z = US_PickApproach[1,2].Z + 100
+            US_PickApproachSlow[1,2].Z = US_PickApproach[1,2].Z - 65                                    
+            US_Pick1[1,2]= US_Pick[1,2]
+            US_Pick2[1,2]= US_Pick[1,2]
+            US_Pick3[1,2]= US_Pick[1,2]
+            US_Pick1[1,2].X = US_Pick[1,2].X + 0.009187222
+            US_Pick1[1,2].Y = US_Pick[1,2].Y  -0.805848
+            US_Pick1[1,2].Z = US_Pick[1,2].Z + 0.81393918
+            US_Pick1[1,2].A = US_Pick[1,2].A + 0.00272370000000421
+            US_Pick1[1,2].B = US_Pick[1,2].B -0.999994156
+            US_Pick1[1,2].C = US_Pick[1,2].C -0.00344900000001758 
+            US_Pick2[1,2].X = US_Pick[1,2].X -1.830273332
+            US_Pick2[1,2].Y = US_Pick[1,2].Y  + 0.118088
+            US_Pick2[1,2].Z = US_Pick[1,2].Z + 0.22346
+            US_Pick2[1,2].A = US_Pick[1,2].A + 0.00272370000000421
+            US_Pick2[1,2].B = US_Pick[1,2].B -0.999994156
+            US_Pick2[1,2].C = US_Pick[1,2].C -0.00344900000001758
+            US_Pick3[1,2].X = US_Pick[1,2].X + 0.764676273
+            US_Pick3[1,2].Y = US_Pick[1,2].Y  -1.519576
+            US_Pick3[1,2].Z = US_Pick[1,2].Z -0.17324344
+            US_Pick3[1,2].A = US_Pick[1,2].A + 0.00272370000000421
+            US_Pick3[1,2].B = US_Pick[1,2].B -0.999990132
+            US_Pick3[1,2].C = US_Pick[1,2].C -0.00344900000001758
+ RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False 
+ SPTP US_PickApproach[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick1[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = .01
+ SLIN US_Pick2[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick3[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1 
+ SLIN US_Pick[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ 
+RtoPLC_BlankCupAVac=True
+RtoPLC_BlankCupBVac=True
+SLIN US_PickApproachSlow[1,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+Halt
+
+            US_PickApproach[1,3] = US_Pick[1,3]
+            US_PickApproach[1,3].Z = US_PickApproach[1,3].Z + 100
+            US_PickApproachSlow[1,3].Z = US_PickApproach[1,3].Z - 65                                    
+            US_Pick1[1,3]= US_Pick[1,3]
+            US_Pick2[1,3]= US_Pick[1,3]
+            US_Pick3[1,3]= US_Pick[1,3]
+            US_Pick1[1,3].X = US_Pick[1,3].X + 2
+
+            US_Pick1[1,3].Y = US_Pick[1,3].Y  +1
+
+
+            US_Pick1[1,3].Z = US_Pick[1,3].Z + 0.2
+            US_Pick1[1,3].A = US_Pick[1,3].A + 0.00272370000000421
+            US_Pick1[1,3].B = US_Pick[1,3].B -0.999994156
+            US_Pick1[1,3].C = US_Pick[1,3].C -0.00344900000001758 
+            US_Pick2[1,3].X = US_Pick[1,3].X -1.830273332
+            US_Pick2[1,3].Y = US_Pick[1,3].Y  + 0.118088
+            US_Pick2[1,3].Z = US_Pick[1,3].Z + 0.22346
+            US_Pick2[1,3].A = US_Pick[1,3].A + 0.00272370000000421
+            US_Pick2[1,3].B = US_Pick[1,3].B -0.999994156
+            US_Pick2[1,3].C = US_Pick[1,3].C -0.00344900000001758
+            US_Pick3[1,3].X = US_Pick[1,3].X + 0.764676273
+            US_Pick3[1,3].Y = US_Pick[1,3].Y  -1.519576
+            US_Pick3[1,3].Z = US_Pick[1,3].Z -0.17324344
+            US_Pick3[1,3].A = US_Pick[1,3].A + 0.00272370000000421
+            US_Pick3[1,3].B = US_Pick[1,3].B -0.999990132
+            US_Pick3[1,3].C = US_Pick[1,3].C -0.00344900000001758
+
+  RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False 
+ SPTP US_PickApproach[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick1[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = .01
+ SLIN US_Pick2[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick3[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ 
+RtoPLC_BlankCupAVac=True
+RtoPLC_BlankCupBVac=True
+SLIN US_PickApproachSlow[1,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+Halt
+             US_PickApproach[1,4] = US_Pick[1,4]
+            US_PickApproach[1,4].Z = US_PickApproach[1,4].Z + 100
+            US_PickApproachSlow[1,4].Z = US_PickApproach[1,4].Z - 65                                    
+            US_Pick1[1,4]= US_Pick[1,4]
+            US_Pick2[1,4]= US_Pick[1,4]
+            US_Pick3[1,4]= US_Pick[1,4]
+            US_Pick1[1,4].X = US_Pick[1,4].X + 0.009187222
+            US_Pick1[1,4].Y = US_Pick[1,4].Y  -0.805848
+            US_Pick1[1,4].Z = US_Pick[1,4].Z + 0.81393918
+            US_Pick1[1,4].A = US_Pick[1,4].A + 0.00272370000000421
+            US_Pick1[1,4].B = US_Pick[1,4].B -0.999994156
+            US_Pick1[1,4].C = US_Pick[1,4].C -0.00344900000001758 
+            US_Pick2[1,4].X = US_Pick[1,4].X -1.830273332
+            US_Pick2[1,4].Y = US_Pick[1,4].Y  + 0.118088
+            US_Pick2[1,4].Z = US_Pick[1,4].Z + 0.22346
+            US_Pick2[1,4].A = US_Pick[1,4].A + 0.00272370000000421
+            US_Pick2[1,4].B = US_Pick[1,4].B -0.999994156
+            US_Pick2[1,4].C = US_Pick[1,4].C -0.00344900000001758
+            US_Pick3[1,4].X = US_Pick[1,4].X + 0.764676273
+            US_Pick3[1,4].Y = US_Pick[1,4].Y  -1.519576
+            US_Pick3[1,4].Z = US_Pick[1,4].Z -0.17324344
+            US_Pick3[1,4].A = US_Pick[1,4].A + 0.00272370000000421
+            US_Pick3[1,4].B = US_Pick[1,4].B -0.999990132
+            US_Pick3[1,4].C = US_Pick[1,4].C -0.00344900000001758
+ 
+  RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False 
+ SPTP US_PickApproach[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick1[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = .01
+ SLIN US_Pick2[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick3[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ 
+RtoPLC_BlankCupAVac=True
+RtoPLC_BlankCupBVac=True
+SLIN US_PickApproachSlow[1,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+   US_PickApproach[2,1] = US_Pick[2,1]
+            US_PickApproach[2,1].Z = US_PickApproach[2,1].Z + 100
+            US_PickApproachSlow[2,1].Z = US_PickApproach[2,1].Z - 65                                    
+            US_Pick1[2,1]= US_Pick[2,1]
+            US_Pick2[2,1]= US_Pick[2,1]
+            US_Pick3[2,1]= US_Pick[2,1]
+            US_Pick1[2,1].X = US_Pick[2,1].X + 0.009187222
+            US_Pick1[2,1].Y = US_Pick[2,1].Y  -0.805848
+            US_Pick1[2,1].Z = US_Pick[2,1].Z + 0.81393918
+            US_Pick1[2,1].A = US_Pick[2,1].A + 0.00272370000000421
+            US_Pick1[2,1].B = US_Pick[2,1].B -0.999994156
+            US_Pick1[2,1].C = US_Pick[2,1].C -0.00344900000001758 
+            US_Pick2[2,1].X = US_Pick[2,1].X -1.830273332
+            US_Pick2[2,1].Y = US_Pick[2,1].Y  + 0.118088
+            US_Pick2[2,1].Z = US_Pick[2,1].Z + 0.22346
+            US_Pick2[2,1].A = US_Pick[2,1].A + 0.00272370000000421
+            US_Pick2[2,1].B = US_Pick[2,1].B -0.999994156
+            US_Pick2[2,1].C = US_Pick[2,1].C -0.00344900000001758
+            US_Pick3[2,1].X = US_Pick[2,1].X + 0.764676273
+            US_Pick3[2,1].Y = US_Pick[2,1].Y  -1.519576
+            US_Pick3[2,1].Z = US_Pick[2,1].Z -0.17324344
+            US_Pick3[2,1].A = US_Pick[2,1].A + 0.00272370000000421
+            US_Pick3[2,1].B = US_Pick[2,1].B -0.999990132
+            US_Pick3[2,1].C = US_Pick[2,1].C -0.00344900000001758
+ RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False 
+ SPTP US_PickApproach[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick1[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = .01
+ SLIN US_Pick2[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick3[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ 
+RtoPLC_BlankCupAVac=True
+RtoPLC_BlankCupBVac=True
+SLIN US_PickApproachSlow[2,1] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+Halt
+             US_PickApproach[2,2] = US_Pick[2,2]
+            US_PickApproach[2,2].Z = US_PickApproach[2,2].Z + 100
+            US_PickApproachSlow[2,2].Z = US_PickApproach[2,2].Z - 65                                    
+            US_Pick1[2,2]= US_Pick[2,2]
+            US_Pick2[2,2]= US_Pick[2,2]
+            US_Pick3[2,2]= US_Pick[2,2]
+            US_Pick1[2,2].X = US_Pick[2,2].X + 0.009187222
+            US_Pick1[2,2].Y = US_Pick[2,2].Y  -0.805848
+            US_Pick1[2,2].Z = US_Pick[2,2].Z + 0.81393918
+            US_Pick1[2,2].A = US_Pick[2,2].A + 0.00272370000000421
+            US_Pick1[2,2].B = US_Pick[2,2].B -0.999994156
+            US_Pick1[2,2].C = US_Pick[2,2].C -0.00344900000001758 
+            US_Pick2[2,2].X = US_Pick[2,2].X -1.830273332
+            US_Pick2[2,2].Y = US_Pick[2,2].Y  + 0.118088
+            US_Pick2[2,2].Z = US_Pick[2,2].Z + 0.22346
+            US_Pick2[2,2].A = US_Pick[2,2].A + 0.00272370000000421
+            US_Pick2[2,2].B = US_Pick[2,2].B -0.999994156
+            US_Pick2[2,2].C = US_Pick[2,2].C -0.00344900000001758
+            US_Pick3[2,2].X = US_Pick[2,2].X + 0.764676273
+            US_Pick3[2,2].Y = US_Pick[2,2].Y  -1.519576
+            US_Pick3[2,2].Z = US_Pick[2,2].Z -0.17324344
+            US_Pick3[2,2].A = US_Pick[2,2].A + 0.00272370000000421
+            US_Pick3[2,2].B = US_Pick[2,2].B -0.999990132
+            US_Pick3[2,2].C = US_Pick[2,2].C -0.00344900000001758
+ RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False 
+ SPTP US_PickApproach[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick1[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = .01
+ SLIN US_Pick2[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick3[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ 
+RtoPLC_BlankCupAVac=True
+RtoPLC_BlankCupBVac=True
+SLIN US_PickApproachSlow[2,2] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+Halt
+            US_PickApproach[2,3] = US_Pick[2,3]
+            US_PickApproach[2,3].Z = US_PickApproach[2,3].Z + 100
+            US_PickApproachSlow[2,3].Z = US_PickApproach[2,3].Z - 65                                    
+            US_Pick1[2,3]= US_Pick[2,3]
+            US_Pick2[2,3]= US_Pick[2,3]
+            US_Pick3[2,3]= US_Pick[2,3]
+            US_Pick1[2,3].X = US_Pick[2,3].X + 0.009187222
+            US_Pick1[2,3].Y = US_Pick[2,3].Y  -0.805848
+            US_Pick1[2,3].Z = US_Pick[2,3].Z + 0.81393918
+            US_Pick1[2,3].A = US_Pick[2,3].A + 0.00272370000000421
+            US_Pick1[2,3].B = US_Pick[2,3].B -0.999994156
+            US_Pick1[2,3].C = US_Pick[2,3].C -0.00344900000001758 
+            US_Pick2[2,3].X = US_Pick[2,3].X -1.830273332
+            US_Pick2[2,3].Y = US_Pick[2,3].Y  + 0.118088
+            US_Pick2[2,3].Z = US_Pick[2,3].Z + 0.22346
+            US_Pick2[2,3].A = US_Pick[2,3].A + 0.00272370000000421
+            US_Pick2[2,3].B = US_Pick[2,3].B -0.999994156
+            US_Pick2[2,3].C = US_Pick[2,3].C -0.00344900000001758
+            US_Pick3[2,3].X = US_Pick[2,3].X + 0.764676273
+            US_Pick3[2,3].Y = US_Pick[2,3].Y  -1.519576
+            US_Pick3[2,3].Z = US_Pick[2,3].Z -0.17324344
+            US_Pick3[2,3].A = US_Pick[2,3].A + 0.00272370000000421
+            US_Pick3[2,3].B = US_Pick[2,3].B -0.999990132
+            US_Pick3[2,3].C = US_Pick[2,3].C -0.00344900000001758
+
+  RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False 
+ SPTP US_PickApproach[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick1[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = .01
+ SLIN US_Pick2[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick3[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ 
+RtoPLC_BlankCupAVac=True
+RtoPLC_BlankCupBVac=True
+SLIN US_PickApproachSlow[2,3] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+Halt
+             US_PickApproach[2,4] = US_Pick[2,4]
+            US_PickApproach[2,4].Z = US_PickApproach[2,4].Z + 100
+            US_PickApproachSlow[2,4].Z = US_PickApproach[2,4].Z - 65                                    
+            US_Pick1[2,4]= US_Pick[2,4]
+            US_Pick2[2,4]= US_Pick[2,4]
+            US_Pick3[2,4]= US_Pick[2,4]
+            US_Pick1[2,4].X = US_Pick[2,4].X + 0.009187222
+            US_Pick1[2,4].Y = US_Pick[2,4].Y  -0.805848
+            US_Pick1[2,4].Z = US_Pick[2,4].Z + 0.81393918
+            US_Pick1[2,4].A = US_Pick[2,4].A + 0.00272370000000421
+            US_Pick1[2,4].B = US_Pick[2,4].B -0.999994156
+            US_Pick1[2,4].C = US_Pick[2,4].C -0.00344900000001758 
+            US_Pick2[2,4].X = US_Pick[2,4].X -1.830273332
+            US_Pick2[2,4].Y = US_Pick[2,4].Y  + 0.118088
+            US_Pick2[2,4].Z = US_Pick[2,4].Z + 0.22346
+            US_Pick2[2,4].A = US_Pick[2,4].A + 0.00272370000000421
+            US_Pick2[2,4].B = US_Pick[2,4].B -0.999994156
+            US_Pick2[2,4].C = US_Pick[2,4].C -0.00344900000001758
+            US_Pick3[2,4].X = US_Pick[2,4].X + 0.764676273
+            US_Pick3[2,4].Y = US_Pick[2,4].Y  -1.519576
+            US_Pick3[2,4].Z = US_Pick[2,4].Z -0.17324344
+            US_Pick3[2,4].A = US_Pick[2,4].A + 0.00272370000000421
+            US_Pick3[2,4].B = US_Pick[2,4].B -0.999990132
+            US_Pick3[2,4].C = US_Pick[2,4].C -0.00344900000001758
+ 
+  RtoPLC_BlankCupAVac=False
+RtoPLC_BlankCupBVac=False 
+RtoPLC_BlankCupABlow=False
+RtoPLC_BlankCupBBlow=False 
+ SPTP US_PickApproach[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick1[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = .01
+ SLIN US_Pick2[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick3[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ SLIN US_Pick[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 1
+ 
+RtoPLC_BlankCupAVac=True
+RtoPLC_BlankCupBVac=True
+SLIN US_PickApproachSlow[2,4] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+
+EndOfModule:
+END
