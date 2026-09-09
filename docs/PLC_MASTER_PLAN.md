@@ -31,6 +31,38 @@ should be recorded here rather than discovered in the code later.
 | Stacker positions | PLC owns row/column/layer selection, sourced from `UpAxis_NextValidPos`. |
 | Definition of done | Each of the 9 routines commandable individually from the PLC and reporting correctly, plus a rough auto-sequence framework that chains them. |
 
+### Purpose of the machine
+
+This is a **demo cell for an open house, 4–8 weeks out**. A visitor types a name at a kiosk, the
+laser engraves it on a blank, the blank is insert-moulded, and the visitor picks their part out of
+the chute by reading their own name off it. That reframes several priorities: the cell must look
+alive, recover without help, and never hand someone the wrong part.
+
+| Area | Decision |
+|---|---|
+| Laser marking | Company logo by default; a queued name engraved on request. |
+| Name transport | Free text over EtherNet/IP to the MDX2. **Nothing in the PLC does this today** — zero STRING tags, zero MSG instructions. New construction. |
+| String length | 20 characters. |
+| Kiosk | An Optix screen that *submits* into a PLC-owned name queue. It never commands the cell. |
+| Kiosk input guard | Character restrictions only (letters, digits, spaces, length clamp). |
+| Queue control | Operator can cancel or edit a pending entry. |
+| Part matching | The name is on the part — no tickets, no sorted bin, no post-delivery lookup. |
+| 2-up naming | Two text fields per laser fire; a field with no queued name takes the logo. |
+| Scrap of a named part | Name is pushed back to the **head** of the queue and re-run automatically. |
+| Mark visibility | Readable on the finished moulded part. |
+| Modes | Auto, Manual (single routine), Dry cycle, Purge. |
+| Dry cycle | Operator selects per run whether the IMM leg is included. |
+| Startup | Operator presses home, then start. Nothing moves unasked. |
+| Tray density | Two blanks per tray position, one per cup. 8 positions × 11 layers = 176 blanks per stack. |
+| Layer count | **11 layers.** See the bounds bug in §2. |
+| Tray reload | Expected mid-event. New trays assumed full; the partly-used tray keeps its own map. Sensor counts trays, operator confirms; **sensor is authoritative**, mismatch warns. |
+| Tray memory | Follows the tray, and tracks current position. **Expand the existing `UpAxis_Memory` logic — do not rewrite it.** |
+| Downstacker | Simple empty-tray counter plus full detection. No position map. |
+| Entry to load | Request-to-enter button → full stop, robot home, everything holds, then unlock. |
+| Empty trays | Unloaded during the event, same entry request. |
+| Position source | **Robot taught points win.** PLC sends the tray index; robot uses `US_Pick[row,col]`. The PLC's x/y/r `TrayPositions` path is not the source of truth. |
+| Part memory | See [`PART_MEMORY.md`](PART_MEMORY.md). Adopt the `Part_Data` shape, retire `Data_Item`; locations hold a sequence number only; pair record with per-part sub-records. |
+
 ### Out of scope for this push
 
 - Reject drawer indexing (`Station500_DrawerMove` stays empty; drawer is emptied by hand).
@@ -56,6 +88,23 @@ Nothing in §4 onward is safe to build until these are closed. They are tasks 0.
    are actually installed and wired, versus present in the I/O tree only.
 5. **EuroMap 67 connection state.** Confirm the molder is physically connected and the EM67 / EM78
    signals in `Routine040700_OutputActions` are live.
+6. **Can the MDX2 accept free text over EtherNet/IP?** The current connection carries discrete bits
+   only — ready, busy, error, trigger, reset, and two bits that look like program select. Sending a
+   string needs a larger assembly and the marker's command protocol. **Get the manual and prove one
+   string end to end before any of the naming work is built on the assumption.** This is the single
+   biggest schedule risk to the open house.
+7. **The new tray-count sensor** is not specified yet — part number, mounting, and whether it counts
+   trays or measures stack height. The replenishment logic can't be finished without it.
+8. **Processor memory headroom.** `Part_Log[500]` at ~64 bytes is ~32 KB, which is modest, but the
+   controller type isn't in these exports. Confirm before sizing anything larger.
+
+### The layer-bounds bug
+
+`UpAxis_Memory` is `SINT[12]` (valid indices 0–11), `UpAxis_Positions` is `DINT[14]`, rung 7 limits
+requests to 1–13, rung 8 increments while `CurrentLayer < 13`, and rung 9 clamps at ≥11. Indexing
+`UpAxis_Memory[UpAxis_CurrentLayer]` at layer 12 or 13 is **out of range and will major-fault the
+processor.** The agreed answer is 11 layers: rung 9 is right, rungs 7 and 8 are wrong. Derive all
+four from one constant.
 
 ---
 
