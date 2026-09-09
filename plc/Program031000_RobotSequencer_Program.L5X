@@ -4,16 +4,57 @@
 <DataTypes Use="Context">
 <DataType Name="UDT_Routine_Control" Family="NoFamily" Class="User">
 <Members>
-<Member Name="Routine_Name" DataType="STRING" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Name Of Routine, Used for Data Logging Final Inspection Data]]></Description></Member>
-<Member Name="Step_Description" DataType="STRING" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Text description for Current Cycle Step]]></Description></Member>
-<Member Name="Routine_CurrentCycleStep" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Cycle Step Dint For Auto Control]]></Description></Member>
-<Member Name="Routine_NextCycleStep" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Next Cycle Step For Auto Control]]></Description></Member>
-<Member Name="Routine_CycleComplete" DataType="BOOL" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Routine is Done]]></Description></Member>
-<Member Name="Routine_CycleStarted" DataType="BOOL" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Routine is Starting]]></Description></Member>
-<Member Name="Fault_Dint" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Fault Bits]]></Description></Member>
-<Member Name="Msg_Dint" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Message bits]]></Description></Member>
-<Member Name="ONS_Dint" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[One Shot]]></Description></Member>
-<Member Name="Station_Cycle_Time" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Stations Last cycle Time]]></Description></Member>
+<Member Name="Routine_Name" DataType="STRING" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Name Of Routine, Used for Data Logging Final Inspection Data]]>
+</Description>
+</Member>
+<Member Name="Step_Description" DataType="STRING" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Text description for Current Cycle Step]]>
+</Description>
+</Member>
+<Member Name="Routine_CurrentCycleStep" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cycle Step Dint For Auto Control]]>
+</Description>
+</Member>
+<Member Name="Routine_NextCycleStep" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Next Cycle Step For Auto Control]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZUDT_Routine_Control0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Routine_CycleComplete" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZUDT_Routine_Control0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Routine is Done]]>
+</Description>
+</Member>
+<Member Name="Routine_CycleStarted" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZUDT_Routine_Control0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Routine is Starting]]>
+</Description>
+</Member>
+<Member Name="Fault_Dint" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Fault Bits]]>
+</Description>
+</Member>
+<Member Name="Msg_Dint" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Message bits]]>
+</Description>
+</Member>
+<Member Name="ONS_Dint" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[One Shot]]>
+</Description>
+</Member>
+<Member Name="Station_Cycle_Time" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Stations Last cycle Time]]>
+</Description>
+</Member>
 </Members>
 </DataType>
 <DataType Name="Part_Pair" Family="NoFamily" Class="User">
@@ -21,15 +62,47 @@
 <![CDATA[One 2-up pair as it travels the cell. Locations hold this record's index (a sequence number), never a copy, so nothing can diverge.]]>
 </Description>
 <Members>
-<Member Name="Seq_Num" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[Identity, 1..500. Same as the Part_Log index.]]></Description></Member>
-<Member Name="State" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"><Description><![CDATA[0 empty, 10 allocated, 20 on gripper unmarked, 30 in nest, 40 marked, 50 on gripper marked, 60 in mould, 70 on gripper moulded, 80 sprue cut, 90 delivered, 900 rejected.]]></Description></Member>
+<Member Name="Seq_Num" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Identity, 1..500. Same as the Part_Log index.]]>
+</Description>
+</Member>
+<Member Name="State" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[0 empty, 10 allocated, 20 on gripper unmarked, 30 in nest, 40 marked, 50 on gripper marked, 60 in mould, 70 on gripper moulded, 80 sprue cut, 90 delivered, 900 rejected.]]>
+</Description>
+</Member>
 <Member Name="ZZZZZZZZZZPart_Pair0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
-<Member Name="A_Present" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="0" ExternalAccess="Read/Write"><Description><![CDATA[Cup A side holds a part.]]></Description></Member>
-<Member Name="A_Good" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="1" ExternalAccess="Read/Write"><Description><![CDATA[Cup A part is good.]]></Description></Member>
-<Member Name="A_Bad" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="2" ExternalAccess="Read/Write"><Description><![CDATA[Cup A part is scrap.]]></Description></Member>
-<Member Name="B_Present" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="3" ExternalAccess="Read/Write"><Description><![CDATA[Cup B side holds a part.]]></Description></Member>
-<Member Name="B_Good" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="4" ExternalAccess="Read/Write"><Description><![CDATA[Cup B part is good.]]></Description></Member>
-<Member Name="B_Bad" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="5" ExternalAccess="Read/Write"><Description><![CDATA[Cup B part is scrap.]]></Description></Member>
+<Member Name="A_Present" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cup A side holds a part.]]>
+</Description>
+</Member>
+<Member Name="A_Good" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cup A part is good.]]>
+</Description>
+</Member>
+<Member Name="A_Bad" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cup A part is scrap.]]>
+</Description>
+</Member>
+<Member Name="B_Present" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cup B side holds a part.]]>
+</Description>
+</Member>
+<Member Name="B_Good" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cup B part is good.]]>
+</Description>
+</Member>
+<Member Name="B_Bad" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPart_Pair0" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Cup B part is scrap.]]>
+</Description>
+</Member>
 </Members>
 </DataType>
 </DataTypes>
@@ -228,26 +301,26 @@
 </Tag>
 <Tag Name="Seq_CycleTimer" TagType="Base" DataType="TIMER" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Measures how long the last commanded routine took. SET PRESET: 600000 ms so it free-runs.]]>
+<![CDATA[Measures how long the last commanded routine took. Preset is large so it free-runs; only .ACC is read.]]>
 </Description>
 <Data Format="L5K">
-<![CDATA[[0,0,0]]]>
+<![CDATA[[0,600000,0]]]>
 </Data>
 </Tag>
 <Tag Name="Seq_AckTimer" TagType="Base" DataType="TIMER" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Acceptance timeout. SET PRESET: 3000 ms.]]>
+<![CDATA[Acceptance timeout: robot never acknowledged. Preset 3 s.]]>
 </Description>
 <Data Format="L5K">
-<![CDATA[[0,0,0]]]>
+<![CDATA[[0,3000,0]]]>
 </Data>
 </Tag>
 <Tag Name="Seq_RunTimer" TagType="Base" DataType="TIMER" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Run timeout. SET PRESET: 120000 ms.]]>
+<![CDATA[Run timeout: accepted but never finished. Preset 120 s. Raise if IMMExchange legitimately runs longer.]]>
 </Description>
 <Data Format="L5K">
-<![CDATA[[0,0,0]]]>
+<![CDATA[[0,120000,0]]]>
 </Data>
 </Tag>
 <Tag Name="HMI_Mode_Select" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
@@ -420,9 +493,6 @@
 <Description>
 <![CDATA[Master part record, indexed by sequence number. Not retentive.]]>
 </Description>
-<Data Format="L5K">
-<![CDATA[[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]]]>
-</Data>
 </Tag>
 <Tag Name="Part_Seq_Next" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
@@ -498,10 +568,10 @@
 </Tag>
 <Tag Name="Mem_Disagree_TMR" TagType="Base" DataType="TIMER" Dimensions="5" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Debounce. Suggested preset 1000 ms.]]>
+<![CDATA[Memory/sensor disagreement debounce, 1 s, so a part in transit does not trip it.]]>
 </Description>
 <Data Format="L5K">
-<![CDATA[[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]]]>
+<![CDATA[[[0,1000,0],[0,1000,0],[0,1000,0],[0,1000,0],[0,1000,0]]]]>
 </Data>
 </Tag>
 <Tag Name="Sim_MarkAtStation3" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">

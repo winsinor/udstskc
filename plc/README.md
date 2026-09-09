@@ -29,21 +29,36 @@ Sequencer state lives in `Robot_Seq`, a `UDT_Routine_Control` — the same shape
 station, and the same one the inert `Robot_Auto` uses. **`Robot_Auto` and
 `Routine030600_RobotAutoSequence` can be deleted once this runs.**
 
+## At the import dialog
+
+- It will list **13 controller tags** (`Robot_Cmd_*`, `Robot_Sts_*`) as dependencies with operation
+  **Create**. Accept them — they are the words that cross to the robot, and `Program040000` needs
+  them at controller scope.
+- If it flags a conflict on **`UDT_Routine_Control`**, choose **Use Existing**. Yours is
+  authoritative; the copy in here only exists so the file resolves standalone.
+- `Part_Pair` is new and should import without comment.
+
+## Timer presets are already set
+
+No manual step. `TON(tag,?,?)` is just how neutral text renders a timer whose preset lives in the
+tag — the presets are in the tag data:
+
+| Timer | Preset | Why |
+|---|---:|---|
+| `Seq_AckTimer` | 3 s | Robot never acknowledged the command |
+| `Seq_RunTimer` | 120 s | Accepted but never finished. **Raise this if `IMMExchange` legitimately runs longer.** |
+| `Seq_CycleTimer` | 600 s | Free-runs; only `.ACC` is read, into `Robot_Seq.Station_Cycle_Time` |
+| `Mem_Disagree_TMR[1..5]` | 1 s | Debounce, so a part in transit doesn't trip a disagreement |
+
 ## Before you download
 
-1. **Set four timer presets.** They export as `?`:
-   - `Seq_AckTimer` — 3000 ms (robot never acknowledged)
-   - `Seq_RunTimer` — 120000 ms (accepted but never finished; raise if `IMMExchange` runs longer)
-   - `Seq_CycleTimer` — 600000 ms (free-runs; it only measures)
-   - `Mem_Disagree_TMR[1]` and `[2]` — 1000 ms (debounce, so a part in transit doesn't trip it)
+1. **Map the `Ext_` stubs** in `R999_ExternalInterface`. Until then the sequencer sits at step 0.
 
-2. **Map the `Ext_` stubs** in `R999_ExternalInterface`. Until then the sequencer will sit at step 0.
-
-3. **Add the two `COP` rungs** to `Program040000_Station100_Robot` — see §10 of
+2. **Add the two `COP` rungs** to `Program040000_Station100_Robot` — see §10 of
    [`../docs/AUTOSEQUENCE.md`](../docs/AUTOSEQUENCE.md). Byte offsets 64–91 are **assumed free and
    unverified**; check the assembly sizes first.
 
-4. **Nothing moves until the robot side exists.** This half is complete and will run, but it is
+3. **Nothing moves until the robot side exists.** This half is complete and will run, but it is
    commanding a robot that does not yet speak the protocol — `Robot_Sts_State` stays 0 and every
    command times out at `Seq_AckTimer` with fault 9001. That is the correct behaviour, and it is a
    useful first test.
@@ -58,6 +73,20 @@ Set `HMI_Mode_Select` = 1 (manual), then drive `R900_Manual`: put a routine numb
 `Sim_MarkAtStation3` is a commissioning aid: with no laser wired, it advances a pair from state 30
 to 40 when it reaches nest station 3, so the whole loop can be exercised. **Clear it before the
 marker goes in.**
+
+## What was verified
+
+The file passes fourteen structural checks: XML well-formed, root and program skeleton correct,
+`ExportOptions` not promising decorated data that isn't there, every UDT `BIT` member resolving to a
+declared hidden host with unique in-range bit numbers, no `Radix` on structured tags, no L5K data on
+UDT-typed tags, every rung reference resolving to a declared tag or UDT member, all 30 one-shots
+unique and inside a DINT, every array subscript inside its declared dimension, rung numbering
+contiguous, every `JSR` target existing, and no stray CDATA terminators.
+
+What that does **not** cover: I have no Studio 5000 here to actually import it against. The residual
+risk is the `UDT_Routine_Control` definition not matching yours member-for-member — hence
+**Use Existing** above. If it rejects for any other reason, the same logic is in
+[`../docs/AUTOSEQUENCE.md`](../docs/AUTOSEQUENCE.md) as neutral text you can paste rung by rung.
 
 ## Two things to read before editing
 
