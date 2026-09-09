@@ -32,6 +32,10 @@ Legend: `[ ]` open · `[~]` in progress · `[x]` done · **⛔** blocked on some
       built until a string has actually reached the marker.
 - [ ] **0.9** Specify the new tray-count sensor — part number, mounting, and whether it counts trays
       or measures stack height. Phase 10 can't be finished without it.
+- [ ] **0.11** **Is the laser hood interlock safety-rated?** Rung 13 gates the fire on hood
+      position in the *standard* PLC, which contradicts "hardwired relays only". Either something
+      independent prevents firing with the hood up, or that rung is the only thing that does.
+      *Resolve before an event with visitors in the room.*
 - [ ] **0.10** Confirm the controller type and memory headroom. `Part_Log[500]` is ~32 KB, which is
       modest, but the processor isn't identified in these exports.
 
@@ -99,6 +103,12 @@ Legend: `[ ]` open · `[~]` in progress · `[x]` done · **⛔** blocked on some
 - [ ] **4.5** ⛔1.4 — Zone occupancy interlocks so overlap is safe. Derive the mould zone from
       `RtoIMM_MoldAreaFree` rather than tracking it separately.
 - [ ] **4.6** Finish the two rungs `Routine030200_Mode_Control` flags in its own comments.
+- [ ] **4.7** Turntable index trigger — **my call, overrule if wrong:** the sequencer indexes when
+      station 1 has been serviced and the robot is out of zone Z2. Replaces today's
+      `TurnTable_New_Seq_Num` / PRX200 latch of `VFD_Index_REQUEST`.
+- [ ] **4.8** Overlap is permitted everywhere: while the turntable indexes the robot may pick from
+      the tray, work in the mould, sprue-cut, drop down the chute, or shift a layer. The turntable
+      is blocked only while the robot is physically at the nest — one interlock, not a matrix.
 
 ## Phase 5 — Part memory
 
@@ -127,6 +137,10 @@ Full spec in [`docs/PART_MEMORY.md`](docs/PART_MEMORY.md).
       four nests read empty, confirm the mould is clear. The mould has no sensor, so it is the one
       location the operator must vouch for.
 - [ ] **5.11** ⛔0.5 — Remove Optix writes. Optix becomes submit-and-display only.
+- [ ] **5.12** Sub-step reporting for `IMMExchange` (entered / shot gripped / blanks released /
+      clear) and `LayerShift`. The mould has no sensor and a tray mid-push is unconstrained; these
+      are the only two places the PLC cannot otherwise know where things are. Write the pattern
+      generically so other routines can adopt it later.
 
 ## Phase 6 — Turntable without vision
 
@@ -173,6 +187,10 @@ Full spec in [`docs/PART_MEMORY.md`](docs/PART_MEMORY.md).
       costs no one their name.
 - [ ] **9.8** On scrap of a named pair, push the name back to the **head** of the queue so that
       visitor is served next rather than going to the back of the line.
+- [ ] **9.9** Publish an estimated wait (queue depth × cycle rate) for the kiosk to show. The queue
+      accepts rather than refuses, so it is sized at 50 and must never fill in practice.
+- [ ] **9.10** Visitor-facing status screen: the queue, what is being marked now, what is coming
+      out. Separate from the engineer-facing HMI.
 
 ## Phase 10 — Tray replenishment and cell entry
 

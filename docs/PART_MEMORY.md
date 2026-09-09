@@ -117,13 +117,17 @@ Spaced in tens so states can be inserted without renumbering.
 ### 3.4 Name queue
 
 ```
-Name_Queue    STRING_20[20]   -- ring buffer, written by the Optix kiosk
+Name_Queue    STRING_20[50]   -- ring buffer, written by the Optix kiosk
 Name_Q_Head   DINT
 Name_Q_Tail   DINT
 Name_Q_Count  DINT
 ```
 
 The kiosk **submits** into this queue and does nothing else. It never commands the cell.
+
+The queue **accepts and shows an estimated wait** (depth x cycle rate, published by the PLC) rather
+than refusing a submission — which is why it is sized at 50 rather than 20. It must be deep enough
+that it never fills in practice; a visitor who queues a name must never lose it silently.
 
 **The name attaches at the laser, not at the pick.** A pair is born anonymous at the upstacker.
 When its nest arrives at the laser station and is about to fire, the PLC pulls up to two names off
@@ -164,6 +168,10 @@ memory known to match reality.
 This costs a few blanks and about a minute every morning, and it needs no human judgement — which
 is the right trade for a machine being opened up by whoever gets there first on the day.
 
+A named part left in the cell from before a power cycle is discarded by the purge, and the pending
+name queue is gone with it. That is accepted: it is rare, and by the time power is restored the
+visitor has moved on.
+
 ### 4.2 Memory versus sensors — hold and alarm
 
 At every point where a sensor can corroborate the memory, it is checked:
@@ -181,6 +189,27 @@ data known to be wrong, and the cause gets found instead of papered over.
 
 The mould has no sensor, which is why §4.1 purge exists and why the mould is the one location the
 operator must vouch for.
+
+### 4.2a Mould sub-steps — the substitute for a sensor
+
+Because nothing senses the cavities, `IMMExchange` reports **sub-steps** as it runs, so a fault
+anywhere inside it leaves the PLC knowing which side of the exchange it stopped on rather than
+guessing:
+
+| Sub-step | Meaning for `Loc_Mold` |
+|---:|---|
+| 1 | Entered, nothing exchanged yet — mould still holds the previous shot |
+| 2 | Shot gripped on the finished side — mould now empty |
+| 3 | Blanks released into the cavities — mould holds the new pair |
+| 4 | Ejector back, robot clear — exchange complete |
+
+A fault at sub-step 2 means the mould is empty and the gripper holds the shot. A fault at 3 means
+the mould holds the new pair and the previous shot is on the gripper. Without this, both look
+identical from outside and the only safe response is to open the mould and look.
+
+`LayerShift` reports the same way, for the same reason: mid-push the tray is unconstrained and
+neither stacker knows where it is. Every other routine is corroborated by a vacuum switch or a
+part-present sensor and needs no sub-steps.
 
 ### 4.3 Delivery confirmation
 

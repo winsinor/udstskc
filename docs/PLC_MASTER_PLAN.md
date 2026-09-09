@@ -62,6 +62,21 @@ alive, recover without help, and never hand someone the wrong part.
 | Empty trays | Unloaded during the event, same entry request. |
 | Position source | **Robot taught points win.** PLC sends the tray index; robot uses `US_Pick[row,col]`. The PLC's x/y/r `TrayPositions` path is not the source of truth. |
 | Part memory | See [`PART_MEMORY.md`](PART_MEMORY.md). Adopt the `Part_Data` shape, retire `Data_Item`; locations hold a sequence number only; pair record with per-part sub-records. |
+| Overlap scope | **Everything.** While the turntable indexes, the robot may pick from the tray, work in the mould, sprue-cut, drop down the chute, or shift a layer. The turntable is blocked only while the robot is physically at the nest — one interlock, not a matrix. |
+| Mould state on fault | Robot reports **sub-steps inside `IMMExchange`** (blanks released, shot gripped, ejector back), so a fault leaves the PLC knowing which side of the exchange it stopped on. The mould has no sensor; this is the substitute. |
+| Queue full | Kiosk **accepts and shows an estimated wait** (queue depth × cycle rate) rather than refusing. Derived: the queue must be deep enough not to fill — size `Name_Queue` at **50**, and have the PLC publish an estimated wait for the kiosk to display. |
+| Purge and names | Auto-purge on start discards any named part left from before a power cycle, and the queue is gone with it. Accepted — rare, and that visitor is long gone. |
+| Event staffing | A technician operates the cell. Plus a **visitor-facing status screen** showing the queue, what is being marked now, and what is coming out. |
+
+### Calls made in the absence of a decision
+
+Recorded so they are visible and easy to overrule. Both were left open; neither is load-bearing
+enough to block on.
+
+| Area | Call | Why |
+|---|---|---|
+| Turntable index trigger | **The PLC sequencer decides** — index when station 1 has been serviced and the robot is out of zone Z2. | The only answer consistent with PLC-as-master. Free-running wears the indexer for nothing; pacing off the mould couples two things that need not be coupled; reacting locally puts a decision back into station code. |
+| Sub-step reporting scope | **`IMMExchange` and `LayerShift` only**, with the pattern written generically. | Sub-steps earn their keep exactly where no sensor can corroborate. The mould has none. Mid-push during a layer shift the tray is unconstrained and neither stacker knows where it is. Every pick is already corroborated by a vacuum switch. |
 
 ### Out of scope for this push
 
@@ -97,6 +112,14 @@ Nothing in §4 onward is safe to build until these are closed. They are tasks 0.
    trays or measures stack height. The replenishment logic can't be finished without it.
 8. **Processor memory headroom.** `Part_Log[500]` at ~64 bytes is ~32 KB, which is modest, but the
    controller type isn't in these exports. Confirm before sizing anything larger.
+9. **Is the laser hood interlock safety-rated?** Rung 13 of `Routine060500_Operation` gates the
+   fire on hood position — `XIC(CR301) XIO(PRX102) XIC(PRX103) XIC(CRM_JB)` → `Hood_Lowered` →
+   `Shutter_OK` → `MDX2:O.Data[0].0`. That is the **standard** PLC making a laser-enclosure
+   decision, which contradicts the "hardwired relays only, the standard PLC never makes a safety
+   decision" position. Either a relay or the marker's own interlock independently prevents firing
+   with the hood up — in which case the ladder is a functional duplicate and should say so in a
+   comment — or this rung is the only thing standing between an open enclosure and a firing laser.
+   **Resolve this before an event with visitors in the room.**
 
 ### The layer-bounds bug
 
