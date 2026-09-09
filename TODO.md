@@ -1,5 +1,7 @@
 # TODO — PLC-as-Master Rework
 
+Working queue: [`NEXT.md`](NEXT.md)
+Framework to build from: [`docs/AUTOSEQUENCE.md`](docs/AUTOSEQUENCE.md)
 Design and decisions: [`docs/PLC_MASTER_PLAN.md`](docs/PLC_MASTER_PLAN.md)
 Part memory spec: [`docs/PART_MEMORY.md`](docs/PART_MEMORY.md)
 Code reading guide: published artifact — "Reading the Cell Robot Code"
