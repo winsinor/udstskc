@@ -51,26 +51,22 @@ arrive in `UStoR_PickRowNumber` / `ColumnNumber` exactly as today.
 That is all the detail available without modifying stations. They still reject parts internally and
 still report only that one flag.
 
-## Install
+## Install and test
 
-1. **`$config.dat` off the controller first.** `XHOME`, `FHOME`, `CHECK_HOME` and every existing
-   signal are declared there.
-2. Work out the real bit addresses and paste in the SIGNAL block.
-3. **Test byte order** — procedure is at the bottom of `CONFIG_ADDITIONS.dat`. A KUKA/Rockwell byte
-   swap presents as "the robot ignores my commands", not as a byte swap.
-4. Rename the existing `Main.src` / `.dat` to `Main_Legacy.*`, install this as `Main.src`.
-   **It needs no `.dat`.**
-5. Select `Main` in Ext Auto, as now.
+Step by step in **[`SETUP.md`](SETUP.md)**, including the byte-order test and a first test that
+proves the whole protocol with the robot standing still.
 
-## The alternative, if you want it
+## Why not PGNO
 
-This does **not** use `PGNO`, for the same reason your current `Main.src` doesn't: Ext Auto starts
-the program and the program loops.
+KUKA's program-number mechanism does the selection half of this natively, and the stock template
+uses it. It is **not** used here, deliberately:
 
-Keeping `PGNO` is the other option and it is arguably better — the request/acknowledge handshake
-would be the controller's rather than mine, and `Robot_Cmd_Seq` would disappear entirely. It costs
-a `$config.dat` change (point `PGNO_FBIT` at the command word, set `PGNO_TYPE` / `PGNO_LENGTH`) and
-a PLC change (drive the PGNO request/ack signals instead of the sequence counter). The robot side
-would get *smaller*, not bigger.
+- Your existing `Main.src` calls no `P00` and no `PGNO`.
+- There is no PGNO tag anywhere in the PLC project. `Routine040600_Robot_Startup` drives only the
+  *start* half of Ext Auto — DrivesOn, ConfMess, ExtStart.
+- PGNO answers "which program" and "did you hear me". It does not carry parameters, a fault code,
+  or a held result. The status half would have to be hand-rolled alongside it anyway.
 
-Worth deciding once `$config.dat` shows how `PGNO` is currently configured.
+So the stock template's `P00 (#CHK_HOME,...)` and `P00 (#INIT_EXT,...)` calls are **removed** —
+`#INIT_EXT` validates the extern-mode PGNO configuration and would fault on startup on a cell where
+PGNO is not set up. Ext Auto still starts this program exactly as it starts the current one.

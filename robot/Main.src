@@ -6,8 +6,8 @@ DEF Main ( )
 ;EXT EXAMPLE3 ( )
 
 ;FOLD INIT
-  DECL CHAR DMY[3]
-  DMY[]="---"
+  ;=== REMOVED: DECL CHAR DMY[3] / DMY[]="---". DMY existed only as the
+  ;=== message buffer for the P00 calls, which are gone.
   ;=== CHANGED: latched copy of the command. Local to this DEF, so no extra
   ;=== .dat file is needed. The Robot_Cmd_* words are live network data and
   ;=== can change mid-routine; these are a snapshot taken once at dispatch.
@@ -19,12 +19,9 @@ DEF Main ( )
   INTERRUPT ON 3
   BAS (#INITMOV,0 )
 ;ENDFOLD (BASISTECH INI)
-;FOLD CHECK HOME
-  $H_POS=XHOME
-  IF CHECK_HOME==TRUE THEN
-    P00 (#CHK_HOME,#PGNO_GET,DMY[],0 ) ;Testing Home-Position
-  ENDIF
-;ENDFOLD (CHECK HOME)
+;=== REMOVED: the stock CHECK HOME fold. It calls P00 (#CHK_HOME,...) and
+;=== reads the CHECK_HOME global, both part of the PGNO mechanism this cell
+;=== does not use. The existing Main.src does not call it either.
 ;FOLD PTP HOME  Vel= 100 % DEFAULT;%{PE}%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
   PDAT_ACT=PDEFAULT
   FDAT_ACT=FHOME
@@ -32,9 +29,11 @@ DEF Main ( )
   $H_POS=XHOME
   PTP  XHOME
 ;ENDFOLD
-;FOLD AUTOEXT INI
-  P00 (#INIT_EXT,#PGNO_GET,DMY[],0 ) ; Initialize extern mode
-;ENDFOLD (AUTOEXT INI)
+;=== REMOVED: the stock AUTOEXT INI fold. P00 (#INIT_EXT,...) validates the
+;=== extern-mode PGNO configuration and faults on startup if PGNO is not set
+;=== up in $config.dat -- and on this cell it is not. Ext Auto still starts
+;=== this program exactly as it starts the current one; only the program
+;=== NUMBER half of Ext Auto is unused, and it is unused today too.
 
 ;=== CHANGED: publish a clean idle state, and adopt whatever sequence number
 ;=== the PLC currently shows. Without the adopt, a command left over from
