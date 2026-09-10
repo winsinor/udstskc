@@ -52,8 +52,21 @@ references. It works, but it leaves no room to grow.
 ## Step 3 — Add the SIGNAL block
 
 Paste the 13 declarations from `CONFIG_ADDITIONS.dat` into `$config.dat` **exactly as written** —
-they are verified against the live config. Put them with the other `SIGNAL` declarations. Reboot the
-controller so the config takes.
+they are verified against the live config.
+
+**Where:** inside the `;FOLD USER GLOBALS` block at the bottom, under the `Userdefined Variables`
+banner — line 956 in the copy pulled off this controller, just above `;ENDFOLD (USER GLOBALS)`.
+
+**Not** up with the other `SIGNAL` declarations. That section lives inside `;FOLD BASISTECH GLOBALS`,
+which KUKA owns: a software update or a WorkVisual deployment can rewrite it and take your
+declarations with it. `USER GLOBALS` is the fold reserved for the integrator and preserved across
+those. The cell's existing signals are in the BASISTECH block — that is a pre-existing liability, not
+a pattern to follow.
+
+Anywhere between `DEFDAT $CONFIG` and `ENDDAT` will compile. The placement is about surviving the
+next controller update.
+
+Reboot the controller so the config takes.
 
 ## Step 4 — Test byte order BEFORE anything else
 

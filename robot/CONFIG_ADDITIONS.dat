@@ -2,7 +2,23 @@
 ;  ADD THESE TO $config.dat  --  robot <-> PLC command/status interface
 ; ============================================================================
 ;
-;  PASTE INTO:  the SIGNAL declarations section of KRC:\STEU\Mada\$config.dat
+;  PASTE INTO:  KRC:\STEU\Mada\$config.dat, inside the USER GLOBALS fold at
+;               the bottom of the file, under "Userdefined Variables" --
+;               NOT up with the other SIGNAL declarations.
+;
+;               In the file pulled off this controller that is line 956,
+;               between the "Userdefined Variables" banner and
+;               ;ENDFOLD (USER GLOBALS).
+;
+;               Why there: the KUKA-owned folds (BASISTECH GLOBALS,
+;               AUTOEXT GLOBALS) can be rewritten by a software update or a
+;               WorkVisual deployment. USER GLOBALS is the one fold reserved
+;               for the integrator and preserved across those. The existing
+;               cell signals sit in the BASISTECH block under "Do not change
+;               !!!!!", which is a pre-existing liability -- don't add to it.
+;
+;               Anywhere between DEFDAT $CONFIG and ENDDAT compiles. This is
+;               about surviving the next controller update, not the compiler.
 ;
 ;  ADDRESSES VERIFIED against the real $config.dat pulled off the KRC.
 ;  Every one of the 13 signals below is in free space -- zero collisions
