@@ -1,0 +1,186 @@
+&ACCESS RVP
+&REL 1
+&PARAM DISKPATH = KRC:\R1\Program
+DEF Main()
+; ============================================================================
+;  PLC-AS-MASTER DISPATCHER
+;
+;  The robot makes no scheduling decisions. It waits for a routine number,
+;  runs it, and reports. Everything about what happens next lives in the PLC.
+;
+;  Replaces the priority-poll Main. The old file is kept as Main_Legacy.src
+;  until every station has been proven through this one.
+;
+;  PROTOCOL
+;    1  PLC writes Robot_Cmd_RoutineID and params, then increments
+;       Robot_Cmd_Seq. The increment is the trigger -- that is what makes
+;       "run routine 20 again" different from "still running routine 20".
+;    2  Robot latches, echoes the sequence into Robot_Sts_AckSeq, reports
+;       Running.
+;    3  Robot runs the routine.
+;    4  Robot reports Complete (2) or Faulted (3) AND HOLDS THERE.
+;    5  PLC writes Robot_Cmd_RoutineID = 0 to consume it.
+;    6  Robot returns to Idle (0).
+;
+;  Nothing else releases the held state. That is deliberate.
+; ============================================================================
+
+;FOLD INI;%{PE}
+   ;FOLD BASISTECH INI
+      GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM()
+      INTERRUPT ON 3
+      BAS(#INITMOV,0)
+   ;ENDFOLD (BASISTECH INI)
+   ;FOLD USER INI
+   ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+   $OV_PRO = 100
+
+   ; ---- publish a clean idle state ----------------------------------------
+   Robot_Sts_State      = 0
+   Robot_Sts_RoutineID  = 0
+   Robot_Sts_FaultCode  = 0
+   Robot_Sts_RetryCount = 0
+   Robot_Sts_SubStep    = 0
+
+   ; Adopt whatever sequence number the PLC is currently showing. Without
+   ; this, a command left over from before the robot started would run the
+   ; instant the program does -- motion nobody asked for, on power-up.
+   Robot_Sts_AckSeq = Robot_Cmd_Seq
+
+   LOOP
+
+      ; ---- wait for a new command -----------------------------------------
+      WAIT FOR ((Robot_Cmd_Seq<>Robot_Sts_AckSeq) AND (Robot_Cmd_RoutineID<>0))
+
+      ; ---- latch it ---------------------------------------------------------
+      ; Snapshot first. The interface words are live network data and may
+      ; change while the routine runs; the routine must see what was ordered.
+      Cmd_Routine    = Robot_Cmd_RoutineID
+      Cmd_P1         = Robot_Cmd_Param1
+      Cmd_P2         = Robot_Cmd_Param2
+      Cmd_P3         = Robot_Cmd_Param3
+      Cmd_P4         = Robot_Cmd_Param4
+      Cmd_RetryLimit = Robot_Cmd_RetryLimit
+      Cmd_Retries    = 0
+
+      Robot_Sts_RoutineID  = Cmd_Routine
+      Robot_Sts_FaultCode  = 0
+      Robot_Sts_RetryCount = 0
+      Robot_Sts_SubStep    = 0
+      Robot_Sts_AckSeq     = Robot_Cmd_Seq
+      Robot_Sts_State      = 1
+
+      ; ---- run it ------------------------------------------------------------
+      SWITCH Cmd_Routine
+
+         CASE 10                       ; Home
+            Rtn_Home()
+
+         CASE 20                       ; PickUpstacker
+            CmdReportFault(199)
+         CASE 30                       ; PlaceTurntable
+            CmdReportFault(199)
+         CASE 40                       ; PickTurntable
+            CmdReportFault(199)
+         CASE 50                       ; IMMExchange
+            CmdReportFault(199)
+         CASE 60                       ; SprueCut
+            CmdReportFault(199)
+         CASE 70                       ; DropChute
+            CmdReportFault(199)
+         CASE 80                       ; LayerShift
+            CmdReportFault(199)
+         CASE 90                       ; Reject
+            CmdReportFault(199)
+
+         DEFAULT                       ; unknown routine ID
+            CmdReportFault(101)
+
+      ENDSWITCH
+
+      ; ---- report --------------------------------------------------------------
+      CmdReportComplete()
+
+      IF Robot_Sts_State==3 THEN
+         Rtn_FaultRetreat()
+      ENDIF
+
+      ; ---- hold until the PLC consumes ------------------------------------------
+      ; This is the point of the whole design. Do not add a timeout here: if
+      ; the PLC never consumes, the right behaviour is to sit still and be
+      ; obviously stuck, not to quietly return to idle and accept new work.
+      WAIT FOR (Robot_Cmd_RoutineID==0)
+
+      Robot_Sts_State      = 0
+      Robot_Sts_RoutineID  = 0
+      Robot_Sts_FaultCode  = 0
+      Robot_Sts_SubStep    = 0
+      Robot_Sts_RetryCount = 0
+
+   ENDLOOP
+
+END
+
+
+; ============================================================================
+;  10  HOME
+;  Idempotent: safe to command at any time, from anywhere, however many times.
+; ============================================================================
+DEF Rtn_Home()
+
+   $OV_PRO = 100
+
+   ; Release the mould before moving. If the robot faulted inside the IMM and
+   ; the operator is now homing it, these are what let the platen move again.
+   RtoIMM_MoldAreaFree    = TRUE
+   RtoIMM_MoldCloseEnable = TRUE
+   RtoIMM_MoldOpenEnable  = TRUE
+
+   ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
+   SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+   ;ENDFOLD
+
+   RobotCell_Error = FALSE
+
+END
+
+
+; ============================================================================
+;  Fault retreat. Called by Main after a routine reports faulted.
+;
+;  Deliberately NOT called from CmdReportFault: the station knows it failed,
+;  but it does not necessarily know it is safe to move. Retreating is Main's
+;  decision, taken once, after the routine has returned and unwound.
+; ============================================================================
+DEF Rtn_FaultRetreat()
+
+   ; Crawl. Something already went wrong; do not make the recovery move fast.
+   $OV_PRO = 30
+
+   ; If the fault happened inside the mould, hand the mould back before
+   ; leaving. RtoIMM_MoldAreaFree is the robot's promise that the mould area
+   ; is clear -- it must be true before the platen is allowed to move, and
+   ; it must not be set while the robot is still in there.
+   IF Cmd_Routine==50 THEN
+      RtoIMM_MoldEjectFrw  = FALSE
+      RtoIMM_MoldEjectBack = FALSE
+   ENDIF
+
+   ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
+   SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+   ;ENDFOLD
+
+   ; Clear of the mould now, so it is honest to say so.
+   RtoIMM_MoldAreaFree    = TRUE
+   RtoIMM_MoldCloseEnable = TRUE
+   RtoIMM_MoldOpenEnable  = TRUE
+
+   $OV_PRO = 100
+
+   ; NOTE: parts stay on the tool. The cell keeps them and resumes with them,
+   ; per the agreed stop policy -- the old code dumped both halves into the
+   ; reject drawer here and told nobody.
+
+END

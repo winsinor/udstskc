@@ -1,0 +1,59 @@
+; ============================================================================
+;  ADD THESE TO $config.dat  --  robot <-> PLC command/status interface
+; ============================================================================
+;
+;  PASTE INTO:  the SIGNAL declarations section of KRC:\STEU\Mada\$config.dat
+;
+;  ADDRESSES BELOW ARE PLACEHOLDERS. Work out the real ones like this:
+;
+;    bit = (assembly_base_bit) + (byte_offset * 8) + 1
+;
+;  The PLC side puts the command block at BYTE 64 of the Station100_Robot
+;  assembly and the status block at byte 64 of the input assembly. If the
+;  EtherNet/IP connection maps to $IN[1] / $OUT[1], byte 64 is bit 513.
+;  If it is based somewhere else -- and it probably is, since the existing
+;  signals already occupy space -- shift every number below by the same amount.
+;
+;  DIRECTION REMINDER, because it is the easy mistake:
+;    PLC output  -> robot $IN     (Robot_Cmd_*)
+;    robot $OUT  -> PLC input     (Robot_Sts_*)
+;
+; ----------------------------------------------------------------------------
+;  PLC -> ROBOT   (command)          PLC byte      32 bits each
+; ----------------------------------------------------------------------------
+SIGNAL Robot_Cmd_RoutineID   $IN[513] TO $IN[544]     ; O.Data[64]
+SIGNAL Robot_Cmd_Seq         $IN[545] TO $IN[576]     ; O.Data[68]
+SIGNAL Robot_Cmd_Param1      $IN[577] TO $IN[608]     ; O.Data[72]  tray row / reject sel
+SIGNAL Robot_Cmd_Param2      $IN[609] TO $IN[640]     ; O.Data[76]  tray column
+SIGNAL Robot_Cmd_Param3      $IN[641] TO $IN[672]     ; O.Data[80]  seq number A
+SIGNAL Robot_Cmd_Param4      $IN[673] TO $IN[704]     ; O.Data[84]  seq number B
+SIGNAL Robot_Cmd_RetryLimit  $IN[705] TO $IN[736]     ; O.Data[88]
+
+; ----------------------------------------------------------------------------
+;  ROBOT -> PLC   (status)           PLC byte
+; ----------------------------------------------------------------------------
+SIGNAL Robot_Sts_State       $OUT[513] TO $OUT[544]   ; I.Data[64]  0 idle 1 run 2 done 3 fault 4 held
+SIGNAL Robot_Sts_RoutineID   $OUT[545] TO $OUT[576]   ; I.Data[68]
+SIGNAL Robot_Sts_AckSeq      $OUT[577] TO $OUT[608]   ; I.Data[72]
+SIGNAL Robot_Sts_FaultCode   $OUT[609] TO $OUT[640]   ; I.Data[76]
+SIGNAL Robot_Sts_RetryCount  $OUT[641] TO $OUT[672]   ; I.Data[80]
+SIGNAL Robot_Sts_SubStep     $OUT[673] TO $OUT[704]   ; I.Data[84]
+
+; ============================================================================
+;  BYTE ORDER -- TEST THIS BEFORE TRUSTING ANY OF IT
+; ============================================================================
+;  KUKA fills a signal group LSB-first; Rockwell lays a DINT out little-endian
+;  in the assembly. They usually agree, but not always, and a byte swap looks
+;  like "the robot ignores my commands" rather than like a byte swap.
+;
+;  From the PLC, write Robot_Cmd_Param1 and read it on the pendant:
+;
+;      write 1          expect 1          (bit 0)
+;      write 256        expect 256        (bit 8  -- catches a byte swap)
+;      write 65536      expect 65536      (bit 16)
+;      write 16777216   expect 16777216   (bit 24)
+;
+;  If 256 comes back as 1, or 16777216 comes back as 256, the bytes are
+;  reversed and every 32-bit signal in this block needs the group order
+;  flipped. Five minutes now, or an afternoon later.
+; ============================================================================
