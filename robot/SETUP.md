@@ -7,7 +7,8 @@ Two things go on the controller: a `$config.dat` edit and one `.src` file. No `.
 
 ## Step 1 — `$config.dat` — DONE, verified
 
-`KRC:\STEU\Mada\$config.dat` has been pulled and checked. Everything `Main.src` needs is already
+`KRC:\STEU\Mada\$config.dat` has been pulled and checked — the live copy is committed as
+[`robot/krc/config.dat`](krc/config.dat). Everything `Main.src` needs is already
 declared there: `XHOME`, `FHOME`, `PDEFAULT`, `Rjct_1Blnk_2Fin_3Both`, `RobotCell_Error`,
 `US_Pick[2,4]`. **`Main.src` will compile.**
 
@@ -42,6 +43,11 @@ Open the `Station100_Robot` module properties in Logix (or the connection in Wor
 the input and output sizes are 92 bytes or more. If they are short, the robot never sees the command
 — no error, no warning, nothing happens. Growing the connection requires a download, so do it before
 you plan a test window.
+
+**If it can't grow, there is a Plan B** at the bottom of `CONFIG_ADDITIONS.dat`. PLC bytes 8, 12, 16,
+20, 24 and 28 are free in both directions inside the space already mapped. Six slots each. Status
+fits exactly; the command block gives up `Robot_Cmd_RetryLimit`, which the PLC declares but no rung
+references. It works, but it leaves no room to grow.
 
 ## Step 3 — Add the SIGNAL block
 

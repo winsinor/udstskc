@@ -69,3 +69,41 @@ SIGNAL Robot_Sts_SubStep     $OUT[673] TO $OUT[704]   ; I.Data[84]
 ;  reversed and every 32-bit signal in this block needs the group order
 ;  flipped. Five minutes now, or an afternoon later.
 ; ============================================================================
+
+; ============================================================================
+;  PLAN B -- if the connection CANNOT grow to 92 bytes
+; ============================================================================
+;  The block above needs the assembly extended. If that turns out to be hard,
+;  the whole interface still fits inside the space that is ALREADY mapped.
+;
+;  Today's connection is at least 60 bytes ($IN[480] / $OUT[416] are in use).
+;  Inside that, these DINT-aligned slots are completely free in both
+;  directions -- PLC bytes 8, 12, 16, 20, 24 and 28:
+;
+;      $IN[65] $IN[97] $IN[129] $IN[161] $IN[193] $IN[225]
+;      $OUT[65] $OUT[97] $OUT[129] $OUT[161] $OUT[193] $OUT[225]
+;
+;  Six each. The status block needs exactly six -- it fits with nothing left
+;  over. The command block needs seven, so ONE must be dropped:
+;  Robot_Cmd_RetryLimit. It is declared in the PLC but referenced by no rung,
+;  so dropping it costs nothing today.
+;
+;  PLAN B -- PLC -> ROBOT
+;    SIGNAL Robot_Cmd_RoutineID  $IN[65]  TO $IN[96]    ; O.Data[8]
+;    SIGNAL Robot_Cmd_Seq        $IN[97]  TO $IN[128]   ; O.Data[12]
+;    SIGNAL Robot_Cmd_Param1     $IN[129] TO $IN[160]   ; O.Data[16]
+;    SIGNAL Robot_Cmd_Param2     $IN[161] TO $IN[192]   ; O.Data[20]
+;    SIGNAL Robot_Cmd_Param3     $IN[193] TO $IN[224]   ; O.Data[24]
+;    SIGNAL Robot_Cmd_Param4     $IN[225] TO $IN[256]   ; O.Data[28]
+;
+;  PLAN B -- ROBOT -> PLC
+;    SIGNAL Robot_Sts_State      $OUT[65]  TO $OUT[96]  ; I.Data[8]
+;    SIGNAL Robot_Sts_RoutineID  $OUT[97]  TO $OUT[128] ; I.Data[12]
+;    SIGNAL Robot_Sts_AckSeq     $OUT[129] TO $OUT[160] ; I.Data[16]
+;    SIGNAL Robot_Sts_FaultCode  $OUT[161] TO $OUT[192] ; I.Data[20]
+;    SIGNAL Robot_Sts_RetryCount $OUT[193] TO $OUT[224] ; I.Data[24]
+;    SIGNAL Robot_Sts_SubStep    $OUT[225] TO $OUT[256] ; I.Data[28]
+;
+;  Prefer the main block. Plan B leaves zero room to grow -- the next signal
+;  anyone adds forces the connection to be resized anyway.
+; ============================================================================

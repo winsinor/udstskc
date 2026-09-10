@@ -3,6 +3,7 @@
 | File | What |
 |---|---|
 | `Main.src` | The stock KUKA CELL template with the dispatch swapped. **Install as the robot's `Main.src`.** |
+| `krc/config.dat` | The live `$config.dat` off the KRC, for reference. Do not edit — mirror changes on the controller. |
 | `CONFIG_ADDITIONS.dat` | 13 SIGNAL declarations for `$config.dat`. **Addresses verified against the live config — no collisions.** |
 
 That is everything. **No `.dat` file is needed for `Main.src`** — the two latched values are
@@ -78,7 +79,7 @@ signals**:
 
 | Ext Auto setting | Lands on | Which is |
 |---|---|---|
-| `PGNO_FBIT = 33` (`$IN[33..40]`) | `TTtoR_TurnTableCycle` `$IN[33]` | a live turntable input |
+| `PGNO_FBIT = 33`, `PGNO_LENGTH = 8` (`$IN[33..40]`) | `TTtoR_TurnTableCycle` `$IN[33]`, `PLCtoR_DrawerFull` `$IN[35]`, `PLCtoR_DrawerInPos` `$IN[36]` | three live inputs |
 | `PGNO_REQ = 33` | `RtoIMM_PickErrorVG530` `$OUT[33]` | a live error output |
 | `APPL_RUN = 34` | `RtoTT_PickErrorVG524` `$OUT[34]` | a live error output |
 | `ERR_TO_PLC = 35` | `RtoTT_PickErrorVG526` `$OUT[35]` | a live error output |
