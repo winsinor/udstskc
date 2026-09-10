@@ -8,11 +8,20 @@ The only thing replaced is the **priority-poll loop in `Main.src`**, which becom
 
 | File | What it is |
 |---|---|
-| `Main_New.src` | The dispatcher. Install as `Main.src`; keep the old one as `Main_Legacy.src`. |
-| `CmdIface.src` / `.dat` | Two helpers and the latched command snapshot. ~50 lines. |
+| `Main_New.src` | The dispatcher, plus `Rtn_Home` and the two status helpers. Install as `Main.src`; keep the old one as `Main_Legacy.src`. |
+| `CmdCommand.dat` | The latched command snapshot. Five globals, and that is all. |
 | `CONFIG_ADDITIONS.dat` | SIGNAL declarations for `$config.dat`. **Addresses are placeholders.** |
 
-`Main.dat` is unchanged.
+`Main.dat` is unchanged. **Two files go on the controller**, plus the `$config.dat` edit.
+
+`CmdCommand.dat` has to be a separate `PUBLIC` `.dat` because that is where a KRL global lives —
+`Main.dat` already exists and belongs to the old program's points, so the command snapshot gets
+its own.
+
+The status helpers `CmdReportComplete` and `CmdReportFault` are **local DEFs at the bottom of
+`Main_New.src`**. That is fine while only `Main` calls them. If a station is ever reworked to
+report a real fault code instead of just setting `RobotCell_Error`, promote them to `GLOBAL DEF`
+in their own file — a local `DEF` in `Main.src` is not callable from `Station400_IMM.src`.
 
 ## The one thing the PLC has to do differently
 
@@ -49,7 +58,7 @@ change, if you want them.
    block in.
 3. **Test byte order** — procedure at the bottom of `CONFIG_ADDITIONS.dat`. A KUKA/Rockwell byte
    swap presents as "the robot ignores my commands", not as a byte swap.
-4. Copy `CmdIface.src` / `.dat` to `KRC:\R1\Program`.
+4. Copy `CmdCommand.dat` to `KRC:\R1\Program`.
 5. Rename `Main.src` to `Main_Legacy.src`, install `Main_New.src` as `Main.src`.
 6. Select `Main` in Ext Auto.
 

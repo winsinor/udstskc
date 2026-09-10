@@ -34,6 +34,13 @@ DEF Main()
 ;
 ;  Tray row and column still arrive in UStoR_PickRowNumber / ColumnNumber
 ;  exactly as they do today. Nothing about that changes either.
+;
+;  The two status helpers live at the bottom of this file. They are local
+;  DEFs, which is fine while only Main calls them. If a station is ever
+;  reworked to report a real fault code instead of just setting
+;  RobotCell_Error, promote them to GLOBAL DEF in their own file so the
+;  station can reach them -- a local DEF here is not callable from
+;  Station400_IMM.src.
 ; ============================================================================
 
 ;FOLD INI;%{PE}
@@ -157,4 +164,37 @@ DEF Rtn_Home()
 
    RobotCell_Error = FALSE
 
+END
+
+
+; ============================================================================
+;  Status helpers. Local to this file -- only Main calls them.
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+;  Report normal completion.
+;
+;  The guard is the point: this only promotes Running -> Complete. Without it,
+;  a routine that already faulted would have its fault silently overwritten
+;  when Main falls through to the end of the SWITCH. One IF, and it is the
+;  difference between a fault the PLC sees and a fault that vanishes.
+; ----------------------------------------------------------------------------
+DEF CmdReportComplete()
+   IF Robot_Sts_State==1 THEN
+      Robot_Sts_State = 2
+   ENDIF
+END
+
+
+; ----------------------------------------------------------------------------
+;  Report a fault. Sets the code and the state together so the two cannot get
+;  out of step.
+;
+;    100  station set RobotCell_Error
+;    101  unknown routine ID
+; ----------------------------------------------------------------------------
+DEF CmdReportFault(FaultCode:IN)
+   DECL INT FaultCode
+   Robot_Sts_FaultCode = FaultCode
+   Robot_Sts_State     = 3
 END
