@@ -1,72 +1,76 @@
-# Robot side — minimal change
+# Robot side — two files
 
-**Nothing inside any station program changes.** `Station200_UpStacker`, `Station300_LaserMarker`,
-`Station400_IMM`, `Station500_SprueCutter`, `Station500_Reject` and `Station600_DownStacker` are
-called exactly as they exist today — same condition bits, same inline reject calls, same timers.
-
-The only thing replaced is the **priority-poll loop in `Main.src`**, which becomes a dispatcher.
-
-| File | What it is |
+| File | What |
 |---|---|
-| `Main_New.src` | The dispatcher, plus `Rtn_Home` and the two status helpers. Install as `Main.src`; keep the old one as `Main_Legacy.src`. |
-| `CmdCommand.dat` | The latched command snapshot. Five globals, and that is all. |
-| `CONFIG_ADDITIONS.dat` | SIGNAL declarations for `$config.dat`. **Addresses are placeholders.** |
+| `Main.src` | The stock KUKA CELL template with the dispatch swapped. **Install as the robot's `Main.src`.** |
+| `CONFIG_ADDITIONS.dat` | 13 SIGNAL declarations for `$config.dat`. **Addresses are placeholders.** |
 
-`Main.dat` is unchanged. **Two files go on the controller**, plus the `$config.dat` edit.
+That is everything. **No `.dat` file is needed for `Main.src`** — the two latched values are
+`DECL INT` locals inside the DEF. No station program is modified.
 
-`CmdCommand.dat` has to be a separate `PUBLIC` `.dat` because that is where a KRL global lives —
-`Main.dat` already exists and belongs to the old program's points, so the command snapshot gets
-its own.
+## What changed from the stock template
 
-The status helpers `CmdReportComplete` and `CmdReportFault` are **local DEFs at the bottom of
-`Main_New.src`**. That is fine while only `Main` calls them. If a station is ever reworked to
-report a real fault code instead of just setting `RobotCell_Error`, promote them to `GLOBAL DEF`
-in their own file — a local `DEF` in `Main.src` is not callable from `Station400_IMM.src`.
+20 lines, all marked `;===` in the file. The skeleton — `INIT`, `BASISTECH INI`, `CHECK HOME`,
+`PTP HOME`, `AUTOEXT INI`, `LOOP`, `SWITCH`, `ENDLOOP` — is untouched.
 
-## The one thing the PLC has to do differently
+| Stock | Now |
+|---|---|
+| `P00 (#EXT_PGNO,#PGNO_GET,DMY[],0)` | `WAIT FOR` a sequence-number change on `Robot_Cmd_Seq` |
+| `SWITCH PGNO` | `SWITCH Cmd_Routine` (the latched copy) |
+| `CASE 1/2/3` → `EXAMPLE1/2/3` | `CASE 10..90` → the existing station programs |
+| `P00 (#EXT_PGNO,#PGNO_ACKN,...)` in each case | gone — the ack is `Robot_Sts_AckSeq` |
+| `P00 (#EXT_PGNO,#PGNO_FAULT,...)` | fault code 101 |
+| — | status publishing and the held-complete handshake |
 
-Two station programs contain two behaviours each, selected by a condition bit, and that is left
-alone. **The PLC must set the bit before issuing the command:**
+`P00 (#INIT_EXT,...)` and `P00 (#CHK_HOME,...)` are **kept**. Ext Auto still starts this program
+and still checks home.
 
-| Routine | PLC sets first | Then calls |
-|---|---|---|
-| 20 PickUpstacker | `UStoR_ReqToMoveLayer` = FALSE | `Station200_UpStacker()` |
-| 80 LayerShift | `UStoR_ReqToMoveLayer` = TRUE | `Station200_UpStacker()` |
-| 30 PlaceTurntable | `TTtoR_ReqToPlace` = TRUE | `Station300_LaserMarker()` |
-| 40 PickTurntable | `TTtoR_ReqToPickGood` or `...PickBad` = TRUE | `Station300_LaserMarker()` |
-| 90 Reject | — | `Rjct_1Blnk_2Fin_3Both` = `Cmd_P1`, then `Station500_Reject()` |
+## Routine map
 
-Tray row and column still arrive in `UStoR_PickRowNumber` / `UStoR_PickColumnNumber` exactly as
-today. Nothing about that changes.
+| ID | Calls | PLC must set first |
+|---:|---|---|
+| 10 | `PTP XHOME` inline | — |
+| 20 | `Station200_UpStacker()` | `UStoR_ReqToMoveLayer` = FALSE |
+| 30 | `Station300_LaserMarker()` | `TTtoR_ReqToPlace` = TRUE |
+| 40 | `Station300_LaserMarker()` | `TTtoR_ReqToPickGood` or `...PickBad` = TRUE |
+| 50 | `Station400_IMM()` | — |
+| 60 | `Station500_SprueCutter()` | — |
+| 70 | `Station600_DownStacker()` | — |
+| 80 | `Station200_UpStacker()` | `UStoR_ReqToMoveLayer` = TRUE |
+| 90 | `Station500_Reject()` | — (`Param1` carries the selector) |
+
+Two stations contain two behaviours each, chosen by a condition bit. Leaving them unmodified means
+that bit still chooses, so the PLC sets it before issuing the command. Tray row and column still
+arrive in `UStoR_PickRowNumber` / `ColumnNumber` exactly as today.
 
 ## Faults
 
-The stations already set `RobotCell_Error` when they fail. The dispatcher checks it after every
-call and reports fault **100** — that one hook turns a silent internal failure into something the
-PLC can see and hold on. It costs nothing and touches no station code.
+- **100** — station set `RobotCell_Error`
+- **101** — unknown routine ID
 
-Fault **101** is an unknown routine ID.
+That is all the detail available without modifying stations. They still reject parts internally and
+still report only that one flag.
 
-That is all the fault detail available without modifying stations. A station that rejects parts
-internally still does so, and still reports only `RobotCell_Error`. Finer fault codes are a later
-change, if you want them.
+## Install
 
-## Install order
-
-1. **`$config.dat` off the controller.** `XHOME` and `FHOME` live there; nothing moves without it.
-2. Work out the real bit addresses (arithmetic is in `CONFIG_ADDITIONS.dat`) and paste the SIGNAL
-   block in.
-3. **Test byte order** — procedure at the bottom of `CONFIG_ADDITIONS.dat`. A KUKA/Rockwell byte
+1. **`$config.dat` off the controller first.** `XHOME`, `FHOME`, `CHECK_HOME` and every existing
+   signal are declared there.
+2. Work out the real bit addresses and paste in the SIGNAL block.
+3. **Test byte order** — procedure is at the bottom of `CONFIG_ADDITIONS.dat`. A KUKA/Rockwell byte
    swap presents as "the robot ignores my commands", not as a byte swap.
-4. Copy `CmdCommand.dat` to `KRC:\R1\Program`.
-5. Rename `Main.src` to `Main_Legacy.src`, install `Main_New.src` as `Main.src`.
-6. Select `Main` in Ext Auto.
+4. Rename the existing `Main.src` / `.dat` to `Main_Legacy.*`, install this as `Main.src`.
+   **It needs no `.dat`.**
+5. Select `Main` in Ext Auto, as now.
 
-## What this does and does not buy
+## The alternative, if you want it
 
-**Does:** the PLC chooses which station runs and when, and gets a held answer back — Complete or
-Faulted, surviving a slow scan or a PLC fault.
+This does **not** use `PGNO`, for the same reason your current `Main.src` doesn't: Ext Auto starts
+the program and the program loops.
 
-**Does not:** change how any station behaves internally. They still self-reject, still share
-`$TIMER[2]`, still read their own condition bits. Those are all still on the list; none of them
-blocks commanding the cell from the PLC.
+Keeping `PGNO` is the other option and it is arguably better — the request/acknowledge handshake
+would be the controller's rather than mine, and `Robot_Cmd_Seq` would disappear entirely. It costs
+a `$config.dat` change (point `PGNO_FBIT` at the command word, set `PGNO_TYPE` / `PGNO_LENGTH`) and
+a PLC change (drive the PGNO request/ack signals instead of the sequence counter). The robot side
+would get *smaller*, not bigger.
+
+Worth deciding once `$config.dat` shows how `PGNO` is currently configured.

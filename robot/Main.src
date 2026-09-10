@@ -1,0 +1,130 @@
+&ACCESS RVP
+&COMMENT HANDLER on external automatic
+DEF Main ( )
+;EXT EXAMPLE1 ( )
+;EXT EXAMPLE2 ( )
+;EXT EXAMPLE3 ( )
+
+;FOLD INIT
+  DECL CHAR DMY[3]
+  DMY[]="---"
+  ;=== CHANGED: latched copy of the command. Local to this DEF, so no extra
+  ;=== .dat file is needed. The Robot_Cmd_* words are live network data and
+  ;=== can change mid-routine; these are a snapshot taken once at dispatch.
+  DECL INT Cmd_Routine
+  DECL INT Cmd_P1
+;ENDFOLD (INIT)
+;FOLD BASISTECH INI
+  GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+  INTERRUPT ON 3
+  BAS (#INITMOV,0 )
+;ENDFOLD (BASISTECH INI)
+;FOLD CHECK HOME
+  $H_POS=XHOME
+  IF CHECK_HOME==TRUE THEN
+    P00 (#CHK_HOME,#PGNO_GET,DMY[],0 ) ;Testing Home-Position
+  ENDIF
+;ENDFOLD (CHECK HOME)
+;FOLD PTP HOME  Vel= 100 % DEFAULT;%{PE}%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
+  PDAT_ACT=PDEFAULT
+  FDAT_ACT=FHOME
+  BAS (#PTP_PARAMS,100 )
+  $H_POS=XHOME
+  PTP  XHOME
+;ENDFOLD
+;FOLD AUTOEXT INI
+  P00 (#INIT_EXT,#PGNO_GET,DMY[],0 ) ; Initialize extern mode
+;ENDFOLD (AUTOEXT INI)
+
+;=== CHANGED: publish a clean idle state, and adopt whatever sequence number
+;=== the PLC currently shows. Without the adopt, a command left over from
+;=== before this program started would execute the instant it does.
+Robot_Sts_State     = 0
+Robot_Sts_RoutineID = 0
+Robot_Sts_FaultCode = 0
+Robot_Sts_AckSeq    = Robot_Cmd_Seq
+
+LOOP
+
+  ;=== CHANGED: was  P00 (#EXT_PGNO,#PGNO_GET,DMY[],0 )
+  ;=== The PLC sequencer writes Robot_Cmd_RoutineID and then increments
+  ;=== Robot_Cmd_Seq. The increment is the trigger -- it is what makes
+  ;=== "run 20 again" different from "still running 20".
+  WAIT FOR ((Robot_Cmd_Seq<>Robot_Sts_AckSeq) AND (Robot_Cmd_RoutineID<>0))
+
+  Cmd_Routine = Robot_Cmd_RoutineID
+  Cmd_P1      = Robot_Cmd_Param1
+
+  Robot_Sts_RoutineID = Cmd_Routine
+  Robot_Sts_FaultCode = 0
+  Robot_Sts_AckSeq    = Robot_Cmd_Seq
+  Robot_Sts_State     = 1
+  RobotCell_Error     = FALSE
+
+  ;=== CHANGED: was  SWITCH PGNO
+  SWITCH Cmd_Routine ; Select with Programnumber
+
+  CASE 10 ; Home
+    PDAT_ACT=PDEFAULT
+    FDAT_ACT=FHOME
+    BAS (#PTP_PARAMS,100 )
+    $H_POS=XHOME
+    PTP  XHOME
+    RtoIMM_MoldAreaFree=TRUE
+    RtoIMM_MoldCloseEnable=TRUE
+    RtoIMM_MoldOpenEnable=TRUE
+
+  CASE 20 ; PickUpstacker   -- PLC clears UStoR_ReqToMoveLayer first
+    Station200_UpStacker ( )
+
+  CASE 30 ; PlaceTurntable  -- PLC sets TTtoR_ReqToPlace first
+    Station300_LaserMarker ( )
+
+  CASE 40 ; PickTurntable   -- PLC sets TTtoR_ReqToPickGood or ...PickBad first
+    Station300_LaserMarker ( )
+
+  CASE 50 ; IMMExchange
+    Station400_IMM ( )
+
+  CASE 60 ; SprueCut
+    Station500_SprueCutter ( )
+
+  CASE 70 ; DropChute
+    Station600_DownStacker ( )
+
+  CASE 80 ; LayerShift      -- PLC sets UStoR_ReqToMoveLayer first
+    Station200_UpStacker ( )
+
+  CASE 90 ; Reject          -- 1 blank side, 2 finished side, 3 both
+    Rjct_1Blnk_2Fin_3Both = Cmd_P1
+    Station500_Reject ( )
+
+  DEFAULT
+    ;=== CHANGED: was  P00 (#EXT_PGNO,#PGNO_FAULT,DMY[],0 )
+    Robot_Sts_FaultCode = 101 ; unknown routine ID
+    Robot_Sts_State     = 3
+  ENDSWITCH
+
+  ;=== CHANGED: report the result.
+  ;=== The station programs already set RobotCell_Error when they fail. That
+  ;=== is the one hook taken from them, and it modifies no station code: it
+  ;=== turns a silent internal failure into a fault the PLC can see.
+  IF RobotCell_Error==TRUE THEN
+    Robot_Sts_FaultCode = 100 ; station reported RobotCell_Error
+    Robot_Sts_State     = 3
+  ENDIF
+  IF Robot_Sts_State==1 THEN
+    Robot_Sts_State     = 2 ; complete
+  ENDIF
+
+  ;=== CHANGED: hold the answer until the PLC consumes it by writing
+  ;=== RoutineID 0. Nothing else releases it. No timeout here on purpose --
+  ;=== if the PLC never consumes, the right behaviour is to sit still and be
+  ;=== obviously stuck, not to quietly go idle and accept new work.
+  WAIT FOR (Robot_Cmd_RoutineID==0)
+  Robot_Sts_State     = 0
+  Robot_Sts_RoutineID = 0
+  Robot_Sts_FaultCode = 0
+
+ENDLOOP
+END
