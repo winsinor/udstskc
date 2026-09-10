@@ -1,19 +1,12 @@
 &ACCESS RVP
 DEFDAT CMDIFACE PUBLIC
 ; ============================================================================
-;  Latched copy of the command the robot is currently executing.
-;
-;  The interface words themselves (Robot_Cmd_*) can change under our feet at
-;  any moment -- they are live network data. Everything below is a snapshot
-;  taken once, at latch time, so a routine that reads Cmd_P1 halfway through
-;  gets the value the command was issued with, not whatever the PLC has since
-;  written.
+;  Latched copy of the command being executed. The Robot_Cmd_* words are live
+;  network data and can change mid-routine; these are a snapshot taken once.
 ; ============================================================================
-DECL GLOBAL INT Cmd_Routine    = 0   ; routine ID being executed
-DECL GLOBAL INT Cmd_P1         = 0   ; tray row, or reject selector on routine 90
-DECL GLOBAL INT Cmd_P2         = 0   ; tray column
-DECL GLOBAL INT Cmd_P3         = 0   ; sequence number, part A
-DECL GLOBAL INT Cmd_P4         = 0   ; sequence number, part B
-DECL GLOBAL INT Cmd_RetryLimit = 0   ; retries allowed before reporting faulted
-DECL GLOBAL INT Cmd_Retries    = 0   ; retries consumed on this command
+DECL GLOBAL INT Cmd_Routine = 0   ; routine ID being executed
+DECL GLOBAL INT Cmd_P1      = 0   ; reject selector on routine 90
+DECL GLOBAL INT Cmd_P2      = 0
+DECL GLOBAL INT Cmd_P3      = 0
+DECL GLOBAL INT Cmd_P4      = 0
 ENDDAT

@@ -3,26 +3,37 @@
 &PARAM DISKPATH = KRC:\R1\Program
 DEF Main()
 ; ============================================================================
-;  PLC-AS-MASTER DISPATCHER
+;  PLC-AS-MASTER DISPATCHER  --  minimal change version
 ;
-;  The robot makes no scheduling decisions. It waits for a routine number,
-;  runs it, and reports. Everything about what happens next lives in the PLC.
+;  The ONLY thing this replaces is the priority-poll loop in the old Main.
+;  Every station program is called exactly as it exists today, unmodified:
+;  they keep their own condition bits, their own inline reject calls, their
+;  own timers. Nothing inside a station changes.
 ;
-;  Replaces the priority-poll Main. The old file is kept as Main_Legacy.src
-;  until every station has been proven through this one.
+;  What this adds is the command/status handshake with the PLC, so the PLC
+;  decides WHICH station runs and WHEN, and gets a held answer back.
 ;
 ;  PROTOCOL
-;    1  PLC writes Robot_Cmd_RoutineID and params, then increments
-;       Robot_Cmd_Seq. The increment is the trigger -- that is what makes
-;       "run routine 20 again" different from "still running routine 20".
-;    2  Robot latches, echoes the sequence into Robot_Sts_AckSeq, reports
-;       Running.
-;    3  Robot runs the routine.
+;    1  PLC writes Robot_Cmd_RoutineID, then increments Robot_Cmd_Seq.
+;       The increment is the trigger.
+;    2  Robot echoes the sequence into Robot_Sts_AckSeq, reports Running.
+;    3  Robot calls the station program.
 ;    4  Robot reports Complete (2) or Faulted (3) AND HOLDS THERE.
 ;    5  PLC writes Robot_Cmd_RoutineID = 0 to consume it.
 ;    6  Robot returns to Idle (0).
 ;
-;  Nothing else releases the held state. That is deliberate.
+;  IMPORTANT -- MODE BITS ARE STILL THE STATION'S BUSINESS
+;  Station200 and Station300 each contain two behaviours selected by a
+;  condition bit, and that is left alone. The PLC must set the bit BEFORE
+;  issuing the command:
+;
+;     routine 20 PickUpstacker   -> UStoR_ReqToMoveLayer = FALSE
+;     routine 80 LayerShift      -> UStoR_ReqToMoveLayer = TRUE
+;     routine 30 PlaceTurntable  -> TTtoR_ReqToPlace = TRUE
+;     routine 40 PickTurntable   -> TTtoR_ReqToPickGood or ...PickBad = TRUE
+;
+;  Tray row and column still arrive in UStoR_PickRowNumber / ColumnNumber
+;  exactly as they do today. Nothing about that changes either.
 ; ============================================================================
 
 ;FOLD INI;%{PE}
@@ -38,15 +49,14 @@ DEF Main()
    $OV_PRO = 100
 
    ; ---- publish a clean idle state ----------------------------------------
-   Robot_Sts_State      = 0
-   Robot_Sts_RoutineID  = 0
-   Robot_Sts_FaultCode  = 0
-   Robot_Sts_RetryCount = 0
-   Robot_Sts_SubStep    = 0
+   Robot_Sts_State     = 0
+   Robot_Sts_RoutineID = 0
+   Robot_Sts_FaultCode = 0
+   Robot_Sts_SubStep   = 0
 
-   ; Adopt whatever sequence number the PLC is currently showing. Without
-   ; this, a command left over from before the robot started would run the
-   ; instant the program does -- motion nobody asked for, on power-up.
+   ; Adopt whatever sequence number the PLC currently shows. Without this, a
+   ; command left over from before the robot started would execute the instant
+   ; this program does -- motion nobody asked for, on power-up.
    Robot_Sts_AckSeq = Robot_Cmd_Seq
 
    LOOP
@@ -54,70 +64,75 @@ DEF Main()
       ; ---- wait for a new command -----------------------------------------
       WAIT FOR ((Robot_Cmd_Seq<>Robot_Sts_AckSeq) AND (Robot_Cmd_RoutineID<>0))
 
-      ; ---- latch it ---------------------------------------------------------
-      ; Snapshot first. The interface words are live network data and may
-      ; change while the routine runs; the routine must see what was ordered.
-      Cmd_Routine    = Robot_Cmd_RoutineID
-      Cmd_P1         = Robot_Cmd_Param1
-      Cmd_P2         = Robot_Cmd_Param2
-      Cmd_P3         = Robot_Cmd_Param3
-      Cmd_P4         = Robot_Cmd_Param4
-      Cmd_RetryLimit = Robot_Cmd_RetryLimit
-      Cmd_Retries    = 0
+      Cmd_Routine = Robot_Cmd_RoutineID
+      Cmd_P1      = Robot_Cmd_Param1
+      Cmd_P2      = Robot_Cmd_Param2
+      Cmd_P3      = Robot_Cmd_Param3
+      Cmd_P4      = Robot_Cmd_Param4
 
-      Robot_Sts_RoutineID  = Cmd_Routine
-      Robot_Sts_FaultCode  = 0
-      Robot_Sts_RetryCount = 0
-      Robot_Sts_SubStep    = 0
-      Robot_Sts_AckSeq     = Robot_Cmd_Seq
-      Robot_Sts_State      = 1
+      Robot_Sts_RoutineID = Cmd_Routine
+      Robot_Sts_FaultCode = 0
+      Robot_Sts_SubStep   = 0
+      Robot_Sts_AckSeq    = Robot_Cmd_Seq
+      Robot_Sts_State     = 1
 
-      ; ---- run it ------------------------------------------------------------
+      RobotCell_Error = FALSE
+
+      ; ---- call the existing station program, unmodified -------------------
       SWITCH Cmd_Routine
 
-         CASE 10                       ; Home
+         CASE 10
             Rtn_Home()
 
-         CASE 20                       ; PickUpstacker
-            CmdReportFault(199)
-         CASE 30                       ; PlaceTurntable
-            CmdReportFault(199)
-         CASE 40                       ; PickTurntable
-            CmdReportFault(199)
-         CASE 50                       ; IMMExchange
-            CmdReportFault(199)
-         CASE 60                       ; SprueCut
-            CmdReportFault(199)
-         CASE 70                       ; DropChute
-            CmdReportFault(199)
-         CASE 80                       ; LayerShift
-            CmdReportFault(199)
-         CASE 90                       ; Reject
-            CmdReportFault(199)
+         CASE 20                              ; PLC sets UStoR_ReqToMoveLayer FALSE first
+            Station200_UpStacker()
 
-         DEFAULT                       ; unknown routine ID
-            CmdReportFault(101)
+         CASE 30                              ; PLC sets TTtoR_ReqToPlace first
+            Station300_LaserMarker()
+
+         CASE 40                              ; PLC sets TTtoR_ReqToPickGood/Bad first
+            Station300_LaserMarker()
+
+         CASE 50
+            Station400_IMM()
+
+         CASE 60
+            Station500_SprueCutter()
+
+         CASE 70
+            Station600_DownStacker()
+
+         CASE 80                              ; PLC sets UStoR_ReqToMoveLayer TRUE first
+            Station200_UpStacker()
+
+         CASE 90
+            Rjct_1Blnk_2Fin_3Both = Cmd_P1    ; 1 blank, 2 finished, 3 both
+            Station500_Reject()
+
+         DEFAULT
+            CmdReportFault(101)               ; unknown routine ID
 
       ENDSWITCH
 
-      ; ---- report --------------------------------------------------------------
-      CmdReportComplete()
-
-      IF Robot_Sts_State==3 THEN
-         Rtn_FaultRetreat()
+      ; ---- report ----------------------------------------------------------
+      ; The stations already set RobotCell_Error on failure. That is the one
+      ; hook we take from them, and it costs nothing: it turns a silent
+      ; internal failure into a fault the PLC can see and hold on.
+      IF RobotCell_Error==TRUE THEN
+         CmdReportFault(100)                  ; station reported RobotCell_Error
       ENDIF
 
-      ; ---- hold until the PLC consumes ------------------------------------------
-      ; This is the point of the whole design. Do not add a timeout here: if
-      ; the PLC never consumes, the right behaviour is to sit still and be
-      ; obviously stuck, not to quietly return to idle and accept new work.
+      CmdReportComplete()
+
+      ; ---- hold until the PLC consumes --------------------------------------
+      ; No timeout here, deliberately. If the PLC never consumes, the right
+      ; behaviour is to sit still and be obviously stuck.
       WAIT FOR (Robot_Cmd_RoutineID==0)
 
-      Robot_Sts_State      = 0
-      Robot_Sts_RoutineID  = 0
-      Robot_Sts_FaultCode  = 0
-      Robot_Sts_SubStep    = 0
-      Robot_Sts_RetryCount = 0
+      Robot_Sts_State     = 0
+      Robot_Sts_RoutineID = 0
+      Robot_Sts_FaultCode = 0
+      Robot_Sts_SubStep   = 0
 
    ENDLOOP
 
@@ -125,15 +140,13 @@ END
 
 
 ; ============================================================================
-;  10  HOME
-;  Idempotent: safe to command at any time, from anywhere, however many times.
+;  10  HOME  --  the one genuinely new routine. Idempotent.
+;  Lifted straight from the old Main's homing block.
 ; ============================================================================
 DEF Rtn_Home()
 
    $OV_PRO = 100
 
-   ; Release the mould before moving. If the robot faulted inside the IMM and
-   ; the operator is now homing it, these are what let the platen move again.
    RtoIMM_MoldAreaFree    = TRUE
    RtoIMM_MoldCloseEnable = TRUE
    RtoIMM_MoldOpenEnable  = TRUE
@@ -143,44 +156,5 @@ DEF Rtn_Home()
    ;ENDFOLD
 
    RobotCell_Error = FALSE
-
-END
-
-
-; ============================================================================
-;  Fault retreat. Called by Main after a routine reports faulted.
-;
-;  Deliberately NOT called from CmdReportFault: the station knows it failed,
-;  but it does not necessarily know it is safe to move. Retreating is Main's
-;  decision, taken once, after the routine has returned and unwound.
-; ============================================================================
-DEF Rtn_FaultRetreat()
-
-   ; Crawl. Something already went wrong; do not make the recovery move fast.
-   $OV_PRO = 30
-
-   ; If the fault happened inside the mould, hand the mould back before
-   ; leaving. RtoIMM_MoldAreaFree is the robot's promise that the mould area
-   ; is clear -- it must be true before the platen is allowed to move, and
-   ; it must not be set while the robot is still in there.
-   IF Cmd_Routine==50 THEN
-      RtoIMM_MoldEjectFrw  = FALSE
-      RtoIMM_MoldEjectBack = FALSE
-   ENDIF
-
-   ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
-   SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
-   ;ENDFOLD
-
-   ; Clear of the mould now, so it is honest to say so.
-   RtoIMM_MoldAreaFree    = TRUE
-   RtoIMM_MoldCloseEnable = TRUE
-   RtoIMM_MoldOpenEnable  = TRUE
-
-   $OV_PRO = 100
-
-   ; NOTE: parts stay on the tool. The cell keeps them and resumes with them,
-   ; per the agreed stop policy -- the old code dumped both halves into the
-   ; reject drawer here and told nobody.
 
 END

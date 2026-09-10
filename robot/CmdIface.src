@@ -3,32 +3,18 @@
 &PARAM DISKPATH = KRC:\R1\Program
 DEF CmdIface()
 ; ============================================================================
-;  Command interface helpers, shared by Main and every station routine.
+;  Command interface helpers. Container file -- call the GLOBAL DEFs below.
 ;
-;  This file is a container. Do not run it -- call the GLOBAL DEFs below.
-;
-;  THE ONE RULE: status is HELD, never pulsed. Robot_Sts_State stays at
-;  Complete or Faulted until the PLC writes Robot_Cmd_RoutineID = 0. That is
-;  what makes the handshake survive a slow scan, a PLC fault, or an operator
-;  walking away -- and it is the whole reason for this rework.
+;  Kept deliberately small. The station programs are unmodified and do not
+;  call any of this; only Main does. If a station is ever reworked to report
+;  its own faults properly, CmdReportFault is what it should use.
 ; ============================================================================
 END
 
 
 ; ----------------------------------------------------------------------------
-;  Report that the commanded routine is under way.
-;  Main already does this at dispatch; a station only calls it if it needs to
-;  re-assert after some internal retry.
-; ----------------------------------------------------------------------------
-GLOBAL DEF CmdReportRunning()
-   Robot_Sts_State = 1
-END
-
-
-; ----------------------------------------------------------------------------
-;  Report normal completion. Only promotes Running -> Complete, so a station
-;  that already faulted cannot accidentally overwrite its own fault by falling
-;  through to the end of its routine.
+;  Report normal completion. Only promotes Running -> Complete, so a routine
+;  that already faulted cannot overwrite its own fault by falling through.
 ; ----------------------------------------------------------------------------
 GLOBAL DEF CmdReportComplete()
    IF Robot_Sts_State==1 THEN
@@ -38,64 +24,15 @@ END
 
 
 ; ----------------------------------------------------------------------------
-;  Report a fault and stop reporting progress. Main sees state 3 when the
-;  routine returns and performs the retreat -- do not move from in here, the
-;  caller may be somewhere retreating blindly would be a bad idea.
+;  Report a fault. Does not move -- Main decides about retreating, once, after
+;  the routine has returned.
 ;
-;  Code ranges (see docs/PLC_MASTER_PLAN.md):
-;     1xx general   2xx upstacker   3xx turntable
-;     4xx IMM       5xx sprue/reject/drawer      6xx chute
+;    100  station set RobotCell_Error
+;    101  unknown routine ID
+;    103  stop asserted mid-routine
 ; ----------------------------------------------------------------------------
 GLOBAL DEF CmdReportFault(FaultCode:IN)
    DECL INT FaultCode
    Robot_Sts_FaultCode = FaultCode
    Robot_Sts_State     = 3
 END
-
-
-; ----------------------------------------------------------------------------
-;  Publish progress inside a routine that no sensor can corroborate.
-;  Used by IMMExchange and LayerShift only: the mould has no sensor, and a
-;  tray mid-push is held by neither stacker. Everywhere else a vacuum switch
-;  or a part-present eye tells the PLC what happened, so this is just traffic.
-;
-;  IMMExchange:  1 entered  2 shot gripped  3 blanks released  4 clear
-;  LayerShift:   1 pin in   2 pushing       3 tray landed      4 clear
-; ----------------------------------------------------------------------------
-GLOBAL DEF CmdSetSubStep(SubStep:IN)
-   DECL INT SubStep
-   Robot_Sts_SubStep = SubStep
-END
-
-
-; ----------------------------------------------------------------------------
-;  Count a retry. Returns TRUE while retries remain, FALSE once the limit set
-;  by the PLC is spent.
-;
-;      IF CmdRetryLeft() THEN
-;         ... try the grip again ...
-;      ELSE
-;         CmdReportFault(201)
-;      ENDIF
-; ----------------------------------------------------------------------------
-GLOBAL DEFFCT BOOL CmdRetryLeft()
-   Cmd_Retries = Cmd_Retries + 1
-   Robot_Sts_RetryCount = Cmd_Retries
-   IF Cmd_Retries>Cmd_RetryLimit THEN
-      RETURN(FALSE)
-   ENDIF
-   RETURN(TRUE)
-ENDFCT
-
-
-; ----------------------------------------------------------------------------
-;  TRUE when the PLC is asking the cell to stop, or the reject drawer has been
-;  pulled out. A routine may call this at a safe point and fault cleanly with
-;  103 rather than being interrupted mid-move.
-; ----------------------------------------------------------------------------
-GLOBAL DEFFCT BOOL CmdStopRequested()
-   IF (PLCtoR_Stop==TRUE) OR (PLCtoR_DrawerInPos==FALSE) THEN
-      RETURN(TRUE)
-   ENDIF
-   RETURN(FALSE)
-ENDFCT
