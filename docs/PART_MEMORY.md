@@ -68,7 +68,7 @@ Part_Seq_Next    DINT             -- next sequence to allocate; wraps 1..500
 
 Loc_RobotBlank   DINT             -- pair on the vacuum-cup half   (0 = empty)
 Loc_RobotFinish  DINT             -- pair on the gripper half
-Loc_Nest         DINT[5]          -- turntable stations 1..4; index 0 unused
+Loc_Nest1..4     DINT             -- turntable stations 1..4, four scalars (see note)
 Loc_Mold         DINT             -- pair in the cavities
 Loc_Delivered    DINT             -- last pair confirmed out the chute
 ```
@@ -80,15 +80,18 @@ This replaces the current turntable shift, which COPs whole records between slot
 becomes four DINT moves instead of five 540-byte record copies:
 
 ```
-temp := Loc_Nest[4]
-Loc_Nest[4] := Loc_Nest[3]
-Loc_Nest[3] := Loc_Nest[2]
-Loc_Nest[2] := Loc_Nest[1]
-Loc_Nest[1] := temp
+temp := Loc_Nest4
+Loc_Nest4 := Loc_Nest3
+Loc_Nest3 := Loc_Nest2
+Loc_Nest2 := Loc_Nest1
+Loc_Nest1 := temp
 ```
 
-`Loc_Nest` is dimensioned `[5]` with index 0 unused so the subscript matches the physical station
-number. The existing code's `TurnTable[0]` is a scratch buffer, not a fifth station — rung 7 of
+**The nest locations are four scalar tags, not an array**, and that is not a style choice. A nest
+location is used as a subscript into `Part_Log` — `Part_Log[Loc_Nest1].State`. Logix allows an
+array subscript to be a scalar tag, but **not another array element**: `Part_Log[Loc_Nest[1]]` is
+rejected by the editor and shows its operand as `??`. Scalars make the indirection single-level and
+legal. The existing code's `TurnTable[0]` is a scratch buffer, not a fifth station — rung 7 of
 `Routine060500_Operation` reads `[4]→[0], [3]→[4], [2]→[3], [1]→[2], [0]→[1]`, a four-position
 rotation through a temp slot. **There are four turntable stations.**
 

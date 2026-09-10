@@ -518,12 +518,36 @@
 <![CDATA[0]]>
 </Data>
 </Tag>
-<Tag Name="Loc_Nest" TagType="Base" DataType="DINT" Dimensions="5" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Loc_Nest1" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[Turntable stations 1..4. Index 0 unused.]]>
+<![CDATA[Pair at turntable station 1 (robot load/unload). 0 = empty. Scalar, not an array element, because Logix cannot use an array element as an array subscript.]]>
 </Description>
 <Data Format="L5K">
-<![CDATA[[0,0,0,0,0]]]>
+<![CDATA[0]]>
+</Data>
+</Tag>
+<Tag Name="Loc_Nest2" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pair at turntable station 2.]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+</Tag>
+<Tag Name="Loc_Nest3" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pair at turntable station 3 (laser).]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+</Tag>
+<Tag Name="Loc_Nest4" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pair at turntable station 4.]]>
+</Description>
+<Data Format="L5K">
+<![CDATA[0]]>
 </Data>
 </Tag>
 <Tag Name="Loc_NestTemp" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
@@ -950,12 +974,12 @@ Ext_MarkComplete <- laser fire complete (leave clear until the marker is wired; 
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[NEQ(Loc_RobotBlank,0)EQU(Part_Log[Loc_RobotBlank].State,20)EQU(Loc_Nest[1],0)XIO(Ext_TurntableMoving)OTE(Req_PlaceTurntable);]]>
+<![CDATA[NEQ(Loc_RobotBlank,0)EQU(Part_Log[Loc_RobotBlank].State,20)EQU(Loc_Nest1,0)XIO(Ext_TurntableMoving)OTE(Req_PlaceTurntable);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
 <Text>
-<![CDATA[NEQ(Loc_Nest[1],0)EQU(Part_Log[Loc_Nest[1]].State,40)EQU(Loc_RobotBlank,0)XIO(Ext_TurntableMoving)OTE(Req_PickTurntable);]]>
+<![CDATA[NEQ(Loc_Nest1,0)EQU(Part_Log[Loc_Nest1].State,40)EQU(Loc_RobotBlank,0)XIO(Ext_TurntableMoving)OTE(Req_PickTurntable);]]>
 </Text>
 </Rung>
 <Rung Number="3" Type="N">
@@ -1095,7 +1119,7 @@ Ext_MarkComplete <- laser fire complete (leave clear until the marker is wired; 
 <![CDATA[Clear on first scan. Part_Log is NOT retentive - after a power cycle the cell is auto-purged rather than trusted.]]>
 </Comment>
 <Text>
-<![CDATA[XIC(S:FS)[FLL(0,Part_Log[0],501) ,MOV(1,Part_Seq_Next) ,MOV(0,Loc_RobotBlank) MOV(0,Loc_RobotFinish) ,FLL(0,Loc_Nest[0],5) ,MOV(0,Loc_Mold) MOV(0,Loc_Delivered) ];]]>
+<![CDATA[XIC(S:FS)[FLL(0,Part_Log[0],501) ,MOV(1,Part_Seq_Next) ,MOV(0,Loc_RobotBlank) MOV(0,Loc_RobotFinish) ,MOV(0,Loc_Nest1) MOV(0,Loc_Nest2) MOV(0,Loc_Nest3) MOV(0,Loc_Nest4) ,MOV(0,Loc_Mold) MOV(0,Loc_Delivered) ];]]>
 </Text>
 </Rung>
 <Rung Number="1" Type="N">
@@ -1116,7 +1140,7 @@ Ext_MarkComplete <- laser fire complete (leave clear until the marker is wired; 
 <![CDATA[Place into the nest - the pair moves from the gripper to station 1.]]>
 </Comment>
 <Text>
-<![CDATA[XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,30)ONS(Robot_Seq.ONS_Dint.17)[MOV(30,Part_Log[Loc_RobotBlank].State) ,MOV(Loc_RobotBlank,Loc_Nest[1]) ,MOV(0,Loc_RobotBlank) ,OTL(Nest1_Serviced) ];]]>
+<![CDATA[XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,30)ONS(Robot_Seq.ONS_Dint.17)[MOV(30,Part_Log[Loc_RobotBlank].State) ,MOV(Loc_RobotBlank,Loc_Nest1) ,MOV(0,Loc_RobotBlank) ,OTL(Nest1_Serviced) ];]]>
 </Text>
 </Rung>
 <Rung Number="4" Type="N">
@@ -1124,7 +1148,7 @@ Ext_MarkComplete <- laser fire complete (leave clear until the marker is wired; 
 <![CDATA[Pick from the nest - back onto the gripper, now marked.]]>
 </Comment>
 <Text>
-<![CDATA[XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,40)ONS(Robot_Seq.ONS_Dint.18)[MOV(50,Part_Log[Loc_Nest[1]].State) ,MOV(Loc_Nest[1],Loc_RobotBlank) ,MOV(0,Loc_Nest[1]) ,OTL(Nest1_Serviced) ];]]>
+<![CDATA[XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,40)ONS(Robot_Seq.ONS_Dint.18)[MOV(50,Part_Log[Loc_Nest1].State) ,MOV(Loc_Nest1,Loc_RobotBlank) ,MOV(0,Loc_Nest1) ,OTL(Nest1_Serviced) ];]]>
 </Text>
 </Rung>
 <Rung Number="5" Type="N">
@@ -1164,7 +1188,7 @@ Ext_MarkComplete <- laser fire complete (leave clear until the marker is wired; 
 <![CDATA[Turntable rotation - four DINT moves, not five record copies. There are FOUR stations: the old TurnTable[0] was a scratch buffer, not a fifth.]]>
 </Comment>
 <Text>
-<![CDATA[XIC(Ext_TurntableMoved)ONS(Robot_Seq.ONS_Dint.23)[MOV(Loc_Nest[4],Loc_NestTemp) ,MOV(Loc_Nest[3],Loc_Nest[4]) ,MOV(Loc_Nest[2],Loc_Nest[3]) ,MOV(Loc_Nest[1],Loc_Nest[2]) ,MOV(Loc_NestTemp,Loc_Nest[1]) ,OTU(Nest1_Serviced) ];]]>
+<![CDATA[XIC(Ext_TurntableMoved)ONS(Robot_Seq.ONS_Dint.23)[MOV(Loc_Nest4,Loc_NestTemp) ,MOV(Loc_Nest3,Loc_Nest4) ,MOV(Loc_Nest2,Loc_Nest3) ,MOV(Loc_Nest1,Loc_Nest2) ,MOV(Loc_NestTemp,Loc_Nest1) ,OTU(Nest1_Serviced) ];]]>
 </Text>
 </Rung>
 <Rung Number="10" Type="N">
@@ -1172,7 +1196,7 @@ Ext_MarkComplete <- laser fire complete (leave clear until the marker is wired; 
 <![CDATA[Mark complete at station 3. Ext_MarkComplete comes from the laser once it is wired. Sim_MarkAtStation3 lets the whole loop be exercised now, with no marker at all - CLEAR IT before the laser goes in.]]>
 </Comment>
 <Text>
-<![CDATA[NEQ(Loc_Nest[3],0)EQU(Part_Log[Loc_Nest[3]].State,30)[XIC(Ext_MarkComplete) ,XIC(Sim_MarkAtStation3) ]ONS(Robot_Seq.ONS_Dint.24)[MOV(40,Part_Log[Loc_Nest[3]].State) ,OTL(Part_Log[Loc_Nest[3]].A_Good) OTL(Part_Log[Loc_Nest[3]].B_Good) ];]]>
+<![CDATA[NEQ(Loc_Nest3,0)EQU(Part_Log[Loc_Nest3].State,30)[XIC(Ext_MarkComplete) ,XIC(Sim_MarkAtStation3) ]ONS(Robot_Seq.ONS_Dint.24)[MOV(40,Part_Log[Loc_Nest3].State) ,OTL(Part_Log[Loc_Nest3].A_Good) OTL(Part_Log[Loc_Nest3].B_Good) ];]]>
 </Text>
 </Rung>
 <Rung Number="11" Type="N">
@@ -1180,7 +1204,7 @@ Ext_MarkComplete <- laser fire complete (leave clear until the marker is wired; 
 <![CDATA[Sensor corroboration at station 1. Memory and sensors must agree; on disagreement the cell HOLDS rather than self-correcting, and the alarm names the location. SET PRESET: 1000 ms so a part in transit does not trip it.]]>
 </Comment>
 <Text>
-<![CDATA[NEQ(Loc_Nest[1],0)XIO(Ext_Nest1PartA)XIO(Ext_Nest1PartB)XIO(Z2_Turntable)TON(Mem_Disagree_TMR[1],?,?)XIC(Mem_Disagree_TMR[1].DN)[OTL(Mem_Disagree) ,MOV(1,Mem_Disagree_Loc) ,OTL(Cyc_StopRequested) ];]]>
+<![CDATA[NEQ(Loc_Nest1,0)XIO(Ext_Nest1PartA)XIO(Ext_Nest1PartB)XIO(Z2_Turntable)TON(Mem_Disagree_TMR[1],?,?)XIC(Mem_Disagree_TMR[1].DN)[OTL(Mem_Disagree) ,MOV(1,Mem_Disagree_Loc) ,OTL(Cyc_StopRequested) ];]]>
 </Text>
 </Rung>
 <Rung Number="12" Type="N">
@@ -1188,7 +1212,7 @@ Ext_MarkComplete <- laser fire complete (leave clear until the marker is wired; 
 <![CDATA[Reverse check: a part is sitting in station 1 that the memory does not know about.]]>
 </Comment>
 <Text>
-<![CDATA[EQU(Loc_Nest[1],0)[XIC(Ext_Nest1PartA) ,XIC(Ext_Nest1PartB) ]XIO(Z2_Turntable)TON(Mem_Disagree_TMR[2],?,?)XIC(Mem_Disagree_TMR[2].DN)[OTL(Mem_Disagree) ,MOV(2,Mem_Disagree_Loc) ,OTL(Cyc_StopRequested) ];]]>
+<![CDATA[EQU(Loc_Nest1,0)[XIC(Ext_Nest1PartA) ,XIC(Ext_Nest1PartB) ]XIO(Z2_Turntable)TON(Mem_Disagree_TMR[2],?,?)XIC(Mem_Disagree_TMR[2].DN)[OTL(Mem_Disagree) ,MOV(2,Mem_Disagree_Loc) ,OTL(Cyc_StopRequested) ];]]>
 </Text>
 </Rung>
 <Rung Number="13" Type="N">
@@ -1239,7 +1263,7 @@ Ext_MarkComplete <- laser fire complete (leave clear until the marker is wired; 
 </Rung>
 <Rung Number="5" Type="N">
 <Text>
-<![CDATA[EQU(Loc_RobotBlank,0)EQU(Loc_RobotFinish,0)EQU(Loc_Nest[1],0)EQU(Loc_Nest[2],0)EQU(Loc_Nest[3],0)EQU(Loc_Nest[4],0)EQU(Loc_Mold,0)OTE(Cell_Empty);]]>
+<![CDATA[EQU(Loc_RobotBlank,0)EQU(Loc_RobotFinish,0)EQU(Loc_Nest1,0)EQU(Loc_Nest2,0)EQU(Loc_Nest3,0)EQU(Loc_Nest4,0)EQU(Loc_Mold,0)OTE(Cell_Empty);]]>
 </Text>
 </Rung>
 <Rung Number="6" Type="N">

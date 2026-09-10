@@ -80,15 +80,21 @@ The file passes fourteen structural checks: XML well-formed, root and program sk
 `ExportOptions` not promising decorated data that isn't there, every UDT `BIT` member resolving to a
 declared hidden host with unique in-range bit numbers, no `Radix` on structured tags, no L5K data on
 UDT-typed tags, every rung reference resolving to a declared tag or UDT member, all 30 one-shots
-unique and inside a DINT, every array subscript inside its declared dimension, rung numbering
-contiguous, every `JSR` target existing, and no stray CDATA terminators.
+unique and inside a DINT, every array subscript inside its declared dimension, **no nested indirect
+addressing and every variable subscript naming a scalar DINT**, rung numbering contiguous, every
+`JSR` target existing, and no stray CDATA terminators.
 
 What that does **not** cover: I have no Studio 5000 here to actually import it against. The residual
 risk is the `UDT_Routine_Control` definition not matching yours member-for-member — hence
 **Use Existing** above. If it rejects for any other reason, the same logic is in
 [`../docs/AUTOSEQUENCE.md`](../docs/AUTOSEQUENCE.md) as neutral text you can paste rung by rung.
 
-## Two things to read before editing
+## Three things to read before editing
+
+- **Never use an array element as an array subscript.** `Part_Log[Loc_Nest[1]]` is rejected by the
+  editor and renders as `??`. That is why the four nest locations are scalar `Loc_Nest1..Loc_Nest4`
+  rather than a `Loc_Nest[5]` array — every subscript into `Part_Log` has to be a plain scalar DINT.
+
 
 - **Step 0's branches are ordered lowest priority first.** All branches evaluate, so the *last true
   branch wins*. `Req_Reject` at the bottom is the highest priority. Reordering them changes the

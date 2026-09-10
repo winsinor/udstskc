@@ -85,7 +85,7 @@ Part_Pair            Family: NoFamily
 **Part memory**
 
 `Part_Log` Part_Pair[500] · `Part_Seq_Next` DINT · `Loc_RobotBlank` DINT ·
-`Loc_RobotFinish` DINT · `Loc_Nest` DINT[5] · `Loc_Mold` DINT · `Loc_Delivered` DINT ·
+`Loc_RobotFinish` DINT · `Loc_Nest1..4` DINT · `Loc_Mold` DINT · `Loc_Delivered` DINT ·
 `Reject_Sel` DINT
 
 **Manual faceplate**
@@ -231,10 +231,10 @@ from part memory and the zone bits — never from robot state directly.
 EQU(Loc_RobotBlank,0)XIC(UpAxis_PosValid)XIO(RequestLayerShift)XIO(Purge_Active)OTE(Req_PickUpstacker);
 ```
 ```
-NEQ(Loc_RobotBlank,0)EQU(Part_Log[Loc_RobotBlank].State,20)EQU(Loc_Nest[1],0)XIO(Weiss:I.Active)OTE(Req_PlaceTurntable);
+NEQ(Loc_RobotBlank,0)EQU(Part_Log[Loc_RobotBlank].State,20)EQU(Loc_Nest1,0)XIO(Weiss:I.Active)OTE(Req_PlaceTurntable);
 ```
 ```
-NEQ(Loc_Nest[1],0)EQU(Part_Log[Loc_Nest[1]].State,40)EQU(Loc_RobotBlank,0)XIO(Weiss:I.Active)OTE(Req_PickTurntable);
+NEQ(Loc_Nest1,0)EQU(Part_Log[Loc_Nest1].State,40)EQU(Loc_RobotBlank,0)XIO(Weiss:I.Active)OTE(Req_PickTurntable);
 ```
 ```
 NEQ(Loc_RobotBlank,0)EQU(Part_Log[Loc_RobotBlank].State,50)EQU(Loc_RobotFinish,0)XIC(IMMtoR_MoldOpen)XIC(IMMtoR_OpEnable)OTE(Req_IMMExchange);
@@ -270,12 +270,12 @@ GRT(Part_Seq_Next,500)MOV(1,Part_Seq_Next);
 
 **Place into the nest** — the pair moves from the gripper to nest station 1.
 ```
-XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,30)ONS(Seq_ONS.21)[MOV(Loc_RobotBlank,Loc_Nest[1]) ,MOV(30,Part_Log[Loc_RobotBlank].State) ,MOV(0,Loc_RobotBlank) ];
+XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,30)ONS(Seq_ONS.21)[MOV(Loc_RobotBlank,Loc_Nest1) ,MOV(30,Part_Log[Loc_RobotBlank].State) ,MOV(0,Loc_RobotBlank) ];
 ```
 
 **Pick from the nest** — back onto the gripper, now marked.
 ```
-XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,40)ONS(Seq_ONS.22)[MOV(Loc_Nest[1],Loc_RobotBlank) ,MOV(50,Part_Log[Loc_Nest[1]].State) ,MOV(0,Loc_Nest[1]) ];
+XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,40)ONS(Seq_ONS.22)[MOV(Loc_Nest1,Loc_RobotBlank) ,MOV(50,Part_Log[Loc_Nest1].State) ,MOV(0,Loc_Nest1) ];
 ```
 
 **Mould exchange.** Two transfers in one routine: the old shot comes out onto the finished side,
@@ -295,9 +295,11 @@ XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,70)XIO(VG528)XIO(VG530)ONS(Seq_ONS.25)[M
 > reading released**. That catches a part still stuck to the tooling — the failure that actually
 > matters with a visitor waiting at the chute.
 
-**Turntable rotation** — four DINT moves, not five record copies. There are four stations.
+**Turntable rotation** — four DINT moves, not five record copies. There are four stations, held in
+four **scalar** tags: a nest location is used as a subscript into `Part_Log`, and Logix will not
+accept an array element as an array subscript.
 ```
-XIC(TurnTable_Move_ONS)[MOV(Loc_Nest[4],Loc_NestTemp) ,MOV(Loc_Nest[3],Loc_Nest[4]) ,MOV(Loc_Nest[2],Loc_Nest[3]) ,MOV(Loc_Nest[1],Loc_Nest[2]) ,MOV(Loc_NestTemp,Loc_Nest[1]) ];
+XIC(TurnTable_Move_ONS)[MOV(Loc_Nest4,Loc_NestTemp) ,MOV(Loc_Nest3,Loc_Nest4) ,MOV(Loc_Nest2,Loc_Nest3) ,MOV(Loc_Nest1,Loc_Nest2) ,MOV(Loc_NestTemp,Loc_Nest1) ];
 ```
 
 **Reject** — clears whichever half the selector named.
@@ -308,14 +310,14 @@ XIC(Seq_CmdDone)EQU(Robot_Sts_RoutineID,90)ONS(Seq_ONS.26)[[EQU(Reject_Sel,1) ,E
 **Sensor corroboration.** Memory and sensors must agree; on disagreement the cell holds rather than
 self-correcting. One rung per location, this is the nest pattern:
 ```
-NEQ(Loc_Nest[1],0)XIO(PE202)XIO(PE203)TON(Mem_Disagree_TMR[1],?,?)XIC(Mem_Disagree_TMR[1].DN)[OTL(Mem_Disagree) ,MOV(1,Mem_Disagree_Loc) ,OTL(Cyc_StopRequested) ];
+NEQ(Loc_Nest1,0)XIO(PE202)XIO(PE203)TON(Mem_Disagree_TMR[1],?,?)XIC(Mem_Disagree_TMR[1].DN)[OTL(Mem_Disagree) ,MOV(1,Mem_Disagree_Loc) ,OTL(Cyc_StopRequested) ];
 ```
 > Preset ~1 s so a part in transit does not trip it. `Mem_Disagree_Loc` drives the alarm text, so
 > the message names the location and the direction rather than saying something generic.
 
 **Clear on first scan** — `Part_Log` is not retentive.
 ```
-XIC(S:FS)[FLL(0,Part_Log[0],500) ,MOV(1,Part_Seq_Next) ,MOV(0,Loc_RobotBlank) MOV(0,Loc_RobotFinish) ,FLL(0,Loc_Nest[0],5) ,MOV(0,Loc_Mold) MOV(0,Loc_Delivered) ];
+XIC(S:FS)[FLL(0,Part_Log[0],500) ,MOV(1,Part_Seq_Next) ,MOV(0,Loc_RobotBlank) MOV(0,Loc_RobotFinish) ,FLL(0,Loc_Nest0,5) ,MOV(0,Loc_Mold) MOV(0,Loc_Delivered) ];
 ```
 
 ---
@@ -342,7 +344,7 @@ XIC(Mode_Auto)XIC(Cyc_Homed)XIO(Cyc_Faulted)[XIC(Cyc_Start)ONS(Seq_ONS.30)OTU(Cy
 **Purge** — stop feeding new blanks, let everything already in the cell finish.
 ```
 XIC(Mode_Purge)OTE(Purge_Active);
-XIC(Purge_Active)EQU(Loc_RobotBlank,0)EQU(Loc_RobotFinish,0)EQU(Loc_Nest[1],0)EQU(Loc_Nest[2],0)EQU(Loc_Nest[3],0)EQU(Loc_Nest[4],0)EQU(Loc_Mold,0)OTE(Cell_Empty);
+XIC(Purge_Active)EQU(Loc_RobotBlank,0)EQU(Loc_RobotFinish,0)EQU(Loc_Nest1,0)EQU(Loc_Nest2,0)EQU(Loc_Nest3,0)EQU(Loc_Nest4,0)EQU(Loc_Mold,0)OTE(Cell_Empty);
 ```
 
 **Zone occupancy.** With overlap permitted everywhere, the turntable is blocked only while the
