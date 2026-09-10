@@ -1,82 +1,107 @@
 # Next — the working list
 
+**State: `Program031000_RobotSequencer` is imported.** The PLC half of the interface exists. The
+robot half does not, so nothing moves yet — that is expected and step 1 below turns it into a test.
+
 The 100-item board is the reference. **This is the queue.** Ordered; work top to bottom.
 
-Full list: [`TODO.md`](TODO.md) · Framework to build from: [`docs/AUTOSEQUENCE.md`](docs/AUTOSEQUENCE.md)
+Full list: [`TODO.md`](TODO.md) · Ladder reference: [`docs/AUTOSEQUENCE.md`](docs/AUTOSEQUENCE.md) ·
+Import guide: [`plc/README.md`](plc/README.md)
 
 ---
 
-## This week
+## 1. Prove the handshake with no robot at all — 10 minutes, nothing else needed
 
-### Unblock, in parallel with everything else
+Do this first. It verifies the entire PLC-side interface with zero dependencies.
 
-- [ ] **Get `$config.dat` off the KRC.** Blocks all robot-side work. Ten minutes at the pendant.
-- [ ] **Prove one string reaches the MDX2.** Biggest schedule risk to the open house, and it is an
-      assumption right now — the PLC has zero STRING tags and zero MSG instructions. If the marker
-      won't take free text over EtherNet/IP, the naming feature needs a different plan and you want
-      to know in week 1, not week 5.
-- [ ] **Check assembly sizes** on the `Station100_Robot` connection. The interface assumes bytes
-      64–91 are free both ways.
+- [ ] Confirm the program verified clean after import. If `UDT_Routine_Control` conflicted, you
+      should have taken **Use Existing**.
+- [ ] Delete the orphaned `Loc_Nest` array tag if the first import left one behind.
+- [ ] Set `HMI_Mode_Select` = 1. Confirm `Mode_Manual` comes on (needs `Ext_EStopOK` — force it for
+      this test if it isn't mapped yet).
+- [ ] Put `10` in `Man_RoutineID`. Pulse `Man_Fire`.
+- [ ] Watch, in order: `Robot_Cmd_RoutineID` becomes 10 · `Robot_Cmd_Seq` increments ·
+      `Seq_CmdBusy` latches · `Seq_AckTimer` runs · after 3 s `Seq_CmdFault` sets and
+      `Robot_Seq.Fault_Dint` reads **9001**.
+- [ ] Pulse `Man_Ack`. `Robot_Cmd_RoutineID` returns to 0 and the fault clears.
 
-### Build the framework
+Fault 9001 is the **correct** result — it means "the robot never acknowledged", and there is no
+robot listening yet. If you see that whole sequence, the command path, the sequence counter, the
+timeout and the consume handshake all work.
 
-- [ ] **1. Create the three UDTs** — `STRING_20`, `Part_Record`, `Part_Pair`. §1 of AUTOSEQUENCE.
-- [ ] **2. Create the tags.** §2.
-- [ ] **3. `R100_CommandInterface`.** §4. Eight rungs. This is the piece everything else stands on —
-      held completion instead of a 150 ms pulse.
-- [ ] **4. `R900_Manual`.** §9. Two rungs plus a faceplate. **Build this before the sequencer** —
-      it is how every routine gets proven.
-- [ ] **5. Add the two `COP` rungs** to `Program040000`. §10.
+## 2. Map the `Ext_` stubs — independent of the robot
 
-At this point you can command the robot by hand and watch it answer, with no sequencer involved.
-That is the milestone worth hitting first.
+In `R999_ExternalInterface`. Until these are mapped the sequencer sits at step 0 forever.
 
-### Fix while you're in there
+- [ ] `Ext_EStopOK`, `Ext_Reset` — safety relay OK, HMI reset
+- [ ] `Ext_TurntableMoving` ← `Weiss:I.Active` · `Ext_TurntableMoved` ← index-complete one-shot
+- [ ] `Ext_MoldOpen` ← `IMMtoR_MoldOpen` · `Ext_OpEnable` ← `IMMtoR_OpEnable`
+- [ ] `Ext_DrawerFull` ← `PLCtoR_DrawerFull` · `Ext_LayerShiftReq` ← `RequestLayerShift`
+- [ ] `Ext_Nest1PartA/B` ← PE202 / PE203
+- [ ] `Ext_FinCupAReleased/BReleased` ← NOT VG528 / NOT VG530
+- [ ] `Ext_TrayPosValid`, `Ext_TrayRow`, `Ext_TrayCol` ← derived from `UpAxis_NextValidPos`
+- [ ] `Ext_TurntableIndexReq` → drives `VFD_Index_REQUEST`
+- [ ] Leave `Ext_MarkComplete` clear — no laser. Use `Sim_MarkAtStation3` instead.
 
-Independent of everything above, and each one is minutes:
+## 3. Critical path: the robot side
 
-- [ ] **Layer bounds.** `UpAxis_Memory` is `SINT[12]`; rung 7 allows layer requests to 13.
-      Indexing at 12 or 13 **major-faults the processor**. Answer is 11 layers.
-- [ ] **Turntable good/bad.** With no vision, both `Inspect_` statuses stay 0, `TTtoR_ReqToPickBad`
-      latches, and **every part goes to the reject drawer**. Swap to PE202 / PE203.
+**This is now the long pole.** The PLC is done and can command nothing until the robot speaks the
+protocol.
+
+- [ ] **3.1 Get `$config.dat` off the KRC.** Ten minutes at the pendant, blocks everything below.
+- [ ] **3.2 Confirm assembly sizes** on the `Station100_Robot` connection have room for bytes 64–91
+      in both directions. If not, the word layout moves and §3.4 changes with it.
+- [ ] **3.3** Declare the command/status signals in `$config.dat`.
+- [ ] **3.4** Add the two `COP` rungs to `Program040000_Station100_Robot` — see the end of
+      [`docs/AUTOSEQUENCE.md`](docs/AUTOSEQUENCE.md).
+- [ ] **3.5** Write `CmdInterface.src`: latch a command when idle and the sequence differs, echo the
+      sequence, publish **held** status. Four helpers — `CmdLatch()`, `ReportRunning()`,
+      `ReportComplete()`, `ReportFault(code)`.
+- [ ] **3.6** Rewrite `Main.src` as a dispatcher on `Robot_Cmd_RoutineID`. Keep the old file as
+      `Main_Legacy.src`.
+- [ ] **3.7** Give `10 Home` the standard prologue/epilogue and make it idempotent.
+
+## 4. First real motion
+
+- [ ] Fire `10 Home` from the faceplate. `Robot_Sts_State` should go 0 → 1 → 2 and **hold at 2**
+      until you pulse `Man_Ack`. That is the whole design working.
+
+## 5. Then, one routine at a time
+
+Prove each from the faceplate before anything chains them:
+
+**20 PickUpstacker → 30 PlaceTurntable → 40 PickTurntable → 70 DropChute → 60 SprueCut →
+80 LayerShift → 90 Reject → 50 IMMExchange.**
+
+The IMM is last — most interlocked, and the only one that can damage a mould.
+
+## 6. Only then, auto
+
+- [ ] Set `Sim_MarkAtStation3` so pairs can get past the nest with no laser.
+- [ ] `HMI_Mode_Select` = 2, press home, then start.
+- [ ] Watch `Robot_Seq.Routine_CurrentCycleStep` walk 0 → 200 → 0 → 300 → 0 → …
+
+---
+
+## Fix these whenever — independent of everything above
+
+- [ ] **Layer bounds.** `UpAxis_Memory` is `SINT[12]`; rung 7 allows layer requests to 13. Indexing
+      at 12 or 13 **major-faults the processor**. The answer is 11 layers.
+- [ ] **Turntable good/bad.** With no vision, both `Inspect_` statuses stay 0,
+      `TTtoR_ReqToPickBad` latches, and **every part goes to the reject drawer**. Swap to
+      PE202 / PE203.
 - [ ] **Downstacker cup A** writes `RtoDS_PickErrorVG530` in four places where it should write the
       VG528 bit, and one guard reads `If VG530 Or VG530`.
-
----
-
-## Next week
-
-- [ ] **6. `R200_Requests`.** §6. Seven rungs.
-- [ ] **7. `R400_PartMemory`.** §7. The lifecycle transitions.
-- [ ] **8. `R300_Sequencer`.** §5. Step machine.
-- [ ] **9. `R500_Modes`.** §8. Cycle control, zones, index trigger.
-- [ ] **10. Robot side:** `CmdInterface.src`, then `Main.src` as a dispatcher. Keep the old file as
-      `Main_Legacy.src`.
-
-- [ ] Prove the routines one at a time from the faceplate, in this order:
-      **20 PickUpstacker → 30 PlaceTurntable → 40 PickTurntable → 70 DropChute → 60 SprueCut →
-      80 LayerShift → 90 Reject → 50 IMMExchange.**
-      The IMM is last — most interlocked, and the only one that can damage a mould.
-
----
-
-## Before the open house, not before the framework
-
-- Naming: queue, kiosk, string path to the laser (Phase 9)
-- Tray replenishment and request-to-enter (Phase 10)
-- Alarms (Phase 7) — start with the vacuum cups; they are already detected and currently handled by
-  silently dumping parts in the drawer
-- Dry cycle and purge modes (Phase 11)
-
----
+- [ ] Remove `XIC(Josh_test.26)` from the laser-fire permissive.
+- [ ] Remove the `XIC(amp_Test_Bits.0)` gate from the stop path.
+- [ ] Interlock or delete `Sim_MarkAtStation3` before the laser goes in — it forces every part to
+      "good", which is the same species as `Josh_test.26`.
 
 ## Answer when you can
 
-Not blocking today, but they need resolving:
-
 - **Is the laser hood interlock safety-rated?** Rung 13 gates the fire on hood position in the
-  *standard* PLC. Either something independent stops it firing with the hood up, or that rung is
-  the only thing that does. Worth settling before there are visitors in the room.
+  *standard* PLC. Settle it before there are visitors in the room.
 - **Who writes the stacker tags today?** Eight are read across all nine programs and written by
   none. Almost certainly Optix.
 - **Tray-count sensor** — part number and mounting.
+- **MDX2 free text over EtherNet/IP** — still the biggest risk to the open house, still unproven.
