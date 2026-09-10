@@ -1,7 +1,11 @@
 # Robot setup and first test
 
-Two things go on the controller: a `$config.dat` edit and one `.src` file. No `.dat` accompanies
-`Main.src` — the two latched values are locals inside the DEF.
+Two things go on the controller: a `$config.dat` edit and the `Main` module (`Main.src` + `Main.dat`).
+
+`Main.dat` exists for one reason: it declares a module-local `PDEFAULT` with `ACC 35.000`, copied
+from the old `Main.dat`. `$config.dat` declares a global `PDEFAULT` with `ACC 100.000`, and a local
+declaration shadows the global. Install `Main.src` alone and every home move runs at about three
+times today's joint acceleration.
 
 ---
 
@@ -90,8 +94,7 @@ the group order in the SIGNAL declarations — every one of the thirteen — bef
 ## Step 5 — Install the program
 
 1. Rename the existing `Main.src` and `Main.dat` to `Main_Legacy.src` / `.dat`. **Keep them.**
-2. Copy this `Main.src` into `KRC:\R1\Program`.
-3. It needs **no** `.dat`.
+2. Copy **both** `Main.src` and `Main.dat` into `KRC:\R1\Program`.
 4. Open it on the pendant and confirm it compiles clean. Unresolved names here mean a `$config.dat`
    global is missing — most likely `XHOME`, `FHOME` or one of the new signals.
 

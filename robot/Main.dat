@@ -1,0 +1,20 @@
+DEFDAT Main
+   ;FOLD EXTERNAL DECLARATIONS;%{PE}%MKUKATPBASIS,%CEXT,%VCOMMON,%P
+   ;FOLD BASISTECH EXT;%{PE}%MKUKATPBASIS,%CEXT,%VEXT,%P
+   EXT BAS(BAS_COMMAND :IN, REAL :IN)
+   DECL INT SUCCESS
+   ;ENDFOLD (BASISTECH EXT)
+   ;FOLD USER EXT;%{E}%MKUKATPUSER,%CEXT,%VEXT,%P
+   ;Make your modifications here
+
+   ;ENDFOLD (USER EXT)
+   ;ENDFOLD (EXTERNAL DECLARATIONS)
+   ; Local PDEFAULT, copied verbatim from the previous Main.dat.
+   ;
+   ; This file exists ONLY for this declaration. $config.dat also declares a
+   ; global PDEFAULT, but with ACC 100.000. A module-local declaration shadows
+   ; the global, so the old Main has always used ACC 35.000. Ship Main.src
+   ; without this .dat and every home move silently runs at roughly three
+   ; times the joint acceleration it does today.
+   DECL PDAT PDEFAULT = { APO_MODE #CDIS, APO_DIST 500.0, VEL 100.0, ACC 35.000, GEAR_JERK 100.0, EXAX_IGN 0 }
+ENDDAT

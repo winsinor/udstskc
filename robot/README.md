@@ -4,6 +4,7 @@
 |---|---|
 | `Main.src` | The stock KUKA CELL template with the dispatch swapped. **Install as the robot's `Main.src`.** |
 | `krc/config.dat` | The live `$config.dat` off the KRC, for reference. Do not edit — mirror changes on the controller. |
+| `Main.dat` | Companion to `Main.src`. Exists only to declare the module-local `PDEFAULT` (`ACC 35.000`) that the old Main used. Without it, `PDEFAULT` falls through to the `$config.dat` global at `ACC 100.000`. |
 | `CONFIG_ADDITIONS.dat` | 13 SIGNAL declarations for `$config.dat`. **Addresses verified against the live config — no collisions.** |
 
 That is everything. **No `.dat` file is needed for `Main.src`** — the two latched values are
