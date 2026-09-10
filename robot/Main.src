@@ -1,16 +1,24 @@
 &ACCESS RVP
-&COMMENT HANDLER on external automatic
+&COMMENT PLC-commanded routine dispatcher
 DEF Main ( )
-;EXT EXAMPLE1 ( )
-;EXT EXAMPLE2 ( )
-;EXT EXAMPLE3 ( )
+;--------------------------------------------------------------------------
+; Main -- runs the routine the PLC asks for, then reports the result.
+;
+;   PLC writes Robot_Cmd_RoutineID, then increments Robot_Cmd_Seq.
+;   The INCREMENT is the trigger, which is what makes "run 20 again"
+;   different from "still running 20".
+;
+;   Robot_Sts_State:  0 idle   1 running   2 complete   3 faulted
+;
+;   State 2 and 3 are HELD. The PLC releases them by writing
+;   Robot_Cmd_RoutineID = 0. Nothing else does.
+;
+; Signals live in $config.dat, USER GLOBALS fold.
+;--------------------------------------------------------------------------
 
 ;FOLD INIT
-  ;=== REMOVED: DECL CHAR DMY[3] / DMY[]="---". DMY existed only as the
-  ;=== message buffer for the P00 calls, which are gone.
-  ;=== CHANGED: latched copy of the command. Local to this DEF, so no extra
-  ;=== .dat file is needed. The Robot_Cmd_* words are live network data and
-  ;=== can change mid-routine; these are a snapshot taken once at dispatch.
+  ; Snapshot of the command. The Robot_Cmd_* words are live network data and
+  ; can change mid-routine; these are taken once, at dispatch.
   DECL INT Cmd_Routine
   DECL INT Cmd_P1
 ;ENDFOLD (INIT)
@@ -19,9 +27,6 @@ DEF Main ( )
   INTERRUPT ON 3
   BAS (#INITMOV,0 )
 ;ENDFOLD (BASISTECH INI)
-;=== REMOVED: the stock CHECK HOME fold. It calls P00 (#CHK_HOME,...) and
-;=== reads the CHECK_HOME global, both part of the PGNO mechanism this cell
-;=== does not use. The existing Main.src does not call it either.
 ;FOLD PTP HOME  Vel= 100 % DEFAULT;%{PE}%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
   PDAT_ACT=PDEFAULT
   FDAT_ACT=FHOME
@@ -29,15 +34,10 @@ DEF Main ( )
   $H_POS=XHOME
   PTP  XHOME
 ;ENDFOLD
-;=== REMOVED: the stock AUTOEXT INI fold. P00 (#INIT_EXT,...) validates the
-;=== extern-mode PGNO configuration and faults on startup if PGNO is not set
-;=== up in $config.dat -- and on this cell it is not. Ext Auto still starts
-;=== this program exactly as it starts the current one; only the program
-;=== NUMBER half of Ext Auto is unused, and it is unused today too.
 
-;=== CHANGED: publish a clean idle state, and adopt whatever sequence number
-;=== the PLC currently shows. Without the adopt, a command left over from
-;=== before this program started would execute the instant it does.
+; Publish idle, and adopt the PLC's current sequence number. Without the
+; adopt, a command left over from before this program started would execute
+; the instant it does.
 Robot_Sts_State     = 0
 Robot_Sts_RoutineID = 0
 Robot_Sts_FaultCode = 0
@@ -45,10 +45,6 @@ Robot_Sts_AckSeq    = Robot_Cmd_Seq
 
 LOOP
 
-  ;=== CHANGED: was  P00 (#EXT_PGNO,#PGNO_GET,DMY[],0 )
-  ;=== The PLC sequencer writes Robot_Cmd_RoutineID and then increments
-  ;=== Robot_Cmd_Seq. The increment is the trigger -- it is what makes
-  ;=== "run 20 again" different from "still running 20".
   WAIT FOR ((Robot_Cmd_Seq<>Robot_Sts_AckSeq) AND (Robot_Cmd_RoutineID<>0))
 
   Cmd_Routine = Robot_Cmd_RoutineID
@@ -60,8 +56,7 @@ LOOP
   Robot_Sts_State     = 1
   RobotCell_Error     = FALSE
 
-  ;=== CHANGED: was  SWITCH PGNO
-  SWITCH Cmd_Routine ; Select with Programnumber
+  SWITCH Cmd_Routine
 
   CASE 10 ; Home
     PDAT_ACT=PDEFAULT
@@ -99,15 +94,12 @@ LOOP
     Station500_Reject ( )
 
   DEFAULT
-    ;=== CHANGED: was  P00 (#EXT_PGNO,#PGNO_FAULT,DMY[],0 )
     Robot_Sts_FaultCode = 101 ; unknown routine ID
     Robot_Sts_State     = 3
   ENDSWITCH
 
-  ;=== CHANGED: report the result.
-  ;=== The station programs already set RobotCell_Error when they fail. That
-  ;=== is the one hook taken from them, and it modifies no station code: it
-  ;=== turns a silent internal failure into a fault the PLC can see.
+  ; The station programs already set RobotCell_Error when they fail. Reading
+  ; it here turns a silent internal failure into a fault the PLC can see.
   IF RobotCell_Error==TRUE THEN
     Robot_Sts_FaultCode = 100 ; station reported RobotCell_Error
     Robot_Sts_State     = 3
@@ -116,10 +108,9 @@ LOOP
     Robot_Sts_State     = 2 ; complete
   ENDIF
 
-  ;=== CHANGED: hold the answer until the PLC consumes it by writing
-  ;=== RoutineID 0. Nothing else releases it. No timeout here on purpose --
-  ;=== if the PLC never consumes, the right behaviour is to sit still and be
-  ;=== obviously stuck, not to quietly go idle and accept new work.
+  ; Hold until the PLC consumes the result. No timeout on purpose -- if the
+  ; PLC never consumes, the right behaviour is to sit still and be obviously
+  ; stuck, not to quietly go idle and accept new work.
   WAIT FOR (Robot_Cmd_RoutineID==0)
   Robot_Sts_State     = 0
   Robot_Sts_RoutineID = 0
