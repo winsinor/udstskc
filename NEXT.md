@@ -45,21 +45,18 @@ In `R999_ExternalInterface`. Until these are mapped the sequencer sits at step 0
 
 ## 3. Critical path: the robot side
 
-**This is now the long pole.** The PLC is done and can command nothing until the robot speaks the
-protocol.
-
-- [ ] **3.1 Get `$config.dat` off the KRC.** Ten minutes at the pendant, blocks everything below.
-- [ ] **3.2 Confirm assembly sizes** on the `Station100_Robot` connection have room for bytes 64–91
-      in both directions. If not, the word layout moves and §3.4 changes with it.
-- [ ] **3.3** Declare the command/status signals in `$config.dat`.
+- [x] **3.1 `$config.dat` pulled and read.** Everything `Main.src` references is declared. It compiles.
+- [x] **3.3 SIGNAL declarations written and verified** — `robot/CONFIG_ADDITIONS.dat`, 13 signals,
+      zero collisions with the live config. Paste as written.
+- [x] **3.5 / 3.6 Dispatcher written** — folded into a single `robot/Main.src`. No separate
+      `CmdInterface.src`, no station file touched.
+- [ ] **3.2 Confirm assembly sizes.** The one open item. `Station100_Robot` needs **≥ 92 bytes in
+      both directions**; today's config only proves ≥ 60. Check the module properties in Logix.
+      A short connection fails silently.
 - [ ] **3.4** Add the two `COP` rungs to `Program040000_Station100_Robot` — see the end of
       [`docs/AUTOSEQUENCE.md`](docs/AUTOSEQUENCE.md).
-- [ ] **3.5** Write `CmdInterface.src`: latch a command when idle and the sequence differs, echo the
-      sequence, publish **held** status. Four helpers — `CmdLatch()`, `ReportRunning()`,
-      `ReportComplete()`, `ReportFault(code)`.
-- [ ] **3.6** Rewrite `Main.src` as a dispatcher on `Robot_Cmd_RoutineID`. Keep the old file as
-      `Main_Legacy.src`.
-- [ ] **3.7** Give `10 Home` the standard prologue/epilogue and make it idempotent.
+- [ ] **3.7** Install per [`robot/SETUP.md`](robot/SETUP.md): byte-order test, then the no-motion
+      protocol test (command 99 → expect fault 101).
 
 ## 4. First real motion
 

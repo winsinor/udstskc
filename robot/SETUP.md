@@ -5,43 +5,49 @@ Two things go on the controller: a `$config.dat` edit and one `.src` file. No `.
 
 ---
 
-## Step 1 — Get `$config.dat` and see what you have
+## Step 1 — `$config.dat` — DONE, verified
 
-`KRC:\STEU\Mada\$config.dat`. Pull it off, commit it, and find these:
+`KRC:\STEU\Mada\$config.dat` has been pulled and checked. Everything `Main.src` needs is already
+declared there: `XHOME`, `FHOME`, `PDEFAULT`, `Rjct_1Blnk_2Fin_3Both`, `RobotCell_Error`,
+`US_Pick[2,4]`. **`Main.src` will compile.**
 
-| Look for | Why |
+## Step 2 — Bit addresses — DONE, verified
+
+The mapping was confirmed against 12 existing signal pairs, in both directions:
+
+```
+bit = (PLC byte offset x 8) + 1          base $IN[1] / $OUT[1], no extra offset
+```
+
+`UStoR_PickRowNumber` is PLC byte 32 and is declared `$IN[257]`. 32x8+1 = 257. It holds for every
+existing pair — inputs at bytes 32/36/40/44/48/52/56 and outputs at 32/36/40/44/48.
+
+Free space in the current config:
+
+| | Free |
 |---|---|
-| `XHOME`, `FHOME` | The home position and its frame. `Main.src` moves there and will not compile without them. |
-| `PDEFAULT` | Motion parameters for that move. |
-| Existing `SIGNAL` declarations | Tells you which `$IN` / `$OUT` numbers are already taken. |
-| The highest `$IN[n]` / `$OUT[n]` in use | Where your free space starts. |
-| `RobotCell_Error`, `Rjct_1Blnk_2Fin_3Both` | Confirm they are declared here as expected. |
+| Inputs | `$IN[34]`, `$IN[37..256]`, `$IN[481..1025]` |
+| Outputs | `$OUT[59..256]`, `$OUT[417..1024]` |
 
-**Do not add anything yet.** Read first.
+All 13 addresses in `CONFIG_ADDITIONS.dat` land in that free space. **Zero collisions.** Paste them
+as written — no shifting needed.
 
-## Step 2 — Work out the bit addresses
+### The one thing left to check: assembly size
 
-The PLC block sits at **byte 64** of each assembly. Convert:
+`$config.dat` does not record how big the EtherNet/IP connection is. The highest input in use today
+is `$IN[480]` = byte 59, so the connection is **at least 60 bytes**. This block needs it to reach
+**byte 92 in both directions**.
 
-```
-bit number = (byte offset x 8) + 1 + (whatever the assembly's base offset is)
-```
-
-If the EtherNet/IP connection maps to `$IN[1]`, byte 64 is `$IN[513]`. It probably does not — the
-existing signals already occupy space — so shift every number in `CONFIG_ADDITIONS.dat` by the same
-amount and keep them contiguous.
-
-Direction, because it is the easy mistake:
-
-```
-PLC output  ->  robot $IN      Robot_Cmd_*
-robot $OUT  ->  PLC input      Robot_Sts_*
-```
+Open the `Station100_Robot` module properties in Logix (or the connection in WorkVisual) and confirm
+the input and output sizes are 92 bytes or more. If they are short, the robot never sees the command
+— no error, no warning, nothing happens. Growing the connection requires a download, so do it before
+you plan a test window.
 
 ## Step 3 — Add the SIGNAL block
 
-Paste the 13 declarations from `CONFIG_ADDITIONS.dat` into `$config.dat` with your corrected
-addresses. Reboot the controller so the config takes.
+Paste the 13 declarations from `CONFIG_ADDITIONS.dat` into `$config.dat` **exactly as written** —
+they are verified against the live config. Put them with the other `SIGNAL` declarations. Reboot the
+controller so the config takes.
 
 ## Step 4 — Test byte order BEFORE anything else
 

@@ -4,15 +4,27 @@
 ;
 ;  PASTE INTO:  the SIGNAL declarations section of KRC:\STEU\Mada\$config.dat
 ;
-;  ADDRESSES BELOW ARE PLACEHOLDERS. Work out the real ones like this:
+;  ADDRESSES VERIFIED against the real $config.dat pulled off the KRC.
+;  Every one of the 13 signals below is in free space -- zero collisions
+;  with anything already declared. These are not placeholders any more.
 ;
-;    bit = (assembly_base_bit) + (byte_offset * 8) + 1
+;  The mapping was confirmed against 12 existing signal pairs:
 ;
-;  The PLC side puts the command block at BYTE 64 of the Station100_Robot
-;  assembly and the status block at byte 64 of the input assembly. If the
-;  EtherNet/IP connection maps to $IN[1] / $OUT[1], byte 64 is bit 513.
-;  If it is based somewhere else -- and it probably is, since the existing
-;  signals already occupy space -- shift every number below by the same amount.
+;    bit = (PLC byte offset * 8) + 1        base $IN[1] / $OUT[1]
+;
+;  e.g. UStoR_PickRowNumber is PLC byte 32 -> $IN[257].  32*8+1 = 257.
+;
+;  Free space in the existing config:
+;    inputs   $IN[34], $IN[37..256], $IN[481..1025]
+;    outputs  $OUT[59..256], $OUT[417..1024]
+;
+;  THE ONE THING STILL UNCONFIRMED: the EtherNet/IP assembly SIZE.
+;  $config.dat does not record it. The highest input in use today is
+;  $IN[480] = byte 59, so the connection is at least 60 bytes. This block
+;  needs it to reach byte 92 in BOTH directions. Check the Station100_Robot
+;  module properties in Logix (or WorkVisual) before you paste this in.
+;  If the connection is short, the robot simply never sees the command --
+;  no error, no warning, just nothing.
 ;
 ;  DIRECTION REMINDER, because it is the easy mistake:
 ;    PLC output  -> robot $IN     (Robot_Cmd_*)

@@ -3,7 +3,7 @@
 | File | What |
 |---|---|
 | `Main.src` | The stock KUKA CELL template with the dispatch swapped. **Install as the robot's `Main.src`.** |
-| `CONFIG_ADDITIONS.dat` | 13 SIGNAL declarations for `$config.dat`. **Addresses are placeholders.** |
+| `CONFIG_ADDITIONS.dat` | 13 SIGNAL declarations for `$config.dat`. **Addresses verified against the live config — no collisions.** |
 
 That is everything. **No `.dat` file is needed for `Main.src`** — the two latched values are
 `DECL INT` locals inside the DEF. No station program is modified.
@@ -70,3 +70,18 @@ uses it. It is **not** used here, deliberately:
 So the stock template's `P00 (#CHK_HOME,...)` and `P00 (#INIT_EXT,...)` calls are **removed** —
 `#INIT_EXT` validates the extern-mode PGNO configuration and would fault on startup on a cell where
 PGNO is not set up. Ext Auto still starts this program exactly as it starts the current one.
+
+### The live config makes this worse than "unused"
+
+The real `$config.dat` carries a leftover Ext-Auto block whose addresses sit **on top of live
+signals**:
+
+| Ext Auto setting | Lands on | Which is |
+|---|---|---|
+| `PGNO_FBIT = 33` (`$IN[33..40]`) | `TTtoR_TurnTableCycle` `$IN[33]` | a live turntable input |
+| `PGNO_REQ = 33` | `RtoIMM_PickErrorVG530` `$OUT[33]` | a live error output |
+| `APPL_RUN = 34` | `RtoTT_PickErrorVG524` `$OUT[34]` | a live error output |
+| `ERR_TO_PLC = 35` | `RtoTT_PickErrorVG526` `$OUT[35]` | a live error output |
+
+Calling `P00 (#INIT_EXT,...)` would have started driving three real error outputs as Ext-Auto
+handshake bits. Removing it was not just tidying.
