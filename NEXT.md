@@ -56,8 +56,11 @@ In `R999_ExternalInterface`. Until these are mapped the sequencer sits at step 0
 - [x] **Mapping verified on hardware.** Writing `Station100_Robot:O.Data[72] = 17` reads back as
       `Robot_Cmd_Param1 = 17` on the pendant. That confirms `bit = (byte × 8) + 1`, confirms byte 72
       is mapped on the KUKA side, and confirms the `SIGNAL` declarations are live.
-- [ ] **3.4** Add the two `COP` rungs to `Program040000_Station100_Robot` — see the end of
-      [`docs/AUTOSEQUENCE.md`](docs/AUTOSEQUENCE.md).
+- [x] **Byte order verified both directions.** `O.Data[72]`=17 → `Robot_Cmd_Param1`=17.
+      `Robot_Sts_SubStep`=65536 → `I.Data[86]`=1. Little-endian, no swap, nothing to flip.
+- [ ] **3.4 Add the two `COP` rungs** to `Program040000_Station100_Robot` — see the end of
+      [`docs/AUTOSEQUENCE.md`](docs/AUTOSEQUENCE.md). **This is the next thing to do.** Until it
+      exists, the sequencer's tags never reach the wire.
 - [ ] **3.7** Install per [`robot/SETUP.md`](robot/SETUP.md): byte-order test, then the no-motion
       protocol test (command 99 → expect fault 101).
 

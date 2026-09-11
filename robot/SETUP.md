@@ -89,7 +89,22 @@ next controller update.
 
 Reboot the controller so the config takes.
 
-## Step 4 — Test byte order BEFORE anything else
+## Step 4 — Byte order — DONE, verified both directions
+
+Both sides are little-endian and agree. No group order needs flipping.
+
+| Direction | Test | Result |
+|---|---|---|
+| PLC → robot | `O.Data[72]` = 17 | `Robot_Cmd_Param1` = 17 |
+| Robot → PLC | `Robot_Sts_SubStep` = 65536 | `I.Data[86]` = 1 |
+
+That second one is the decisive check. `Robot_Sts_SubStep` starts at PLC byte 84, and
+65536 = `0x00010000` puts its only set byte at index 2 of the group — byte 86. A reversed group would
+have landed on 85.
+
+<details>
+<summary>Original procedure, kept for reference</summary>
+
 
 Do not skip this. KUKA fills a signal group LSB-first; Rockwell lays a DINT out little-endian in the
 assembly. They usually agree. When they do not, it presents as *"the robot ignores my commands"*,
@@ -107,6 +122,8 @@ the pendant under **Display > Variable > Single**:
 
 If 256 comes back as 1, or 16777216 comes back as 256, the bytes are reversed. Fix it by flipping
 the group order in the SIGNAL declarations — every one of the thirteen — before going further.
+
+</details>
 
 ## Step 5 — Install the program
 
