@@ -105,9 +105,15 @@ the group order in the SIGNAL declarations — every one of the thirteen — bef
 
 ## Step 6 — First test: does it answer at all
 
-**No motion. Robot in T1, drives off is fine.** You are testing the handshake, not the robot.
+**This step DOES move the robot.** `Main.src` runs `PTP XHOME` once, before it reaches the
+dispatch loop — the same startup move the stock template does. So: **T1, reduced override, hand on
+the enabling switch, ready on the E-stop.** Drives must be on and any external E-stop cleared, or
+the program halts at the motion instruction and never reaches the loop.
 
-1. Select `Main` and start it. It should run to the `WAIT FOR` and sit there.
+Once it is parked at `XHOME` and sitting in the `WAIT FOR`, nothing below moves it: routine 99 hits
+the `DEFAULT` branch and calls no station.
+
+1. Select `Main` and start it. It moves to `XHOME`, then sits at the `WAIT FOR`.
 2. On the pendant watch `Robot_Sts_AckSeq` — it should have adopted whatever `Robot_Cmd_Seq` is.
 3. From the PLC, set `HMI_Mode_Select` = 1 for manual mode.
 4. Put **99** — deliberately invalid — in `Man_RoutineID`. Pulse `Man_Fire`.
