@@ -1,0 +1,4 @@
+# KRL files live on a Windows-based controller and must keep CRLF endings.
+*.src text eol=crlf
+*.dat text eol=crlf
+*.sub text eol=crlf
