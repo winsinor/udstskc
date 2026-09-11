@@ -50,9 +50,12 @@ In `R999_ExternalInterface`. Until these are mapped the sequencer sits at step 0
       zero collisions with the live config. Paste as written.
 - [x] **3.5 / 3.6 Dispatcher written** — folded into a single `robot/Main.src`. No separate
       `CmdInterface.src`, no station file touched.
-- [ ] **3.2 Confirm assembly sizes.** The one open item. `Station100_Robot` needs **≥ 92 bytes in
-      both directions**; today's config only proves ≥ 60. Check the module properties in Logix.
-      A short connection fails silently.
+- [x] **3.2 Assembly sizes confirmed — 256 bytes each way.** `Station100_Robot` is a generic
+      `AB:ETHERNET_MODULE` with `SINT[256]` on both `I` and `O`. The block needs bytes 64–91; there is
+      room to spare. **No Plan B needed.**
+- [x] **Mapping verified on hardware.** Writing `Station100_Robot:O.Data[72] = 17` reads back as
+      `Robot_Cmd_Param1 = 17` on the pendant. That confirms `bit = (byte × 8) + 1`, confirms byte 72
+      is mapped on the KUKA side, and confirms the `SIGNAL` declarations are live.
 - [ ] **3.4** Add the two `COP` rungs to `Program040000_Station100_Robot` — see the end of
       [`docs/AUTOSEQUENCE.md`](docs/AUTOSEQUENCE.md).
 - [ ] **3.7** Install per [`robot/SETUP.md`](robot/SETUP.md): byte-order test, then the no-motion

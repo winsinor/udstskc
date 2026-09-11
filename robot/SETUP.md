@@ -37,7 +37,17 @@ Free space in the current config:
 All 13 addresses in `CONFIG_ADDITIONS.dat` land in that free space. **Zero collisions.** Paste them
 as written — no shifting needed.
 
-### The one thing left to check: assembly size
+### Assembly size — CONFIRMED, 256 bytes each way
+
+`Station100_Robot` is a generic `AB:ETHERNET_MODULE` carrying `SINT[256]` on both `I` and `O`. The
+command block needs bytes 64–91 and the status block 64–87, so there is room several times over.
+
+Verified on hardware: `Station100_Robot:O.Data[72] = 17` reads back as `Robot_Cmd_Param1 = 17` on
+the pendant. The mapping is 1:1 from PLC byte 0 to `$IN[1]`, exactly as derived.
+
+<details>
+<summary>Original note, kept for the reasoning</summary>
+
 
 `$config.dat` does not record how big the EtherNet/IP connection is. The highest input in use today
 is `$IN[480]` = byte 59, so the connection is **at least 60 bytes**. This block needs it to reach
@@ -48,7 +58,9 @@ the input and output sizes are 92 bytes or more. If they are short, the robot ne
 — no error, no warning, nothing happens. Growing the connection requires a download, so do it before
 you plan a test window.
 
-**If it can't grow, there is a Plan B** at the bottom of `CONFIG_ADDITIONS.dat`. PLC bytes 8, 12, 16,
+</details>
+
+**Plan B is no longer needed** — it stays at the bottom of `CONFIG_ADDITIONS.dat` for reference only. PLC bytes 8, 12, 16,
 20, 24 and 28 are free in both directions inside the space already mapped. Six slots each. Status
 fits exactly; the command block gives up `Robot_Cmd_RetryLimit`, which the PLC declares but no rung
 references. It works, but it leaves no room to grow.
