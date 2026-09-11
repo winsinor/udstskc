@@ -189,7 +189,7 @@ one DINT, copied with `COP(..., 4)` exactly as the existing words are.
 | 40–43 | `RtoIMM_SeqNumber` | *(legacy)* |
 | 44–47 | `RtoPLC_ToolBlnkSeqNumber` | *(legacy)* |
 | 48–51 | `RtoPLC_ToolFinSeqNumber` | *(legacy)* |
-| 64–67 | `Robot_Sts_State` | `0` Idle, `1` Running, `2` Complete, `3` Faulted, `4` Held. **Held, not pulsed.** |
+| 64–67 | `Robot_Sts_State` | `0` Idle, `1` Running, `2` Complete, `3` Faulted. States 2 and 3 are **held, not pulsed** — the robot parks on them until the PLC writes `Robot_Cmd_RoutineID = 0`. `4` is reserved for a stop-request park and is **not implemented** in `Main.src`. |
 | 68–71 | `Robot_Sts_RoutineID` | Routine currently running, or the one just completed/faulted. |
 | 72–75 | `Robot_Sts_AckSeq` | Echo of `Robot_Cmd_Seq`. The command is latched when this matches. |
 | 76–79 | `Robot_Sts_FaultCode` | `0` when not faulted. See §4.3. |
@@ -225,7 +225,7 @@ Rules:
   the handshake idempotent and recovery possible.
 - On fault: robot retreats to `XHOME`, sets `Sts_FaultCode`, sets `Sts_State = 3`, and holds.
   The PLC clears it by writing `RoutineID = 0` after acknowledging the alarm.
-- `PLCtoR_Stop` still forces `Held` at the next safe point. `Sts_State = 4` replaces
+- *(Not implemented.)* `PLCtoR_Stop` would force `Held` at the next safe point. `Sts_State = 4` replaces
   `RtoPLC_RobotReachedStop`, which is retained during migration.
 - PLC-side timeout on `Running` is mandatory — a robot that stops scanning must not read as busy
   forever.

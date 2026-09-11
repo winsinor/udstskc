@@ -60,7 +60,7 @@ SIGNAL Robot_Cmd_RetryLimit  $IN[705] TO $IN[736]     ; O.Data[88]
 ; ----------------------------------------------------------------------------
 ;  ROBOT -> PLC   (status)           PLC byte
 ; ----------------------------------------------------------------------------
-SIGNAL Robot_Sts_State       $OUT[513] TO $OUT[544]   ; I.Data[64]  0 idle 1 run 2 done 3 fault 4 held
+SIGNAL Robot_Sts_State       $OUT[513] TO $OUT[544]   ; I.Data[64]  0 idle 1 run 2 done 3 fault  (2 and 3 are HELD)
 SIGNAL Robot_Sts_RoutineID   $OUT[545] TO $OUT[576]   ; I.Data[68]
 SIGNAL Robot_Sts_AckSeq      $OUT[577] TO $OUT[608]   ; I.Data[72]
 SIGNAL Robot_Sts_FaultCode   $OUT[609] TO $OUT[640]   ; I.Data[76]
