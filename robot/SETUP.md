@@ -11,7 +11,7 @@ times today's joint acceleration.
 
 ## Step 1 — `$config.dat` — DONE, verified
 
-`KRC:\STEU\Mada\$config.dat` has been pulled and checked — the live copy is committed as
+`KRC:\R1\System\$config.dat` has been pulled and checked — the live copy is committed as
 [`robot/krc/config.dat`](krc/config.dat). Everything `Main.src` needs is already
 declared there: `XHOME`, `FHOME`, `PDEFAULT`, `Rjct_1Blnk_2Fin_3Both`, `RobotCell_Error`,
 `US_Pick[2,4]`. **`Main.src` will compile.**
@@ -57,6 +57,11 @@ references. It works, but it leaves no room to grow.
 
 Paste the 13 declarations from `CONFIG_ADDITIONS.dat` into `$config.dat` **exactly as written** —
 they are verified against the live config.
+
+**How:** `$config.dat` is a **linked module**. The controller has it loaded, so the Navigator refuses
+to overwrite it — pasting a replacement from USB fails with *"Invalid command for linked modules:
+command: Overwrite"*. Edit it in place instead: select `$config` in `KRC:\R1\System`, press **Open**,
+and type the declarations into the editor. Thirteen lines, once.
 
 **Where:** inside the `;FOLD USER GLOBALS` block at the bottom, under the `Userdefined Variables`
 banner — line 956 in the copy pulled off this controller, just above `;ENDFOLD (USER GLOBALS)`.

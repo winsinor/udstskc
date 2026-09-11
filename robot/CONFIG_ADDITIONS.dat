@@ -2,7 +2,7 @@
 ;  ADD THESE TO $config.dat  --  robot <-> PLC command/status interface
 ; ============================================================================
 ;
-;  PASTE INTO:  KRC:\STEU\Mada\$config.dat, inside the USER GLOBALS fold at
+;  TYPE INTO:   KRC:\R1\System\$config.dat, inside the USER GLOBALS fold at
 ;               the bottom of the file, under "Userdefined Variables" --
 ;               NOT up with the other SIGNAL declarations.
 ;
