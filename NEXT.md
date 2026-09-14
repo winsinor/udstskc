@@ -1,7 +1,53 @@
 # Next — the working list
 
-**State: `Program031000_RobotSequencer` is imported.** The PLC half of the interface exists. The
-robot half does not, so nothing moves yet — that is expected and step 1 below turns it into a test.
+## State as of 2026-09-11 — the interface is LIVE and PROVEN
+
+The PLC commands the robot and reads it back. Everything below this line is behaviour, not plumbing.
+
+**Done, verified on hardware:**
+
+| | |
+|---|---|
+| `$config.dat` | 13 `SIGNAL` declarations typed into `KRC:\R1\System\$config.dat`, USER GLOBALS fold. Cold start done. |
+| `Main.src` + `Main.dat` | On the controller in `KRC:\R1\Program`. Old pair kept as `Main_old`. Compiles clean — the 25 errors were the missing signals and cleared together. |
+| Assembly size | `Station100_Robot` is a generic `AB:ETHERNET_MODULE`, `SINT[256]` **both directions**. Block needs bytes 64–91. Plan B not needed. |
+| Mapping | `O.Data[72] = 17` → `Robot_Cmd_Param1 = 17` on the pendant. `bit = (byte × 8) + 1` confirmed. |
+| Byte order | `Robot_Sts_SubStep = 65536` → `I.Data[86]`. Little-endian both ways, nothing to flip. |
+| COP rungs | Added. Inbound in `Routine040300_InputStatus`, outbound in `Routine040700_OutputActions`. |
+| Protocol | 9001 ack-timeout reproduced and cleared correctly. PLC half fully exercised. |
+
+**Three PLC tags had to be created by hand** — the L5X declared them but no rung referenced them, so
+the import skipped them: `Robot_Cmd_RetryLimit`, `Robot_Sts_RetryCount`, `Robot_Sts_SubStep`
+(controller-scope DINTs).
+
+**Running the robot program:** AUT mode, select `Main`, **hold** Start until *"programmed path
+reached (BCO)"* — releasing early aborts the BCO and it reads as a mysterious `#P_STOP`. Confirm with
+`$PRO_STATE1` = `#P_ACTIVE` and `Robot_Sts_AckSeq` == `Robot_Cmd_Seq`.
+
+## Where we stopped
+
+Routine **99** (invalid ID → fault 101) and **10** (Home) were the next things to fire from the
+faceplate. Then **60 SprueCut** — the easiest station test, because `Station500_SprueCutter` has no
+preconditions at all: no request bits, no array indices, no part-present checks.
+
+## Open, in priority order
+
+1. Fire 99, then 10, then 60 from the manual faceplate
+2. Map the 17 `Ext_` stubs in `R999_ExternalInterface` — **one rung each, do not find-and-replace
+   into the sequencer**. `Ext_EStopOK` gates every mode and is being forced for now.
+3. Stations in order: **20 → 30 → 40 → 70 → 60 → 80 → 90 → 50**. IMM last.
+4. `UpAxis_Memory` is `SINT[12]`, rung 7 allows a layer request of 13 — **major-faults the
+   processor**. Answer is 11 layers.
+5. Controller buffer battery is dead (`KSS13103`). Reboot only from the HMI, never the disconnect.
+6. The controller edits are **not** in the WorkVisual project. A future deploy would silently revert
+   `$config.dat` and `Main.src`. Load the project from the controller once GripperSpotTech is sorted.
+
+**GripperSpotTech:** the WorkVisual project declares it and the PC lacks the `.kop`, so code
+generation is blocked. It does not matter — none of the work needs a deploy. Nothing in the
+application calls it; `Grp_sps` only runs if manually assigned to an Extended Submit. Do not
+uninstall it — that requires the deploy you cannot do.
+
+---
 
 The 100-item board is the reference. **This is the queue.** Ordered; work top to bottom.
 
