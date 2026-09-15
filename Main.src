@@ -13,6 +13,9 @@ DEF Main ( )
 ;   State 2 and 3 are HELD. The PLC releases them by writing
 ;   Robot_Cmd_RoutineID = 0. Nothing else does.
 ;
+;   Fault codes: 100 station error   101 unknown routine ID
+;                102 tray position out of range
+;
 ; Signals live in $config.dat, USER GLOBALS fold.
 ;--------------------------------------------------------------------------
 
@@ -21,6 +24,7 @@ DEF Main ( )
   ; can change mid-routine; these are taken once, at dispatch.
   DECL INT Cmd_Routine
   DECL INT Cmd_P1
+  DECL INT Cmd_P2
 ;ENDFOLD (INIT)
 ;FOLD BASISTECH INI
   GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
@@ -49,6 +53,7 @@ LOOP
 
   Cmd_Routine = Robot_Cmd_RoutineID
   Cmd_P1      = Robot_Cmd_Param1
+  Cmd_P2      = Robot_Cmd_Param2
 
   Robot_Sts_RoutineID = Cmd_Routine
   Robot_Sts_FaultCode = 0
@@ -69,7 +74,17 @@ LOOP
     RtoIMM_MoldOpenEnable=TRUE
 
   CASE 20 ; PickUpstacker   -- PLC clears UStoR_ReqToMoveLayer first
-    Station200_UpStacker ( )
+    ; Param1 = tray row, Param2 = tray column. Bounds are US_Pick[2,4];
+    ; checked here so a bad index faults cleanly instead of throwing a
+    ; KRL index error part-way into the move.
+    IF (Cmd_P1<1) OR (Cmd_P1>2) OR (Cmd_P2<1) OR (Cmd_P2>4) THEN
+      Robot_Sts_FaultCode = 102 ; tray position out of range
+      Robot_Sts_State     = 3
+    ELSE
+      US_CmdRow = Cmd_P1
+      US_CmdCol = Cmd_P2
+      Station200_UpStacker ( )
+    ENDIF
 
   CASE 30 ; PlaceTurntable  -- PLC sets TTtoR_ReqToPlace first
     Station300_LaserMarker ( )

@@ -56,6 +56,25 @@ SIGNAL Robot_Cmd_Param2      $IN[609] TO $IN[640]     ; O.Data[76]  tray column
 SIGNAL Robot_Cmd_Param3      $IN[641] TO $IN[672]     ; O.Data[80]  seq number A
 SIGNAL Robot_Cmd_Param4      $IN[673] TO $IN[704]     ; O.Data[84]  seq number B
 SIGNAL Robot_Cmd_RetryLimit  $IN[705] TO $IN[736]     ; O.Data[88]
+;
+; ----------------------------------------------------------------------------
+;  TRAY POSITION HANDOFF  (plain variables, NOT signals)
+;
+;  Robot_Cmd_Param1/2 are $IN signals and cannot be written from KRL, and a
+;  local in Main is not visible inside Station200_UpStacker. Main snapshots
+;  the command into these two globals; the station program indexes with them.
+;
+;  Put these next to DECL INT Rjct_1Blnk_2Fin_3Both (~line 280 of $config.dat),
+;  in the same block as the US_Pick[2,4] declarations -- NOT in the SIGNAL
+;  block above.
+;
+;      DECL INT US_CmdRow
+;      DECL INT US_CmdCol
+;
+;  Valid range is set by the arrays themselves: US_Pick[2,4], so row 1..2 and
+;  column 1..4. Main rejects anything outside that with fault 102 rather than
+;  letting KRL throw an index error mid-motion.
+; ----------------------------------------------------------------------------
 
 ; ----------------------------------------------------------------------------
 ;  ROBOT -> PLC   (status)           PLC byte
