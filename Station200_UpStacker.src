@@ -75,14 +75,14 @@ RobotCell_Error=False
 
 
  ;move tooling to row and column approach position for pick, then slowy move into the pick position 
-            US_PickApproach[US_CmdRow,US_CmdCol] = US_Pick[US_CmdRow,US_CmdCol]
-            US_PickApproach[US_CmdRow,US_CmdCol].Z = US_PickApproach[US_CmdRow,US_CmdCol].Z + 100
-            US_PickApproachSlow[US_CmdRow,US_CmdCol].Z = US_PickApproach[US_CmdRow,US_CmdCol].Z - 65                                    
+            US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber] = US_Pick[UStoR_PickRowNumber,UStoR_PickColumnNumber]
+            US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber].Z = US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber].Z + 100
+            US_PickApproachSlow[UStoR_PickRowNumber,UStoR_PickColumnNumber].Z = US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber].Z - 65                                    
         
             
- SPTP US_PickApproach[US_CmdRow,US_CmdCol] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
- SLIN US_PickApproachSlow[US_CmdRow,US_CmdCol] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
- SLIN US_Pick[US_CmdRow,US_CmdCol] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
+ SPTP US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_PickApproachSlow[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+ SLIN US_Pick[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 0.1
 
 ;Set vacuum cups to on
 RtoPLC_BlankCupAVac=True
@@ -124,12 +124,12 @@ If ((RtoUS_PickErrorVG524==True) Or (RtoUS_PickErrorVG526==True)) Then
        RtoUS_PickErrorVG524=False
        RtoUS_PickErrorVG526=False      
 
-       SLIN US_PickApproach[US_CmdRow,US_CmdCol] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+       SLIN US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
 EndIf      
 
 ;check vacuum sensors for being true, if true, slowly lift parts from tray
 If ((PLCtoR_BlankCupAVacOn==True) And (PLCtoR_BlankCupBVacOn==True)) Then
-       SLIN US_PickApproach[US_CmdRow,US_CmdCol] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
+       SLIN US_PickApproach[UStoR_PickRowNumber,UStoR_PickColumnNumber] with $TOOL=TOOL_DATA[1],$BASE=BASE_DATA[1],$LOAD=LOAD_DATA[1],$VEL.CP = 2
 EndIf     
 
 
