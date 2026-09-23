@@ -2,33 +2,19 @@
 &REL 6
 DEF Main()
 
-
-   ;FOLD INI;%{PE}
-      ;FOLD BASISTECH INI
-         GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS == TRUE DO IR_STOPM()
-         INTERRUPT ON 3
-         BAS(#INITMOV, 0)
-      ;ENDFOLD (BASISTECH INI)
-      ;FOLD USER INI
-         ;Make your modifications here
-      ;ENDFOLD (USER INI)
-      ;ENDFOLD (INI)     
+GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==True DO IR_STOPM()
+INTERRUPT ON 3
+BAS(#INITMOV,0)
 
 DECL INT Cmd
 
-;Routine numbers the PLC writes to Robot_Cmd_RoutineID
-;  10  Home
-;  20  Station200_UpStacker     (PLC picks pick-vs-layer with UStoR_ReqToMoveLayer)
-;  30  Station300_LaserMarker   (PLC picks place-vs-pick with TTtoR_ReqToPlace / ReqToPickGood / ReqToPickBad)
-;  40  Station400_IMM           (PLC picks place-vs-pick with IMMtoR_PartInjected)
-;  50  Station500_SprueCutter
-;  60  Station600_DownStacker   (PLC picks the branch with DStoR_PlaceInTray / PickFromTray / DropInShoot)
-;  71  Station500_Reject        blank side
-;  72  Station500_Reject        finished side
-;  73  Station500_Reject        both sides
-;  80  Station500_DrawerMove
+;Robot_Cmd_RoutineID   from PLC   0 = idle, anything else = run that routine
+;Robot_Sts_State       to PLC     0 idle   1 running   2 done   3 faulted
+;Robot_Sts_RoutineID   to PLC     echo of the routine being run
+;
+;10 Home          20 UpStacker    30 LaserMarker   40 IMM
+;50 SprueCutter   60 DownStacker  71 72 73 Reject blank / finished / both
 
-;Home the robot on first program run, or if there is a cell error
 BeginningOfModule:
 RobotCell_Error=False
 RtoPLC_RobotReachedStop=False
@@ -36,12 +22,7 @@ Robot_Sts_State=0
 Robot_Sts_RoutineID=0
 
 $OV_PRO=30
-        ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
-      ;FOLD Parameters ;%{h}
-         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP; SimId=
-      ;ENDFOLD
-      SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
-      ;ENDFOLD  
+GoHome()
 $OV_PRO=100
 
 RtoIMM_RobotWithIMM=True
@@ -54,98 +35,70 @@ RtoPLC_ToolBlnkMrked=False
 Loop
 
 If ((PLCtoR_Stop==True) Or (PLCtoR_DrawerInPos==False)) Then
-        ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
-      ;FOLD Parameters ;%{h}
-         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP; SimId=
-      ;ENDFOLD
-      SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
-      ;ENDFOLD  
-        RtoIMM_MoldAreaFree=True
-        RtoIMM_MoldCloseEnable=True
-        RtoIMM_MoldOpenEnable=True
-        RobotCell_Error=False
-        Robot_Sts_State=0
-        Robot_Sts_RoutineID=0
-        RtoPLC_RobotReachedStop=True
-        Wait for $EXT_START
-        RtoPLC_RobotReachedStop=False
+   GoHome()
+   RtoIMM_MoldAreaFree=True
+   RtoIMM_MoldCloseEnable=True
+   RtoIMM_MoldOpenEnable=True
+   Robot_Sts_State=0
+   Robot_Sts_RoutineID=0
+   RtoPLC_RobotReachedStop=True
+   Wait for $EXT_START
+   RtoPLC_RobotReachedStop=False
 EndIf
 
-;Idle here until the PLC asks for a routine, or asks us to stop
 Wait for ((Robot_Cmd_RoutineID<>0) Or (PLCtoR_Stop==True) Or (PLCtoR_DrawerInPos==False))
 
-If ((PLCtoR_Stop==True) Or (PLCtoR_DrawerInPos==False)) Then
-        GOTO EndOfLoop
+If Robot_Cmd_RoutineID<>0 Then
+
+   Cmd=Robot_Cmd_RoutineID
+   Robot_Sts_RoutineID=Cmd
+   Robot_Sts_State=1
+
+   Switch Cmd
+   Case 10
+      GoHome()
+   Case 20
+      Station200_UpStacker()
+   Case 30
+      Station300_LaserMarker()
+   Case 40
+      Station400_IMM()
+   Case 50
+      Station500_SprueCutter()
+   Case 60
+      Station600_DownStacker()
+   Case 71,72,73
+      Rjct_1Blnk_2Fin_3Both=Cmd-70
+      Station500_Reject()
+   Default
+      RobotCell_Error=True
+   EndSwitch
+
+   If RobotCell_Error==True Then
+      Robot_Sts_State=3
+   Else
+      Robot_Sts_State=2
+   EndIf
+
+   Wait for Robot_Cmd_RoutineID==0
+
+   If RobotCell_Error==True Then
+      GOTO BeginningOfModule
+   EndIf
+
+   Robot_Sts_State=0
+   Robot_Sts_RoutineID=0
+
 EndIf
 
-Cmd=Robot_Cmd_RoutineID
-Robot_Sts_RoutineID=Cmd
-Robot_Sts_State=1
-
-Switch Cmd
-
-Case 10
-        ;FOLD SPTP HOME Vel=100 % DEFAULT Tool[0] Base[0] ;%{PE}
-      ;FOLD Parameters ;%{h}
-         ;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP; SimId=
-      ;ENDFOLD
-      SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
-      ;ENDFOLD  
-
-Case 20
-        Station200_UpStacker()
-
-Case 30
-        Station300_LaserMarker()
-
-Case 40
-        Station400_IMM()
-
-Case 50
-        Station500_SprueCutter()
-
-Case 60
-        Station600_DownStacker()
-
-Case 71
-        Rjct_1Blnk_2Fin_3Both=1
-        Station500_Reject()
-
-Case 72
-        Rjct_1Blnk_2Fin_3Both=2
-        Station500_Reject()
-
-Case 73
-        Rjct_1Blnk_2Fin_3Both=3
-        Station500_Reject()
-
-Case 80
-        Station500_DrawerMove()
-
-Default
-        RobotCell_Error=True
-
-EndSwitch
-
-;Report the result and hold it until the PLC clears the command
-If RobotCell_Error==True Then
-        Robot_Sts_State=3
-Else
-        Robot_Sts_State=2
-EndIf
-
-Wait for Robot_Cmd_RoutineID==0
-
-If RobotCell_Error==True Then
-        GOTO EndOfModule
-EndIf
-
-Robot_Sts_State=0
-Robot_Sts_RoutineID=0
-
-EndOfLoop:
 EndLoop
+END
 
-EndOfModule:
-GOTO BeginningOfModule
+
+DEF GoHome()
+PDAT_ACT=PDEFAULT
+FDAT_ACT=FHOME
+BAS(#PTP_PARAMS,100)
+$H_POS=XHOME
+PTP XHOME
 END
