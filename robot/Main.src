@@ -7,6 +7,7 @@ INTERRUPT ON 3
 BAS(#INITMOV,0)
 
 DECL INT Cmd
+DECL INT OvSave
 
 ;Robot_Cmd_RoutineID   from PLC   0 = idle, anything else = run that routine
 ;Robot_Sts_State       to PLC     0 idle   1 running   2 done   3 faulted
@@ -21,9 +22,10 @@ RtoPLC_RobotReachedStop=False
 Robot_Sts_State=0
 Robot_Sts_RoutineID=0
 
+OvSave=$OV_PRO
 $OV_PRO=30
 GoHome()
-$OV_PRO=100
+$OV_PRO=OvSave
 
 RtoIMM_RobotWithIMM=True
 RtoIMM_MoldAreaFree=True

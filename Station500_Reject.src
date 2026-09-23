@@ -120,6 +120,5 @@ SLIN XSC_A1Return WITH $VEL = SVEL_CP(2.0, , LCPDAT20), $TOOL = STOOL2(FSC_A1Ret
 Wait For PLCtoR_DrawerInPos==True
 
 
-$OV_PRO=100
       
 END
