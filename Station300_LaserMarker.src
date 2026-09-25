@@ -1,5 +1,5 @@
 &ACCESS RVP1
-&REL 101
+&REL 112
 &PARAM DISKPATH = KRC:\R1\Program
 DEF Station300_LaserMarker()
 
@@ -50,8 +50,8 @@ XTT_PlaceReturn.Z=XTT_PlaceAppr.Z+100
 XTT_PlaceApprClose=XTT_Place1
 XTT_PlaceApprClose.Z=XTT_Place1.Z+10
 
-XTT_Pick=XTT_Place
-
+XTT_Place=XTT_Pick
+;above line was XTT_Pick=XTT_Place
 XTT_PickAppr=XTT_Pick
 XTT_PickAppr.Z=XTT_Pick.Z+100
 
@@ -72,6 +72,15 @@ If ((TTtoR_ReqToPlace==True) And ((RtoPLC_ToolBlnkMrked==False) And (RtoPLC_Tool
 SPTP XTT_A1Turn WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FTT_A1Turn), $BASE = SBASE(FTT_A1Turn.BASE_NO), $IPO_MODE = SIPO_MODE(FTT_A1Turn.IPO_FRAME), $LOAD = SLOAD(FTT_A1Turn.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT01), $APO = SAPO_PTP(PPDAT01), $GEAR_JERK[1] = SGEAR_JERK(PPDAT01), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
 ;ENDFOLD
 
+If ((TTtoR_ReqToPlace==True) And (TTtoR_ReqToPlace==False)) Then
+
+;FOLD SPTP TT_Pick Vel=100 % PDAT04 Tool[4]:TurnTable Base[2]:LaserMarker ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=XTT_Pick; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=PDAT04; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+SPTP XXTT_Pick WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FXTT_Pick), $BASE = SBASE(FXTT_Pick.BASE_NO), $IPO_MODE = SIPO_MODE(FXTT_Pick.IPO_FRAME), $LOAD = SLOAD(FXTT_Pick.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PPDAT04), $APO = SAPO_PTP(PPDAT04), $GEAR_JERK[1] = SGEAR_JERK(PPDAT04), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+EndIf
 ;approach nest
 ;FOLD SPTP TT_PlaceAppr CONT Vel=100 % PDAT5 Tool[4]:TurnTable Base[2]:LaserMarker ;%{PE}
 ;FOLD Parameters ;%{h}
@@ -95,11 +104,11 @@ SLIN XTT_Place1 WITH $VEL = SVEL_CP(0.1, , LCPDAT8), $TOOL = STOOL2(FTT_Place1),
 ;ENDFOLD
 
 ;start to sliding in from right of tooling (x+ traveling tool[4])
-;FOLD SLIN TT_Place2 Vel=2 m/s CPDAT9 Tool[4]:TurnTable Base[2]:LaserMarker ;%{PE}
+;FOLD SLIN TT_Place2 Vel=0.5 m/s CPDAT9 Tool[4]:TurnTable Base[2]:LaserMarker ;%{PE}
 ;FOLD Parameters ;%{h}
-;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=TT_Place2; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT9; Kuka.VelocityPath=2; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=TT_Place2; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDAT9; Kuka.VelocityPath=0.5; Kuka.VelocityFieldEnabled=True; Kuka.ColDetectFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SLIN
 ;ENDFOLD
-SLIN XTT_Place2 WITH $VEL = SVEL_CP(2.0, , LCPDAT9), $TOOL = STOOL2(FTT_Place2), $BASE = SBASE(FTT_Place2.BASE_NO), $IPO_MODE = SIPO_MODE(FTT_Place2.IPO_FRAME), $LOAD = SLOAD(FTT_Place2.TOOL_NO), $ACC = SACC_CP(LCPDAT9), $ORI_TYPE = SORI_TYP(LCPDAT9), $APO = SAPO(LCPDAT9), $JERK = SJERK(LCPDAT9), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+SLIN XTT_Place2 WITH $VEL = SVEL_CP(0.5, , LCPDAT9), $TOOL = STOOL2(FTT_Place2), $BASE = SBASE(FTT_Place2.BASE_NO), $IPO_MODE = SIPO_MODE(FTT_Place2.IPO_FRAME), $LOAD = SLOAD(FTT_Place2.TOOL_NO), $ACC = SACC_CP(LCPDAT9), $ORI_TYPE = SORI_TYP(LCPDAT9), $APO = SAPO(LCPDAT9), $JERK = SJERK(LCPDAT9), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
 ;ENDFOLD
 
        RtoPLC_BlankCupAVac=False

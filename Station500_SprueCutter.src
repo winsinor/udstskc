@@ -1,5 +1,5 @@
 &ACCESS RVO1
-&REL 8
+&REL 11
 &PARAM DISKPATH = KRC:\R1\Program
 DEF Station500_SprueCutter()
    ;FOLD INI;%{PE}
@@ -105,7 +105,8 @@ RtoPLC_SprueCut2=False
 RtoPLC_FinishGripClose=False
 wait sec .5
 RtoPLC_FinishGripOpen=True
-    Wait Sec .25
+    Wait Sec 1
+
 RtoPLC_FinishGripOpen=False
     Wait Sec .25      
       

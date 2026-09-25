@@ -1,5 +1,5 @@
-&ACCESS RVP2
-&REL 34
+&ACCESS RVO1
+&REL 36
 &PARAM DISKPATH = KRC:\R1\Program
 DEF Station500_Reject()
 
@@ -115,8 +115,14 @@ SLIN XRejectApprMid WITH $VEL = SVEL_CP(2.0, , LCPDAT23), $TOOL = STOOL2(FReject
 ;ENDFOLD
 SLIN XSC_A1Return WITH $VEL = SVEL_CP(2.0, , LCPDAT20), $TOOL = STOOL2(FSC_A1Return), $BASE = SBASE(FSC_A1Return.BASE_NO), $IPO_MODE = SIPO_MODE(FSC_A1Return.IPO_FRAME), $LOAD = SLOAD(FSC_A1Return.TOOL_NO), $ACC = SACC_CP(LCPDAT20), $ORI_TYPE = SORI_TYP(LCPDAT20), $APO = SAPO(LCPDAT20), $JERK = SJERK(LCPDAT20), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
 ;ENDFOLD
-     
-   
+ 
+If PLCtoR_DrawerInPos==False then
+RtoPLC_UnlockDoors=true
+wait sec 1
+RtoPLC_UnlockDoors=false
+EndIf
+
+
 Wait For PLCtoR_DrawerInPos==True
 
 

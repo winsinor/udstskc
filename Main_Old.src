@@ -1,6 +1,5 @@
-﻿&ACCESS RVP
-&REL 6
-DEF Main()
+&ACCESS RVP
+DEF Main_old()
 
 
    ;FOLD INI;%{PE}
@@ -30,7 +29,7 @@ If RobotInitialHoming==False Then
       ;ENDFOLD
       SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
       ;ENDFOLD  
-
+rtoplc_unlockdoors=false
 
         RtoIMM_RobotWithIMM=True
         RtoIMM_MoldAreaFree=True
