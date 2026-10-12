@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--This program runs and manages logic for communication -->
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.04" TargetName="Program010000_Communication" TargetType="Program" TargetClass="Standard" ContainsContext="true" Owner="KraussMaffei Group, KraussMaffei Group" ExportDate="Fri Sep 04 13:00:28 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.04" TargetName="Program010000_Communication" TargetType="Program" TargetClass="Standard" ContainsContext="true" Owner="KraussMaffei Group, KraussMaffei Group" ExportDate="Mon Oct 12 09:40:12 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
 <Controller Use="Context" Name="RS_Rev35011_691904_NPE">
 <DataTypes Use="Context">
 <DataType Name="Data_Item" Family="NoFamily" Class="User">
@@ -245,6 +245,28 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
+<Tag Name="Air_Pressure_Switch" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[1]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="1"/>
+</Data>
+</Tag>
+<Tag Name="amp_Test_Bits" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Comments>
+<Comment Operand=".6">
+<![CDATA[toggles exectpors
+off = ejectors back]]>
+</Comment>
+</Comments>
+<Data Format="L5K">
+<![CDATA[564168706]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="564168706"/>
+</Data>
+</Tag>
 <Tag Name="Cognex_Com_Fault" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -255,7 +277,7 @@
 </Tag>
 <Tag Name="CRM" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.2" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[CRM, IMM AND CELL SAFTEY HEALTHY, PLC1102 (Slot-1), I0102]]>
+<![CDATA[CRM, ROBOT SAFTEY HEALTHY, PLC1102 (Slot-1), I0102]]>
 </Description>
 </Tag>
 <Tag Name="CRM_DS" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.3" ExternalAccess="Read/Write">
@@ -271,48 +293,6 @@
 <Tag Name="CRM_S" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.1" ExternalAccess="Read/Write">
 <Description>
 <![CDATA[CRM_S, CELL SAFTEY DOORS AND ESTOPS HEALTHY, PLC1102 (Slot-1), I0101]]>
-</Description>
-</Tag>
-<Tag Name="Data_Item_Initialize" Class="Standard" TagType="Base" DataType="Data_Item" Constant="false" ExternalAccess="Read/Write">
-<Data Format="L5K">
-<![CDATA[[0,0,0,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		]]]>
-</Data>
-<Data Format="Decorated">
-<Structure DataType="Data_Item">
-<DataValueMember Name="Inspect_1_Status" DataType="BOOL" Value="0"/>
-<DataValueMember Name="Inspect_2_Status" DataType="BOOL" Value="0"/>
-<DataValueMember Name="TurnTable_1_Pres" DataType="BOOL" Value="0"/>
-<DataValueMember Name="TurnTable_2_Pres" DataType="BOOL" Value="0"/>
-<DataValueMember Name="Status" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Seq_Num" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Orig_X_1" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="Orig_Y_1" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="Orig_Angle_1" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="Orig_X_2" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="Orig_Y_2" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="Orig_Angle_2" DataType="REAL" Radix="Float" Value="0.0"/>
-</Structure>
-</Data>
-</Tag>
-<Tag Name="DOOR_1" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.5" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[DOOR_1, UPSTACKER DOOR, PLC1102 (Slot-1), I0105]]>
-</Description>
-</Tag>
-<Tag Name="DOOR_2" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.6" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[DOOR_2, DOWNSTACKER DOOR, PLC1102 (Slot-1), I0106]]>
-</Description>
-</Tag>
-<Tag Name="DOOR_3" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.7" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[DOOR_3, FUMEX DOOR, PLC1102 (Slot-1), I0107]]>
-</Description>
-</Tag>
-<Tag Name="DOOR_4" TagType="Alias" Radix="Decimal" AliasFor="Local:1:I.Data.8" ExternalAccess="Read/Write">
-<Description>
-<![CDATA[DOOR_4, LASER DOOR, PLC1102 (Slot-1), I0108]]>
 </Description>
 </Tag>
 <Tag Name="Door_Open_Request" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
@@ -413,26 +393,26 @@
 </Tag>
 <Tag Name="DwnStack_HMI_Tray_Qty" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
-<![CDATA[0]]>
+<![CDATA[1]]>
 </Data>
 <Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValue DataType="DINT" Radix="Decimal" Value="1"/>
 </Data>
 </Tag>
 <Tag Name="DwnStack_Inputs" Class="Standard" TagType="Base" DataType="SCON_Inputs" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
-<![CDATA[[19360,0,10,105,0,0,1819,222,0,0,2,-16]]]>
+<![CDATA[[2062,302,24,0,0,0,13077,241,0,0,19,112]]]>
 </Data>
 <Data Format="Decorated">
 <Structure DataType="SCON_Inputs">
-<DataValueMember Name="Actual_Position" DataType="DINT" Radix="Decimal" Value="19360"/>
-<DataValueMember Name="Command_Current" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Actual_Speed" DataType="DINT" Radix="Decimal" Value="10"/>
-<DataValueMember Name="Alarm_Code" DataType="INT" Radix="Decimal" Value="105"/>
+<DataValueMember Name="Actual_Position" DataType="DINT" Radix="Decimal" Value="2062"/>
+<DataValueMember Name="Command_Current" DataType="DINT" Radix="Decimal" Value="302"/>
+<DataValueMember Name="Actual_Speed" DataType="DINT" Radix="Decimal" Value="24"/>
+<DataValueMember Name="Alarm_Code" DataType="INT" Radix="Decimal" Value="0"/>
 <DataValueMember Name="OCCUPIED_n14_n15" DataType="INT" Radix="Decimal" Value="0"/>
 <DataValueMember Name="Load_Cell_Value" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Total_Moving_Count" DataType="DINT" Radix="Decimal" Value="1819"/>
-<DataValueMember Name="Total_Moving_Distance" DataType="DINT" Radix="Decimal" Value="222"/>
+<DataValueMember Name="Total_Moving_Count" DataType="DINT" Radix="Decimal" Value="13077"/>
+<DataValueMember Name="Total_Moving_Distance" DataType="DINT" Radix="Decimal" Value="241"/>
 <DataValueMember Name="Battery_Alarm" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Loadcell_Cal_Complete" DataType="BOOL" Value="0"/>
 <DataValueMember Name="OCCUPIED_n28b2" DataType="BOOL" Value="0"/>
@@ -442,11 +422,11 @@
 <DataValueMember Name="OCCUPIED_n28b6" DataType="BOOL" Value="0"/>
 <DataValueMember Name="OCCUPIED_n28b7" DataType="BOOL" Value="0"/>
 <DataValueMember Name="OCCUPIED_n29" DataType="SINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Position_Complete" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Position_Complete" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Home_Complete" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Moving" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Alarm_Active" DataType="BOOL" Value="0"/>
-<DataValueMember Name="Servo_is_On" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Servo_is_On" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Push_Failed" DataType="BOOL" Value="0"/>
 <DataValueMember Name="In_Push_Zone" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Homing" DataType="BOOL" Value="0"/>
@@ -457,7 +437,7 @@
 <DataValueMember Name="In_Zone_1" DataType="BOOL" Value="1"/>
 <DataValueMember Name="In_Zone_2" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Ready" DataType="BOOL" Value="1"/>
-<DataValueMember Name="E_Stop_Active" DataType="BOOL" Value="1"/>
+<DataValueMember Name="E_Stop_Active" DataType="BOOL" Value="0"/>
 </Structure>
 </Data>
 </Tag>
@@ -490,14 +470,6 @@
 <![CDATA[ESPB104, PANEL ESTOP PUSHBUTTON, PLC1102 (Slot-1), I0104]]>
 </Description>
 </Tag>
-<Tag Name="Fire_The_Laser" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
 <Tag Name="I0300" TagType="Alias" Radix="Decimal" AliasFor="Local:3:I.Data.0" ExternalAccess="Read/Write">
 <Description>
 <![CDATA[I0300, DOCKING STATION CYLINDER RETRACT, PLC1302 (Slot-3), I0300]]>
@@ -510,21 +482,13 @@
 </Tag>
 <Tag Name="Keyence_Com_Fault" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
-<![CDATA[1]]>
+<![CDATA[0]]>
 </Data>
 <Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="1"/>
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
 <Tag Name="Laser_Com_Fault" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Data Format="L5K">
-<![CDATA[1]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="1"/>
-</Data>
-</Tag>
-<Tag Name="Low_Air_Fault" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -638,8 +602,8 @@
 </Comment>
 </Comments>
 <Data Format="L5K">
-<![CDATA[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]]>
+<![CDATA[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]]>
 </Data>
 <Data Format="Decorated">
 <Array DataType="DINT" Dimensions="100" Radix="Decimal">
@@ -693,10 +657,10 @@
 <Element Index="[47]" Value="0"/>
 <Element Index="[48]" Value="0"/>
 <Element Index="[49]" Value="0"/>
-<Element Index="[50]" Value="11"/>
+<Element Index="[50]" Value="9"/>
 <Element Index="[51]" Value="0"/>
 <Element Index="[52]" Value="0"/>
-<Element Index="[53]" Value="0"/>
+<Element Index="[53]" Value="1"/>
 <Element Index="[54]" Value="0"/>
 <Element Index="[55]" Value="0"/>
 <Element Index="[56]" Value="0"/>
@@ -747,7 +711,6 @@
 </Data>
 </Tag>
 <Tag Name="PC_Trigger_Cognex" TagType="Alias" Radix="Decimal" AliasFor="PC_To_PLC_DINT[10].2" ExternalAccess="Read/Write"/>
-<Tag Name="PC_TT_Clear_Data" TagType="Alias" Radix="Decimal" AliasFor="PC_To_PLC_DINT[10].0" ExternalAccess="Read/Write"/>
 <Tag Name="PC_TT_Run" TagType="Alias" Radix="Decimal" AliasFor="PC_To_PLC_DINT[10].1" ExternalAccess="Read/Write"/>
 <Tag Name="PC_Upstack_Column_Cmd" TagType="Alias" Radix="Decimal" AliasFor="PC_To_PLC_DINT[52]" ExternalAccess="Read/Write"/>
 <Tag Name="PC_Upstack_Layer_Cmd" TagType="Alias" Radix="Decimal" AliasFor="PC_To_PLC_DINT[50]" ExternalAccess="Read/Write"/>
@@ -963,25 +926,25 @@
 </Comment>
 </Comments>
 <Data Format="L5K">
-<![CDATA[[32,0,0,0,0,33,0,0,0,0,32,96,0,269223784,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,2,1,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+<![CDATA[[106,0,0,0,0,240,0,0,0,0,32,32,0,3932520,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,2,1,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0
 		,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]]>
 </Data>
 <Data Format="Decorated">
 <Array DataType="DINT" Dimensions="100" Radix="Decimal">
-<Element Index="[0]" Value="32"/>
+<Element Index="[0]" Value="106"/>
 <Element Index="[1]" Value="0"/>
 <Element Index="[2]" Value="0"/>
 <Element Index="[3]" Value="0"/>
 <Element Index="[4]" Value="0"/>
-<Element Index="[5]" Value="33"/>
+<Element Index="[5]" Value="240"/>
 <Element Index="[6]" Value="0"/>
 <Element Index="[7]" Value="0"/>
 <Element Index="[8]" Value="0"/>
 <Element Index="[9]" Value="0"/>
 <Element Index="[10]" Value="32"/>
-<Element Index="[11]" Value="96"/>
+<Element Index="[11]" Value="32"/>
 <Element Index="[12]" Value="0"/>
-<Element Index="[13]" Value="269223784"/>
+<Element Index="[13]" Value="3932520"/>
 <Element Index="[14]" Value="1"/>
 <Element Index="[15]" Value="0"/>
 <Element Index="[16]" Value="0"/>
@@ -1128,24 +1091,15 @@
 </Tag>
 <Tag Name="TTtoR_TurnTableCycle" TagType="Alias" Radix="Decimal" AliasFor="Station100_Robot:O.Data[4].0" ExternalAccess="Read/Write">
 <Description>
-<![CDATA[TTtoR_TurnTableCycle, Turn table to Robot, turn table cycle bit, (PLC To Robot Ethernet IP Comms)
-]]>
+<![CDATA[TTtoR_TurnTableCycle, Turn table to Robot, table turning bit, (PLC To Robot Ethernet IP Comms)]]>
 </Description>
-</Tag>
-<Tag Name="Turn_Table_Full" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Data Format="L5K">
-<![CDATA[1]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="1"/>
-</Data>
 </Tag>
 <Tag Name="TurnTable" Class="Standard" TagType="Base" DataType="Data_Item" Dimensions="5" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[[[0,0,0,1.14498997e+001,3.37315521e+001,-7.88359642e-001,2.01831188e+001,3.37437820e+001,-6.27696574e-001
 		],[0,0,0,1.14498997e+001,3.37315521e+001,-7.88359642e-001,2.01831188e+001,3.37437820e+001,-6.27696574e-001
-		],[12,2,78,7.07473183e+000,1.46159248e+001,6.61180079e-001,1.56521959e+001,1.44012222e+001,3.90049219e-001
-		],[0,3,62,0.00000000e+000,0.00000000e+000,0.00000000e+000,3.81864624e+001,3.36926155e+001,-3.89676839e-001
+		],[12,3,78,7.07473183e+000,1.46159248e+001,6.61180079e-001,1.56521959e+001,1.44012222e+001,3.90049219e-001
+		],[12,3,62,0.00000000e+000,0.00000000e+000,0.00000000e+000,3.81864624e+001,3.36926155e+001,-3.89676839e-001
 		],[0,0,0,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
 		]]]]>
 </Data>
@@ -1189,7 +1143,7 @@
 <DataValueMember Name="Inspect_2_Status" DataType="BOOL" Value="0"/>
 <DataValueMember Name="TurnTable_1_Pres" DataType="BOOL" Value="1"/>
 <DataValueMember Name="TurnTable_2_Pres" DataType="BOOL" Value="1"/>
-<DataValueMember Name="Status" DataType="DINT" Radix="Decimal" Value="2"/>
+<DataValueMember Name="Status" DataType="DINT" Radix="Decimal" Value="3"/>
 <DataValueMember Name="Seq_Num" DataType="DINT" Radix="Decimal" Value="78"/>
 <DataValueMember Name="Orig_X_1" DataType="REAL" Radix="Float" Value="7.074732"/>
 <DataValueMember Name="Orig_Y_1" DataType="REAL" Radix="Float" Value="14.615925"/>
@@ -1203,8 +1157,8 @@
 <Structure DataType="Data_Item">
 <DataValueMember Name="Inspect_1_Status" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Inspect_2_Status" DataType="BOOL" Value="0"/>
-<DataValueMember Name="TurnTable_1_Pres" DataType="BOOL" Value="0"/>
-<DataValueMember Name="TurnTable_2_Pres" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TurnTable_1_Pres" DataType="BOOL" Value="1"/>
+<DataValueMember Name="TurnTable_2_Pres" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Status" DataType="DINT" Radix="Decimal" Value="3"/>
 <DataValueMember Name="Seq_Num" DataType="DINT" Radix="Decimal" Value="62"/>
 <DataValueMember Name="Orig_X_1" DataType="REAL" Radix="Float" Value="0.0"/>
@@ -1234,38 +1188,6 @@
 </Array>
 </Data>
 </Tag>
-<Tag Name="TurnTable_1_SeqNum" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="TurnTable_2_SeqNum" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Data Format="L5K">
-<![CDATA[78]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="78"/>
-</Data>
-</Tag>
-<Tag Name="TurnTable_3_SeqNum" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Data Format="L5K">
-<![CDATA[62]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="62"/>
-</Data>
-</Tag>
-<Tag Name="TurnTable_4_SeqNum" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
 <Tag Name="Upstack_Column_Current" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[2]]>
@@ -1292,26 +1214,26 @@
 </Tag>
 <Tag Name="UpStack_HMI_Tray_Qty" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
-<![CDATA[11]]>
+<![CDATA[9]]>
 </Data>
 <Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="11"/>
+<DataValue DataType="DINT" Radix="Decimal" Value="9"/>
 </Data>
 </Tag>
 <Tag Name="UpStack_Inputs" Class="Standard" TagType="Base" DataType="SCON_Inputs" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
-<![CDATA[[2562,0,-5,105,0,0,2397,205,0,0,2,-16]]]>
+<![CDATA[[2562,514,-5,0,0,0,3416,226,0,0,19,112]]]>
 </Data>
 <Data Format="Decorated">
 <Structure DataType="SCON_Inputs">
 <DataValueMember Name="Actual_Position" DataType="DINT" Radix="Decimal" Value="2562"/>
-<DataValueMember Name="Command_Current" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Command_Current" DataType="DINT" Radix="Decimal" Value="514"/>
 <DataValueMember Name="Actual_Speed" DataType="DINT" Radix="Decimal" Value="-5"/>
-<DataValueMember Name="Alarm_Code" DataType="INT" Radix="Decimal" Value="105"/>
+<DataValueMember Name="Alarm_Code" DataType="INT" Radix="Decimal" Value="0"/>
 <DataValueMember Name="OCCUPIED_n14_n15" DataType="INT" Radix="Decimal" Value="0"/>
 <DataValueMember Name="Load_Cell_Value" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Total_Moving_Count" DataType="DINT" Radix="Decimal" Value="2397"/>
-<DataValueMember Name="Total_Moving_Distance" DataType="DINT" Radix="Decimal" Value="205"/>
+<DataValueMember Name="Total_Moving_Count" DataType="DINT" Radix="Decimal" Value="3416"/>
+<DataValueMember Name="Total_Moving_Distance" DataType="DINT" Radix="Decimal" Value="226"/>
 <DataValueMember Name="Battery_Alarm" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Loadcell_Cal_Complete" DataType="BOOL" Value="0"/>
 <DataValueMember Name="OCCUPIED_n28b2" DataType="BOOL" Value="0"/>
@@ -1321,11 +1243,11 @@
 <DataValueMember Name="OCCUPIED_n28b6" DataType="BOOL" Value="0"/>
 <DataValueMember Name="OCCUPIED_n28b7" DataType="BOOL" Value="0"/>
 <DataValueMember Name="OCCUPIED_n29" DataType="SINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Position_Complete" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Position_Complete" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Home_Complete" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Moving" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Alarm_Active" DataType="BOOL" Value="0"/>
-<DataValueMember Name="Servo_is_On" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Servo_is_On" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Push_Failed" DataType="BOOL" Value="0"/>
 <DataValueMember Name="In_Push_Zone" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Homing" DataType="BOOL" Value="0"/>
@@ -1336,7 +1258,7 @@
 <DataValueMember Name="In_Zone_1" DataType="BOOL" Value="1"/>
 <DataValueMember Name="In_Zone_2" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Ready" DataType="BOOL" Value="1"/>
-<DataValueMember Name="E_Stop_Active" DataType="BOOL" Value="1"/>
+<DataValueMember Name="E_Stop_Active" DataType="BOOL" Value="0"/>
 </Structure>
 </Data>
 </Tag>
@@ -1403,40 +1325,35 @@
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[XIC(PC_TT_Clear_Data)[COP(Data_Item_Initialize,TurnTable[0],1) ,COP(Data_Item_Initialize,TurnTable[1],1) ,COP(Data_Item_Initialize,TurnTable[2],1) ,COP(Data_Item_Initialize,TurnTable[3],1) ,COP(Data_Item_Initialize,TurnTable[4],1) ][CLR(TurnTable_1_SeqNum) ,CLR(TurnTable_2_SeqNum) ,CLR(TurnTable_3_SeqNum) ,CLR(TurnTable_4_SeqNum) ][OTU(Turn_Table_Full) ,OTU(TTtoR_ReqToPickGood) ,OTU(TTtoR_ReqToPickBad) ]OTU(Fire_The_Laser)OTU(PC_TT_Clear_Data);]]>
+<![CDATA[XIC(PC_TT_Run)ONS(ONS_DOCK.0)OTL(VFD_Index_REQUEST)OTU(PC_TT_Run);]]>
 </Text>
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[XIC(PC_TT_Run)ONS(ONS_DOCK.0)OTL(VFD_Index_REQUEST)OTU(PC_TT_Run);]]>
+<![CDATA[XIC(PC_Trigger_Cognex)OTL(Trigger_Cognex);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
 <Text>
-<![CDATA[XIC(PC_Trigger_Cognex)OTL(Trigger_Cognex);]]>
+<![CDATA[XIC(amp_Test_Bits.0)XIC(PC_Door_Open_Request)ONS(PC_Door_Open_RequestONS)OTL(Door_Open_Request);]]>
 </Text>
 </Rung>
 <Rung Number="3" Type="N">
 <Text>
-<![CDATA[XIC(PC_Door_Open_Request)ONS(PC_Door_Open_RequestONS)OTL(Door_Open_Request);]]>
+<![CDATA[[[XIC(PC_Part_to_Chute) ,XIC(Optix_AlwaysDropInShootTimer.DN) ] [OTL(DStoR_DropInShoot) ,TON(Optix_AlwaysDropInShootTimer,?,?) ] ,XIC(Optix_AlwaysDropInShootReset) RES(Optix_AlwaysDropInShootTimer) OTU(DStoR_DropInShoot) ,[XIO(DStoR_DropInShoot) XIO(Optix_AlwaysDropInShootTimer.DN) MOV(1,Optix_AlwaysDropInShootStatusCode) ,XIC(DStoR_DropInShoot) XIO(Optix_AlwaysDropInShootTimer.DN) MOV(2,Optix_AlwaysDropInShootStatusCode) ,XIC(DStoR_DropInShoot) XIC(Optix_AlwaysDropInShootTimer.DN) MOV(3,Optix_AlwaysDropInShootStatusCode) ] ,XIO(Optix_AlwaysDropInShootTimer.DN) XIC(RtoDS_PlacedConfirm) OTU(DStoR_DropInShoot) ,[XIC(DStoR_DropInShoot) XIC(RtoDS_PlacedConfirm) ,XIC(DropInChuteLEDblink[0].TT) ] [TON(DropInChuteLEDblink[0],?,?) ,XIO(DropInChuteLEDblink[2].DN) [TON(DropInChuteLEDblink[1],?,?) ,XIC(DropInChuteLEDblink[1].DN) TON(DropInChuteLEDblink[2],?,?) ] ] ];]]>
 </Text>
 </Rung>
 <Rung Number="4" Type="N">
 <Text>
-<![CDATA[[XIO(DStoR_DropInShoot) OTE(DStoR_PlaceInTray) ,[XIC(PC_Part_to_Chute) ,XIC(Optix_AlwaysDropInShootTimer.DN) ] [OTL(DStoR_DropInShoot) ,TON(Optix_AlwaysDropInShootTimer,?,?) ] ,XIC(Optix_AlwaysDropInShootReset) RES(Optix_AlwaysDropInShootTimer) OTU(DStoR_DropInShoot) ,[XIO(DStoR_DropInShoot) XIO(Optix_AlwaysDropInShootTimer.DN) MOV(1,Optix_AlwaysDropInShootStatusCode) ,XIC(DStoR_DropInShoot) XIO(Optix_AlwaysDropInShootTimer.DN) MOV(2,Optix_AlwaysDropInShootStatusCode) ,XIC(DStoR_DropInShoot) XIC(Optix_AlwaysDropInShootTimer.DN) MOV(3,Optix_AlwaysDropInShootStatusCode) ] ,XIO(Optix_AlwaysDropInShootTimer.DN) XIC(RtoDS_PlacedConfirm) OTU(DStoR_DropInShoot) ,[XIC(DStoR_DropInShoot) XIC(RtoDS_PlacedConfirm) ,XIC(DropInChuteLEDblink[0].TT) ] [TON(DropInChuteLEDblink[0],?,?) ,XIO(DropInChuteLEDblink[2].DN) [TON(DropInChuteLEDblink[1],?,?) ,XIC(DropInChuteLEDblink[1].DN) TON(DropInChuteLEDblink[2],?,?) ] ] ];]]>
+<![CDATA[XIO(PC_Stacker_Cmd)MOV(PC_Upstack_Layer_Cmd,UpStack_HMI_Tray_Qty)MOV(PC_DwnStack_Layer_Cmd,DwnStack_HMI_Tray_Qty);]]>
 </Text>
 </Rung>
 <Rung Number="5" Type="N">
 <Text>
-<![CDATA[XIO(PC_Stacker_Cmd)MOV(PC_Upstack_Layer_Cmd,UpStack_HMI_Tray_Qty)MOV(PC_DwnStack_Layer_Cmd,DwnStack_HMI_Tray_Qty);]]>
-</Text>
-</Rung>
-<Rung Number="6" Type="N">
-<Text>
 <![CDATA[[XIO(Upstack_Complete) XIO(PC_Stacker_Cmd) MOV(0,Optix_LayerEntryEnable) ,XIC(Upstack_Complete) MOV(1,Optix_LayerEntryEnable) ,[XIC(PC_Stacker_Cmd) XIO(Upstack_Complete) ,XIC(PC_Stacker_Cmd) XIC(Upstack_Complete) ] MOV(2,Optix_LayerEntryEnable) ];]]>
 </Text>
 </Rung>
-<Rung Number="7" Type="N">
+<Rung Number="6" Type="N">
 <Text>
 <![CDATA[XIC(PC_Stacker_Cmd)[NEQ(PC_Upstack_Layer_Cmd,Upstack_Layer_Current) MOV(PC_Upstack_Layer_Cmd,Upstack_Layer_Current) ,NEQ(PC_Upstack_Row_Cmd,Upstack_Row_Current) MOV(PC_Upstack_Row_Cmd,Upstack_Row_Current) ,NEQ(PC_Upstack_Column_Cmd,Upstack_Column_Current) MOV(PC_Upstack_Column_Cmd,Upstack_Column_Current) ,NEQ(PC_DwnStack_Layer_Cmd,DwnStack_Layer_Current) MOV(PC_DwnStack_Layer_Cmd,DwnStack_Layer_Current) ,NEQ(PC_DwnStack_Row_Cmd,DwnStack_Row_Current) MOV(PC_DwnStack_Row_Cmd,DwnStack_Row_Current) ,NEQ(PC_DwnStack_Column_Cmd,DwnStack_Column_Current) MOV(PC_DwnStack_Column_Cmd,DwnStack_Column_Current) ];]]>
 </Text>
@@ -1472,12 +1389,12 @@
 </Rung>
 <Rung Number="5" Type="N">
 <Text>
-<![CDATA[[XIC(ESPB104) OTE(PLC_To_PC_DINT[5].0) ,XIC(DR1_DR2) OTE(PLC_To_PC_DINT[5].1) ,XIC(DR3_DR4) OTE(PLC_To_PC_DINT[5].2) ,XIC(Door_Open_Request) OTE(PLC_To_PC_DINT[5].3) ,XIC(DOOR_1) OTE(PLC_To_PC_DINT[5].4) ,XIC(DOOR_2) OTE(PLC_To_PC_DINT[5].5) ,XIC(DOOR_3) OTE(PLC_To_PC_DINT[5].6) ,XIC(DOOR_4) OTE(PLC_To_PC_DINT[5].7) ];]]>
+<![CDATA[[XIC(ESPB104) OTE(PLC_To_PC_DINT[5].0) ,XIC(DR1_DR2) OTE(PLC_To_PC_DINT[5].1) ,XIC(DR3_DR4) OTE(PLC_To_PC_DINT[5].2) ,XIC(Door_Open_Request) OTE(PLC_To_PC_DINT[5].3) ];]]>
 </Text>
 </Rung>
 <Rung Number="6" Type="N">
 <Text>
-<![CDATA[[XIC(CRM) OTE(PLC_To_PC_DINT[0].0) ,XIC(CRM_S) OTE(PLC_To_PC_DINT[0].1) ,XIC(CRM_P) OTE(PLC_To_PC_DINT[0].3) ,XIO(ESPB104) XIO(CRM_P) OTE(PLC_To_PC_DINT[0].4) ,XIC(CRM_DS) OTE(PLC_To_PC_DINT[0].5) ,XIC(Low_Air_Fault) OTE(PLC_To_PC_DINT[0].6) ];]]>
+<![CDATA[[XIC(CRM) OTE(PLC_To_PC_DINT[0].0) ,XIC(CRM_S) OTE(PLC_To_PC_DINT[0].1) ,XIC(CRM_P) OTE(PLC_To_PC_DINT[0].3) ,XIO(ESPB104) XIO(CRM_P) OTE(PLC_To_PC_DINT[0].4) ,XIC(CRM_DS) OTE(PLC_To_PC_DINT[0].5) ,XIC(Air_Pressure_Switch) OTE(PLC_To_PC_DINT[0].6) ];]]>
 </Text>
 </Rung>
 </RLLContent>
@@ -1485,11 +1402,6 @@
 <Routine Name="Routine010100_Main" Type="RLL">
 <RLLContent>
 <Rung Number="0" Type="N">
-<Text>
-<![CDATA[JSR(PC_to_PLC,0);]]>
-</Text>
-</Rung>
-<Rung Number="1" Type="N">
 <Text>
 <![CDATA[JSR(PLC_to_PC,0);]]>
 </Text>

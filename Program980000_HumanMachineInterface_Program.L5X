@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--This program runs/manages logic for HMI functions and displays-->
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.04" TargetName="Program980000_HumanMachineInterface" TargetType="Program" TargetClass="Standard" ContainsContext="true" Owner="KraussMaffei Group, KraussMaffei Group" ExportDate="Fri Sep 04 13:00:58 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.04" TargetName="Program980000_HumanMachineInterface" TargetType="Program" TargetClass="Standard" ContainsContext="true" Owner="KraussMaffei Group, KraussMaffei Group" ExportDate="Mon Oct 12 09:43:29 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
 <Controller Use="Context" Name="RS_Rev35011_691904_NPE">
 <DataTypes Use="Context">
 <DataType Name="System_Tags" Family="NoFamily" Class="User">
@@ -43,7 +43,7 @@
 <Tags Use="Context">
 <Tag Name="CameraFlash" Class="Standard" TagType="Base" DataType="TIMER" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
-<![CDATA[[3110660,200,0]]]>
+<![CDATA[[2868755,200,0]]]>
 </Data>
 <Data Format="Decorated">
 <Structure DataType="TIMER">
@@ -290,25 +290,25 @@
 </Comment>
 </Comments>
 <Data Format="L5K">
-<![CDATA[[32,0,0,0,0,33,0,0,0,0,32,96,0,269223784,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,2,1,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0
-		,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]]>
+<![CDATA[[104,0,0,0,0,0,0,0,0,0,32,32,0,3933546,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,2,1,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]]>
 </Data>
 <Data Format="Decorated">
 <Array DataType="DINT" Dimensions="100" Radix="Decimal">
-<Element Index="[0]" Value="32"/>
+<Element Index="[0]" Value="104"/>
 <Element Index="[1]" Value="0"/>
 <Element Index="[2]" Value="0"/>
 <Element Index="[3]" Value="0"/>
 <Element Index="[4]" Value="0"/>
-<Element Index="[5]" Value="33"/>
+<Element Index="[5]" Value="0"/>
 <Element Index="[6]" Value="0"/>
 <Element Index="[7]" Value="0"/>
 <Element Index="[8]" Value="0"/>
 <Element Index="[9]" Value="0"/>
 <Element Index="[10]" Value="32"/>
-<Element Index="[11]" Value="96"/>
+<Element Index="[11]" Value="32"/>
 <Element Index="[12]" Value="0"/>
-<Element Index="[13]" Value="269223784"/>
+<Element Index="[13]" Value="3933546"/>
 <Element Index="[14]" Value="1"/>
 <Element Index="[15]" Value="0"/>
 <Element Index="[16]" Value="0"/>
@@ -499,8 +499,8 @@
 </Comment>
 </Comments>
 <Data Format="L5K">
-<![CDATA[[[[1544272,0,0],[1544272,0,0],[2676298,0,0],[2676298,0,0],[1587169,0,0],[1587169,0,0],[0,0,0],[0,0,0],[1412961,0,0],[1412961,0,0],[2787568
-		,0,0],[0,0,0],[2016873,0,0],[2162960,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],[[530575
+<![CDATA[[[[334271,0,0],[334271,0,0],[3428252,0,0],[3428252,0,0],[334271,0,0],[334271,0,0],[0,0,0],[0,0,0],[2738608,0,0],[2738608,0,0],[334271,0
+		,0],[334271,0,0],[4174393,0,0],[334271,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],[[1940744
 		,0,0],[59941,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0
 		],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],0,[2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0
 		,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0],[2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0
@@ -1180,7 +1180,7 @@
 </Tag>
 <Tag Name="TurnTableCycleEndDelay" Class="Standard" TagType="Base" DataType="TIMER" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
-<![CDATA[[3110660,500,0]]]>
+<![CDATA[[2868755,500,0]]]>
 </Data>
 <Data Format="Decorated">
 <Structure DataType="TIMER">
@@ -1194,7 +1194,7 @@
 </Tag>
 <Tag Name="TurnTableTurnTimer" Class="Standard" TagType="Base" DataType="TIMER" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
-<![CDATA[[3110660,400,0]]]>
+<![CDATA[[2868755,400,0]]]>
 </Data>
 <Data Format="Decorated">
 <Structure DataType="TIMER">
